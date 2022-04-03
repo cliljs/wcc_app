@@ -14,6 +14,11 @@ class Helpers {
       return "SET {$values}"; 
     }
 
+    public function generate_random() 
+    {
+      return vsprintf( '%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex(random_bytes(16)), 4));
+    }
+
     public function fn_print_die($string)
     {
         echo "<pre>";

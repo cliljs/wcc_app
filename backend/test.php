@@ -2,6 +2,11 @@
 <?php
 include_once './autoload.php';
 
+if (ENVIROMENT === 'PROD') {
+    echo json_encode('Unauthorize');
+    exit;
+}
+
 $act = !empty($_GET['action']) ? $_GET['action'] : '';
 $seeds = [
     [
@@ -17,7 +22,6 @@ $seeds = [
         "is_verified"     => 1,
         "is_leader"       => 1,
     ],
-
     [
         "username"        => 'pastor123',
         "password"        => password_hash('jaudian29', PASSWORD_BCRYPT, ['cost' => 12]),
