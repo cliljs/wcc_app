@@ -21,7 +21,6 @@ switch ($act) {
 
     case 'get_account_profile':
         $account = $account_model->get_account_details($_GET['id']);
-        
         echo json_encode(
             $common->create_response("AccountController/action=get_account_profile", $account, 1)
         );
@@ -29,7 +28,6 @@ switch ($act) {
 
     case 'update_account':
         $updated_account = $account_model->update_account($_POST, $_GET['id']);
-
         echo json_encode(
             $common->create_response("AccountController/action=update_account", $updated_account, 1)
         );
@@ -37,7 +35,6 @@ switch ($act) {
 
     case 'delete_account':
         $deleted_account = $account_model->delete_account($_GET['id']);
-
         echo json_encode(
             $common->create_response("AccountController/action=delete_account", $deleted_account, 1)
         );
