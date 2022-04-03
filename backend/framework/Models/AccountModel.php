@@ -3,6 +3,39 @@ require_once '../../autoload.php';
 class AccountModel {
     private $base_table = 'bro_accounts';
 
+    private function get_leader_by_ref($ref_code = null)
+    {
+        global $db, $common;
+
+        return $db->get_row("SELECT * FROM {$this->base_table} WHERE ref_code = ?", [$ref_code]);
+    }
+
+    private function create_hash($password)
+	{
+		$bcrypt_options = [
+			'cost' => 12,
+		];
+		
+		return password_hash($password, PASSWORD_BCRYPT, $bcrypt_options);
+	}
+
+    public function login($payload = [])
+    {
+        global $db, $common;
+
+        $has_account = $db->get_row("SELECT * FROM {$this->base_table} WHERE username = ?", [$payload['username']]);
+
+        if(empty($has_account) || $has_account['is_verified'] < 1) {
+            return ['error' => true, "msg" => "Account does not exists"];
+        }
+
+        if (!password_verify($payload['password'], $has_account['password'])) {
+            return ['error' => true, "msg" => "Password does not match"];
+		}
+
+        return $has_account;
+    }
+
     // GENERAL ACCOUNT CREATION (PANG DISCIPLE PALANG ATA??)
     public function create_account($payload = [])
     {
@@ -38,22 +71,6 @@ class AccountModel {
 
         return $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
     }
-
-    private function get_leader_by_ref($ref_code = null)
-    {
-        global $db, $common;
-
-        return $db->get_row("SELECT * FROM {$this->base_table} WHERE ref_code = ?", [$ref_code]);
-    }
-
-    private function create_hash($password)
-	{
-		$bcrypt_options = [
-			'cost' => 12,
-		];
-		
-		return password_hash($password, PASSWORD_BCRYPT, $bcrypt_options);
-	}
 
     public function get_account_details($id = null)
     {

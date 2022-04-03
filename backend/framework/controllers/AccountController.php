@@ -42,6 +42,20 @@ switch ($act) {
             $common->create_response("AccountController/action=delete_account", $deleted_account, 1)
         );
         break;
+    
+    case 'account_login': 
+        $auth_user = $account_model->login($_POST);
+        $response  = $common->create_response("AccountController/action=account_login");
+
+        if (@$auth_user['error']) {
+            $response['msg'] = $auth_user['msg'];
+        } else {
+            $response['data']    = $auth_user;
+            $response['success'] = 1;
+        }
+
+        echo json_encode($response);
+        break;
 
     default:
         break;
