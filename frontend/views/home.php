@@ -1,37 +1,4 @@
-<div class="row">
-  <div class="col-md-12 vh-50">
-    <div class="card card-widget widget-user shadow-lg">
 
-      <div class="widget-user-header text-white" style="background: url('frontend/assets/wcc.jpg ') center center;">
-        <h3 class="widget-user-username text-right">Father Bro</h3>
-        <h5 class="widget-user-desc text-right">Bataan Branch</h5>
-      </div>
-      <div class="widget-user-image">
-        <img class="img-circle elevation-1" src="https://via.placeholder.com/250" alt="User Avatar">
-      </div>
-      <div class="card-footer">
-        <div class="row">
-          <div class="col-sm-6 border-right">
-            <div class="description-block">
-              <h5 class="description-header">3,200</h5>
-              <span class="description-text">Members</span>
-            </div>
-
-          </div>
-
-          <div class="col-sm-6">
-            <div class="description-block">
-              <h5 class="description-header">13,000</h5>
-              <span class="description-text">Invites</span>
-            </div>
-
-          </div>
-
-        
-        </div>
-
-      </div>
-    </div>
     <div class="card card-primary card-outline">
       <div class="card-body box-profile">
 
@@ -76,7 +43,3 @@
       </div>
 
     </div>
-
-  </div>
-
-</div>

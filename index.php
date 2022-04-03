@@ -7,6 +7,7 @@
 session_start();
 $source = (isset($_GET["view"])) ? $_GET["view"] : "home";
 $is_admin = (isset($_SESSION["is_admin"])) ? true : false;
+$is_login = (isset($_SESSION["user_id"])) ? true : false;
 ?>
 
 <!DOCTYPE html>
@@ -40,14 +41,20 @@ $is_admin = (isset($_SESSION["is_admin"])) ? true : false;
       color: #fd7e14 !important;
     }
 
-    .vh-50{
-      min-width:60vh !important;
+    .vh-50 {
+      min-width: 60vh !important;
     }
-    .widget-user .widget-user-image{
-      top:145px !important;
+
+    .widget-user .widget-user-image {
+      top: 185px !important;
+      margin-left: -60px !important;
     }
-    .widget-user .widget-user-header{
-      height: 200px !important;
+
+    .widget-user .widget-user-header {
+      height: 240px !important;
+    }
+    .widget-user .widget-user-image>img{
+      width:120px !important;
     }
   </style>
 </head>
@@ -60,19 +67,50 @@ $is_admin = (isset($_SESSION["is_admin"])) ? true : false;
 
       <section class="content">
         <div class="container-fluid">
-          <?php
-          switch ($source) {
-            case "home":
-              include "frontend/views/home.php";
-              break;
-            case "tribe":
-              include "frontend/views/tribe.php";
-              break;
-            default:
-              include "frontend/views/404.php";
-              break;
-          }
-          ?>
+          <div class="row">
+
+            <div class="col-md-12 vh-50">
+              <div class="card card-widget widget-user shadow-lg">
+
+                <div class="widget-user-header text-white" style="background: url('frontend/assets/wcc.jpg ') center center;">
+                  <h3 class="widget-user-username text-right">Father Bro</h3>
+                  <h5 class="widget-user-desc text-right">Bataan Branch</h5>
+                </div>
+                <div class="widget-user-image">
+                  <img class="img-circle elevation-1" src="https://via.placeholder.com/250" alt="User Avatar">
+                </div>
+                <div class="card-footer">
+                  <div class="row">
+                    <div class="col-sm-6 border-right">
+                      <div class="description-block">
+                        <h5 class="description-header">3,200</h5>
+                        <span class="description-text">Members</span>
+                      </div>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="description-block">
+                        <h5 class="description-header">13,000</h5>
+                        <span class="description-text">Invites</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <?php
+              switch ($source) {
+                case "home":
+                  include "frontend/views/home.php";
+                  break;
+                case "tribe":
+                  include "frontend/views/tribe.php";
+                  break;
+                default:
+                  include "frontend/views/404.php";
+                  break;
+              }
+              ?>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -91,9 +129,9 @@ $is_admin = (isset($_SESSION["is_admin"])) ? true : false;
       let me = getUrlVars()['view'];
       if (me == null || me == 'home') {
 
-      }else if (me == 'tribe') {
+      } else if (me == 'tribe') {
 
-} 
+      }
 
     });
 

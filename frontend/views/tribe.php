@@ -1,14 +1,9 @@
-<div class="row">
-  <h3>My Tribe</h3>
-  <div class="col-md-12 vh-50">
 
+  
     <div class="card card-primary card-outline">
       <div class="card-body box-profile">
-        <div class="text-center">
-          <img class="profile-user-img img-fluid img-circle" src="https://via.placeholder.com/128" alt="User profile picture">
-        </div>
-        <h3 class="profile-username text-center">Father Bro</h3>
-        <p class="text-muted text-center"><a href = "index.php">[Back to Homepage]</a></p>
+      <h3 class = "text-center">My Tribe</h3>
+        <p class="text-muted text-center"><a href="index.php">[Back to Homepage]</a></p>
 
         <hr>
         <div class="card collapsed-card elevation-2">
@@ -33,10 +28,16 @@
                 <div class="user-block">
                   <img class="img-circle img-bordered-sm" src="https://via.placeholder.com/128" alt="user image">
                   <span class="username">
-                    <a href="#">Tagasubaybay #1</a>
+                    <a href="#">Ricardo Madlang-awa Madlangtuta</a>
                   </span>
                   <span class="description">144</span>
+
                 </div>
+                <div class="text-right">
+                  <button class="btn btn-outline-dark btn-sm">Transfer</button>
+                  <button class="btn btn-info btn-sm">Lifestyle</button>
+                </div>
+
               </div>
             </div>
             <div class="card collapsed-card elevation-1">
@@ -48,6 +49,10 @@
                   </span>
                   <span class="description">144</span>
                 </div>
+                <div class="text-right">
+                  <button class="btn btn-outline-dark btn-sm">Transfer</button>
+                  <button class="btn btn-info btn-sm">Lifestyle</button>
+                </div>
               </div>
             </div>
             <div class="card collapsed-card elevation-1">
@@ -58,6 +63,10 @@
                     <a href="#">Tagasubaybay #3</a>
                   </span>
                   <span class="description">144</span>
+                </div>
+                <div class="text-right">
+                  <button class="btn btn-outline-dark btn-sm">Transfer</button>
+                  <button class="btn btn-info btn-sm">Lifestyle</button>
                 </div>
               </div>
             </div>
@@ -151,10 +160,3 @@
       </div>
 
     </div>
-
-
-
-
-  </div>
-
-</div>
