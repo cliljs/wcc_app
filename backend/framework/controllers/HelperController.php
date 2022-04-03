@@ -22,6 +22,15 @@ class Helpers {
         exit;
     }
 
+    public function create_response($action = null, $data = null, $success = null)
+    {
+       return [
+            "action"  => $action,
+            "data"    => $data,
+            "success" => $success,
+        ];
+    }
+
     // FOR $_FILES UPLOAD
     public function upload($file_path = null, $file =[]) 
     {

@@ -103,7 +103,7 @@ class DatabaseController
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
             $stmt->close();
 
-            return $result[0];
+            return !empty($result) ? $result[0] : [];
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
@@ -122,6 +122,21 @@ class DatabaseController
             $stmt->close();
 
             return $result;
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+
+        return false;
+    }
+
+    public function truncate($tbl_name = "")
+    {
+        try {
+           
+            $stmt = $this->execute("TRUNCATE TABLE {$tbl_name}", []);
+            $stmt->close();
+
+            return true;
         } catch (Exception $e) {
             throw new Exception($e->getMessage());
         }
