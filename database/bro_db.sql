@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 03, 2022 at 09:25 AM
+-- Generation Time: Apr 05, 2022 at 02:07 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.3.31
 
@@ -42,7 +42,6 @@ CREATE TABLE `bro_accounts` (
   `is_verified` tinyint(1) NOT NULL DEFAULT 0,
   `is_leader` tinyint(1) NOT NULL,
   `is_pastor` tinyint(1) NOT NULL,
-  `leader_pk` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `ref_code` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -76,6 +75,20 @@ CREATE TABLE `bro_lessons` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bro_tribe`
+--
+
+CREATE TABLE `bro_tribe` (
+  `id` int(11) NOT NULL,
+  `user_pk` int(11) DEFAULT NULL,
+  `leader_pk` int(11) DEFAULT NULL,
+  `is_approved` tinyint(1) DEFAULT NULL,
+  `date_approved` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for dumped tables
 --
@@ -99,6 +112,12 @@ ALTER TABLE `bro_lessons`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `bro_tribe`
+--
+ALTER TABLE `bro_tribe`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -118,6 +137,12 @@ ALTER TABLE `bro_attendance`
 -- AUTO_INCREMENT for table `bro_lessons`
 --
 ALTER TABLE `bro_lessons`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `bro_tribe`
+--
+ALTER TABLE `bro_tribe`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
