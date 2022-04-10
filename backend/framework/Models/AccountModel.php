@@ -1,5 +1,7 @@
 <?php
 require_once '../../autoload.php';
+require_once MODEL_PATH . 'TribeModel.php';
+
 class AccountModel {
     private $base_table = 'bro_accounts';
 
@@ -8,8 +10,11 @@ class AccountModel {
     {
         global $db, $common;
 
-        return $db->get_row("SELECT CONCAT(firstname, ' ', lastname) AS fullname, id
-                            FROM {$this->base_table} WHERE CONCAT(firstname, ' ', lastname) = ? AND is_leader = ?", [$name, 1]);
+        return $db->get_row("SELECT REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, 
+                            acc.id
+                            FROM {$this->base_table} acc INNER JOIN bro_tribe tr ON acc.id = tr.member_pk
+                            WHERE REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') = ? 
+                            AND acc.is_leader = ? AND tr.is_approved = ?", [$name, 1, 1]);
     }
 
     private function create_hash($password)
@@ -25,15 +30,20 @@ class AccountModel {
     {
         global $db, $common;
 
-        $has_account = $db->get_row("SELECT * FROM {$this->base_table} WHERE username = ?", [$payload['username']]);
+        $has_account = $db->get_row("SELECT acc.*, tr.is_approved FROM {$this->base_table} acc
+                                    INNER JOIN bro_tribe tr ON acc.id = tr.member_pk
+                                    WHERE acc.username = ?", [$payload['username']]);
 
-        if(empty($has_account) || $has_account['is_verified'] < 1) {
+        if(empty($has_account) || $has_account['is_approved'] === 0) {
             return ['error' => true, "msg" => "Account does not exists"];
         }
 
         if (!password_verify($payload['password'], $has_account['password'])) {
             return ['error' => true, "msg" => "Password does not match"];
 		}
+        
+        // DAGDAGAN MO NALANG MABOSS NEED MONG DETAILS
+        $_SESSION['pk'] = $has_account['id'];
 
         return $has_account;
     }
@@ -41,7 +51,7 @@ class AccountModel {
     // GENERAL ACCOUNT CREATION (PANG DISCIPLE PALANG ATA??)
     public function create_account($payload = [], $files)
     {
-        global $db, $common;
+        global $db, $common, $tribe_model;
 
         $username_exists = $db->get_row("SELECT * FROM bro_accounts WHERE username = ?", [$payload['username']]);
 
@@ -78,13 +88,10 @@ class AccountModel {
             $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$last_id}", [$profile_pic]);
         }
 
-        $tribe_info = [
+        $tribe_model->create_leader([
             "leader_pk" => $leader_info['id'],
-            "member_pk" => $last_id,
-        ];
-
-        $tribe_fields = $common->get_insert_fields($tribe_info);
-        $db->insert("INSERT INTO {$this->base_table} {$tribe_fields}", array_values($tribe_info));
+            "insert_id" => $last_id
+        ]);
         
         return $last_id;
     }
@@ -93,7 +100,9 @@ class AccountModel {
     {
         global $db, $common;
 
-        return $db->get_row("SELECT * FROM {$this->base_table} WHERE id = ?", [$id]);
+        return $db->get_row("SELECT acc.*, tr.is_approved FROM {$this->base_table} acc
+                             INNER JOIN bro_tribe tr ON acc.id = tr.member_pk
+                             WHERE acc.id = ? AND tr.is_approved = ?", [$id, 1]);
     }
 
     public function update_account($payload = [], $id = null)
@@ -113,6 +122,16 @@ class AccountModel {
         $deleted =  $db->delete("DELETE FROM {$this->base_table} WHERE id = {$id}");
 
         return $deleted ? $result : false;
+    }
+
+    public function get_leader_names()
+    {
+        global $db, $common;
+        return $db->get_list("SELECT tr.is_approved, acc.* 
+                              FROM {$this->base_table} acc 
+                              INNER JOIN bro_tribe tr ON acc.id = tr.member_pk 
+                              WHERE acc.is_leader = ? AND tr.is_approved = ?",
+                              [1, 1]);
     }
 }
 

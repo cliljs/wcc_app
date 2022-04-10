@@ -53,7 +53,7 @@ switch ($act) {
 
         echo json_encode($response);
         break;
-
+        
     default:
         break;
 }
