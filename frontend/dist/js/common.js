@@ -32,3 +32,4 @@ function fireSwal(swalTitle, swalBody, swalIcon) {
         icon: swalIcon
     })
 }
+

@@ -24,6 +24,8 @@ $is_login = (isset($_SESSION["user_id"])) ? true : false;
 
   <link rel="stylesheet" href="frontend/dist/css/adminlte.min.css">
   <link rel="stylesheet" href="frontend/plugins/sweetalert2/sweetalert2.min.css">
+  <link rel="stylesheet" href="frontend/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="frontend/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
   <style>
     .bg-orange {
       color: white !important;
@@ -108,6 +110,18 @@ $is_login = (isset($_SESSION["user_id"])) ? true : false;
                 case "attendance":
                   include "frontend/views/attendance.php";
                   break;
+                case "badge":
+                  include "frontend/views/badge.php";
+                  break;
+                case "lifestyle":
+                  include "frontend/views/lifestyle.php";
+                  break;
+                case "trainings":
+                  include "frontend/views/trainings.php";
+                  break;
+                case "celebration":
+                  include "frontend/views/celebration.php";
+                  break;
                 default:
                   include "frontend/views/404.php";
                   break;
@@ -126,6 +140,7 @@ $is_login = (isset($_SESSION["user_id"])) ? true : false;
   <script src="frontend/plugins/jquery/jquery.min.js"></script>
   <script src="frontend/plugins/sweetalert2/sweetalert2.min.js"></script>
   <script src="frontend/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="frontend/plugins/select2/js/select2.full.min.js"></script>
   <script src="frontend/dist/js/common.js"></script>
   <script src="frontend/dist/js/adminlte.min.js"></script>
   <script>
@@ -135,8 +150,14 @@ $is_login = (isset($_SESSION["user_id"])) ? true : false;
 
       } else if (me == 'tribe') {
 
+      } else if (me == 'attendance') {
+
       }
 
+    });
+
+    $('.select2bs4').select2({
+      theme: 'bootstrap4'
     });
 
     function getUrlVars() {
