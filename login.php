@@ -5,7 +5,7 @@
 //   exit;
 // }
 session_start();
-$is_login = (isset($_SESSION["user_id"])) ? true : false;
+$is_login = (isset($_SESSION["pk"])) ? true : false;
 if ($is_login) {
   header("Location: index.php");
 }
@@ -80,14 +80,15 @@ if ($is_login) {
                   </div>
                   <div class="card-body">
                     <p class="login-box-msg">Sign in to start your session</p>
-                    <div class="alert alert-danger">
+                    <div class="alert alert-danger" style = "display:none;">
                       <h5><i class="icon fas fa-ban"></i> Login</h5>
-                      Invalid Username/Password. Please try again.<br>
-                      4 attempts remaining
+                      <div class = "err-message">
+
+                      </div>    
                     </div>
-                    <form>
+                    <form id = "frmLogin">
                       <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Username">
+                        <input id = "username" name = "username" type="text" class="form-control" placeholder="Username">
                         <div class="input-group-append">
                           <div class="input-group-text">
                             <span class="fas fa-user"></span>
@@ -95,7 +96,7 @@ if ($is_login) {
                         </div>
                       </div>
                       <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password">
+                        <input id = "password" name = "password" type="password" class="form-control" placeholder="Password">
                         <div class="input-group-append">
                           <div class="input-group-text">
                             <span class="fas fa-lock"></span>
@@ -137,18 +138,29 @@ if ($is_login) {
   <script src="frontend/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <script src="frontend/dist/js/adminlte.min.js"></script>
+  <script src="frontend/dist/js/common.js"></script>
   <script>
     $(function() {
-
+     
+      $("#frmLogin").on('submit',function(e){
+        e.preventDefault();
+        $(".alert").hide();
+        let fd = new FormData(this);
+       
+        let data = fireAjax('AccountController.php?action=account_login', fd, true).then(function(data) {
+          let obj = jQuery.parseJSON(data.trim()); 
+          if(obj.hasOwnProperty('msg')){
+            $(".alert").show();
+            $(".err-message").html(obj.msg);
+          } else{
+            window.location.href = home_url;
+          }
+        }).catch(function(err){
+          console.log(err);
+          fireSwal("Member's Portal","Failed to login. Please try again.","error");
+        });
+      });
     });
-
-    function fireSwal(swalTitle, swalBody, swalIcon) {
-      Swal.fire({
-        title: swalTitle,
-        text: swalBody,
-        icon: swalIcon
-      })
-    }
   </script>
 </body>
 

@@ -41,7 +41,8 @@ class AccountModel {
         
         // DAGDAGAN MO NALANG MABOSS NEED MONG DETAILS
         $_SESSION['pk'] = $has_account['id'];
-
+        $_SESSION['is_leader'] = $has_account['is_leader'];
+        $_SESSION['is_pastor'] = $has_account['is_pastor'];
         return $has_account;
     }
 

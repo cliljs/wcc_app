@@ -6,8 +6,13 @@
 // }
 session_start();
 $source = (isset($_GET["view"])) ? $_GET["view"] : "home";
-$is_admin = (isset($_SESSION["is_admin"])) ? true : false;
-$is_login = (isset($_SESSION["user_id"])) ? true : false;
+$is_leader = (isset($_SESSION["is_leader"])) ? true : false;
+$is_pastor = (isset($_SESSION["is_pastor"])) ? true : false;
+$is_login = (isset($_SESSION["pk"])) ? true : false;
+
+if (!$is_login) {
+  header("Location: login.php");
+}
 ?>
 
 <!DOCTYPE html>

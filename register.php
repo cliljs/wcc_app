@@ -5,7 +5,7 @@
 //   exit;
 // }
 session_start();
-$is_login = (isset($_SESSION["user_id"])) ? true : false;
+$is_login = (isset($_SESSION["pk"])) ? true : false;
 if ($is_login) {
   header("Location: index.php");
 }
@@ -124,7 +124,7 @@ if ($is_login) {
                         <label for="profile_picture">Profile Picture</label>
                         <div class="input-group">
                           <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="profile_picture" name = "profile_picture">
+                            <input type="file" class="custom-file-input" id="profile_picture" name="profile_picture">
                             <label class="custom-file-label" for="profile_picture">Choose Image</label>
                           </div>
 
@@ -197,62 +197,50 @@ if ($is_login) {
       $('#frmRegister').on('submit', function(e) {
         e.preventDefault();
         let fd = new FormData(this);
-        try {
-          let data = fireAjax('AccountController.php?action=create_account', fd, true).then(function(data) {
-            let obj = jQuery.parseJSON(data.trim());
-            if (obj.success == 1) {
-              fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
-              Swal.fire({
-                icon:'success',
-                title: 'Account Registration',
-                text: 'Account created successfully. Click OK to return to login page.',
-                showDenyButton: false,
-                showCancelButton: false,
-                allowOutsideClick: false,
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  window.location.href = home_url + 'login.php';
-                }
-              })
-            } else {
-              fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
-            }
-          }).catch(function(err) {
-            console.log(err)
+        let data = fireAjax('AccountController.php?action=create_account', fd, true).then(function(data) {
+          let obj = jQuery.parseJSON(data.trim());
+          if (obj.success == 1) {
             fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
-          });
-
-
-        } catch (error) {
-          console.log(error);
+            Swal.fire({
+              icon: 'success',
+              title: 'Account Registration',
+              text: 'Account created successfully. Click OK to return to login page.',
+              showDenyButton: false,
+              showCancelButton: false,
+              allowOutsideClick: false,
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = home_url + 'login.php';
+              }
+            })
+          }
+        }).catch(function(err) {
+          console.log(err)
           fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
-        }
+        });
       });
-      $("#profile_picture").on("change",function(){
+      $("#profile_picture").on("change", function() {
         $(".custom-file-label").html("Image Selected");
       });
-     
-      function getLeaders() {
-        try {
-          //let data = fireAjax('SuperAdminController.php?action=get_leaders', '', false);
-          let data = fireAjax('SuperAdminController.php?action=get_leaders', '', false).then(function(data) {
-            console.log(data)
-            let obj = jQuery.parseJSON(data.trim());
-            let tls = obj.data;
-            let renderVal = '<option selected="selected" disabled="disabled">Please select your tribe leader</option>';
-            $.each(tls, function(k, v) {
-              renderVal += '<option value="' + v.id + '">' + v.fullname + '</option>';
-            });
-            $("#leader_name").html(renderVal);
-          }).catch(function(err) {
-            console.log(err)
-            fireSwal('Account Registration', 'Failed to retrieve list of tribe leaders. Please reload the page', 'error');
-          })
 
-        } catch (error) {
-          console.log(error);
+      function getLeaders() {
+
+
+        let data = fireAjax('SuperAdminController.php?action=get_leaders', '', false).then(function(data) {
+          console.log(data)
+          let obj = jQuery.parseJSON(data.trim());
+          let tls = obj.data;
+          let renderVal = '<option selected="selected" disabled="disabled">Please select your tribe leader</option>';
+          $.each(tls, function(k, v) {
+            renderVal += '<option value="' + v.id + '">' + v.fullname + '</option>';
+          });
+          $("#leader_name").html(renderVal);
+        }).catch(function(err) {
+          console.log(err)
           fireSwal('Account Registration', 'Failed to retrieve list of tribe leaders. Please reload the page', 'error');
-        }
+        })
+
+
 
         $('.select2bs4').select2({
           theme: 'bootstrap4'
