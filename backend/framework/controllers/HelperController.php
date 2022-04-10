@@ -51,7 +51,7 @@ class Helpers {
         $tick          = strtotime(date('Y-m-d H:i:s'));
 
         $uploadPath = $uploadDirectory . $pk.'_'. $tick . '.' . $path_parts['extension']; 
-    
+        $filename_larns = $pk.'_'. $tick . '.' . $path_parts['extension']; 
         if ($fileSize > 4000000) {
           $errors['has_error'] = 1;
           $errors['msg']       = "File exceeds maximum size (4MB)";
@@ -62,7 +62,7 @@ class Helpers {
         $didUpload = move_uploaded_file($fileTmpName, $uploadPath);
 
         if ($didUpload) {
-          return $uploadPath;
+          return $filename_larns;
         } else {
            return [
              "has_error" => true,

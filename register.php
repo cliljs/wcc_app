@@ -78,12 +78,12 @@ if ($is_login) {
 
                 <div class="card card-outline card-primary">
                   <div class="card-header text-center">
-                    <a href="../../index2.html" class="h1"><b>WCC </b>Account Registration</a>
+                    <a href="Javascript:void(0);" class="h1"><b>WCC </b>Account Registration</a>
                   </div>
                   <div class="card-body">
                     <p class="login-box-msg">Fill-out all information fields below</p>
 
-                    <form>
+                    <form id="frmRegister">
                       <div class="form-group">
                         <label for="username">Username</label>
                         <input type="text" class="form-control" id="username" name="username" placeholder="Enter desired username">
@@ -124,10 +124,10 @@ if ($is_login) {
                         <label for="profile_picture">Profile Picture</label>
                         <div class="input-group">
                           <div class="custom-file">
-                            <input type="image" class="custom-file-input" id="profile_picture">
+                            <input type="file" class="custom-file-input" id="profile_picture" name = "profile_picture">
                             <label class="custom-file-label" for="profile_picture">Choose Image</label>
                           </div>
-                          
+
                         </div>
                       </div>
                       <hr>
@@ -143,10 +143,9 @@ if ($is_login) {
                       </div>
                       <div class="form-group">
                         <label for="ref_code">Tribe Leader</label>
-                        <select id="ref_code" name="ref_code" class="form-control select2bs4" style="width: 100%;">
-                          <option selected="selected" disabled="disabled">Please select your tribe leader</option>
-                          <option value="1">Ricardo J. Madlangtuta</option>
-                          <option value="2">Gorgonio M. Magalpoc</option>
+                        <select id="leader_name" name="leader_name" class="form-control select2bs4" style="width: 100%;">
+
+
                         </select>
                       </div>
                       <div class="form-group">
@@ -193,14 +192,73 @@ if ($is_login) {
   <script src="frontend/dist/js/common.js"></script>
   <script>
     $(function() {
-      $('.select2bs4').select2({
-        theme: 'bootstrap4'
+
+      getLeaders();
+      $('#frmRegister').on('submit', function(e) {
+        e.preventDefault();
+        let fd = new FormData(this);
+        try {
+          let data = fireAjax('AccountController.php?action=create_account', fd, true).then(function(data) {
+            let obj = jQuery.parseJSON(data.trim());
+            if (obj.success == 1) {
+              fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
+              Swal.fire({
+                icon:'success',
+                title: 'Account Registration',
+                text: 'Account created successfully. Click OK to return to login page.',
+                showDenyButton: false,
+                showCancelButton: false,
+                allowOutsideClick: false,
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = home_url + 'login.php';
+                }
+              })
+            } else {
+              fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
+            }
+          }).catch(function(err) {
+            console.log(err)
+            fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
+          });
+
+
+        } catch (error) {
+          console.log(error);
+          fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
+        }
       });
+      $("#profile_picture").on("change",function(){
+        $(".custom-file-label").html("Image Selected");
+      });
+     
+      function getLeaders() {
+        try {
+          //let data = fireAjax('SuperAdminController.php?action=get_leaders', '', false);
+          let data = fireAjax('SuperAdminController.php?action=get_leaders', '', false).then(function(data) {
+            console.log(data)
+            let obj = jQuery.parseJSON(data.trim());
+            let tls = obj.data;
+            let renderVal = '<option selected="selected" disabled="disabled">Please select your tribe leader</option>';
+            $.each(tls, function(k, v) {
+              renderVal += '<option value="' + v.id + '">' + v.fullname + '</option>';
+            });
+            $("#leader_name").html(renderVal);
+          }).catch(function(err) {
+            console.log(err)
+            fireSwal('Account Registration', 'Failed to retrieve list of tribe leaders. Please reload the page', 'error');
+          })
 
+        } catch (error) {
+          console.log(error);
+          fireSwal('Account Registration', 'Failed to retrieve list of tribe leaders. Please reload the page', 'error');
+        }
 
+        $('.select2bs4').select2({
+          theme: 'bootstrap4'
+        });
+      }
     });
-
-    
   </script>
 </body>
 

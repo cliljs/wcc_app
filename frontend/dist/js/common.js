@@ -1,35 +1,47 @@
+let home_url = "http://localhost/wcc_app/";
+let base_url = home_url + "backend/framework/controllers/";
+
 function fireAjax(path, payload, is_multi) {
-    let retval = "";
-    if (is_multi) {
-        $.ajax({
-            method: 'POST',
-            url: path,
-            data: payload,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (data) {
-                retval = data.trim();
-            }
-        })
-    } else {
-        $.ajax({
-            method: 'POST',
-            url: path,
-            data: payload,
-            success: function (data) {
-                retval = data.trim();
-            }
-        })
-    }
-    return retval;
+    return new Promise(function (resolve, reject) {
+     
+        if (is_multi) {
+            $.ajax({
+
+                method: 'POST',
+                url: base_url + path,
+                data: payload,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (data) {
+                    resolve(data);
+                },
+                error: function (err) {
+                    reject(err);
+                }
+            })
+        } else {
+            $.ajax({
+
+                method: 'POST',
+                url: base_url + path,
+                data: payload,
+                success: function (data) {
+                    resolve(data);
+                },
+                error: function (err) {
+                    reject(err);
+                }
+            })
+        }
+    });
 }
 
 function fireSwal(swalTitle, swalBody, swalIcon) {
     Swal.fire({
         title: swalTitle,
         text: swalBody,
-        icon: swalIcon
+        icon: swalIcon,
+        allowOutsideClick: false
     })
 }
-

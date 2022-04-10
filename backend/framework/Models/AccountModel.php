@@ -4,12 +4,12 @@ class AccountModel {
     private $base_table = 'bro_accounts';
 
     // @params $name = fullname
-    private function get_leader_by_fullname($name = null)
+    private function get_leader_by_pk($pk = null)
     {
         global $db, $common;
 
-        return $db->get_row("SELECT CONCAT(firstname, ' ', lastname) AS fullname, id
-                            FROM {$this->base_table} WHERE CONCAT(firstname, ' ', lastname) = ? AND is_leader = ?", [$name, 1]);
+        return $db->get_row("SELECT CONCAT(firstname, ' ', middlename, ' ', lastname) AS fullname, id
+                            FROM {$this->base_table} WHERE id = ? AND is_leader = ?", [$pk, 1]);
     }
 
     private function create_hash($password)
@@ -49,7 +49,7 @@ class AccountModel {
             return ["error" => true, "msg" => "Username Already Exists"];
         }
 
-        $leader_info = $this->get_leader_by_fullname($payload['leader_name']);
+        $leader_info = $this->get_leader_by_pk($payload['leader_name']);
         
         if (empty($leader_info)) {
             return ["error" => true, "msg" => "Tribe Leader name does not exists"];
@@ -72,8 +72,10 @@ class AccountModel {
         $last_id       = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
         
         if (!empty($files)) {
+           
             $update_fields = $common->get_update_fields(['profile_pic' => ""]);
-            $profile_pic   = $common->upload($last_id, $files[0]);
+
+            $profile_pic   = $common->upload($last_id, $files['profile_picture']);
 
             $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$last_id}", [$profile_pic]);
         }

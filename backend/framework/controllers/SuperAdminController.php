@@ -5,6 +5,20 @@ include_once '../Models/SuperAdminModel.php';
 $act = !empty($_GET['action']) ? $_GET['action'] : '';
 
 switch ($act) {
+    case 'get_leaders':
+        $get_leaders  = $admin_model->get_leaders();
+        $response    = $common->create_response("SuperAdminController/action=get_leaders");
+
+        if (@$new_leader['error']) {
+            $response['msg'] = $get_leaders['msg'];
+
+        } else {
+            $response['data']    = $get_leaders;
+            $response['success'] = 1;
+        }
+
+        echo json_encode($response);
+        break;
     case 'create_leader':
         $new_leader  = $admin_model->create_leader($_POST);
         $response    = $common->create_response("SuperAdminController/action=create_leader");
