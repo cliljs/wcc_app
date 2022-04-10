@@ -12,7 +12,6 @@ class SuperAdmin {
         return $account_model->update_account(
             [
               'is_leader' => 1, 
-              "ref_code" => $common->generate_random()
             ],
             $id
         );
@@ -27,7 +26,7 @@ class SuperAdmin {
     {
         global $db, $common, $account_model;
 
-        $last_insert = $account_model->create_account($payload);
+        $last_insert = $account_model->create_account($payload, $files);
 
         if (@$last_insert['error']) {
             return $last_insert;
@@ -40,7 +39,11 @@ class SuperAdmin {
     public function get_pending_list()
     {
         global $db, $common, $account_model;
-        return $db->get_list("SELECT * FROM {$this->base_table} WHERE is_verified = ?", [0]);
+        return $db->get_list("SELECT tr.is_approved, acc.* 
+                              FROM {$this->base_table} acc 
+                              INNER JOIN bro_tribe tr ON acc.id = tr.member_pk 
+                              WHERE acc.is_leader = ? AND tr.is_approved = ? AND acc.is_pastor = ? AND tr.leader_pk = ?", 
+                              [0, 0, 0, 1]);
     }
 
     public function verify_member($id = null)
