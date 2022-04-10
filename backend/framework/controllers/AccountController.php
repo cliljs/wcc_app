@@ -5,7 +5,7 @@ $act = !empty($_GET['action']) ? $_GET['action'] : '';
 
 switch ($act) {
     case 'create_account':
-        $new_account = $account_model->create_account($_POST);
+        $new_account = $account_model->create_account($_POST, $_FILES);
         $response    = $common->create_response("AccountController/action=create_account");
 
         if (@$new_account['error']) {

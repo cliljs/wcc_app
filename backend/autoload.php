@@ -6,10 +6,10 @@ define('DB_PATH', rtrim(preg_replace('#[/\\\\]{1,}#', '/', realpath(dirname(__FI
 define('MODEL_PATH', rtrim(preg_replace('#[/\\\\]{1,}#', '/', realpath(dirname(__FILE__))), '/') . '/framework/models/');
 define('UPLOAD_PATH', rtrim(preg_replace('#[/\\\\]{1,}#', '/', realpath(dirname(__FILE__))), '/') . '/framework/uploads/');
 define('ENVIROMENT', 'DEV');
+
 // DEPENDENCIES
 include_once DB_PATH;
 include_once CONTROLLER_PATH . 'HelperController.php';
-
 $db = new DatabaseController();
 
 // SERVES REQUEST CONTROLLER

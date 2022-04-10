@@ -19,8 +19,8 @@ $seeds = [
         "address"         => 'Jan lang',
         "birthdate"       => '2022-29-05',
         "contact"         => '09955591932',
-        "is_verified"     => 1,
         "is_leader"       => 1,
+        "is_pastor"       => 1,
     ],
     [
         "username"        => 'pastor123',
@@ -32,7 +32,6 @@ $seeds = [
         "address"         => 'Wcc Church',
         "birthdate"       => '2022-05-05',
         "contact"         => '09955591932',
-        "is_verified"     => 1,
         "is_pastor"       => 1,
         "is_leader"       => 1,
     ]
@@ -44,7 +43,6 @@ switch ($act) {
             $has_account = $db->get_row("SELECT * FROM bro_accounts WHERE username = ?", [$seed['username']]);
             
            if (empty($has_account)) {
-                $seed["ref_code"]  = vsprintf( '%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex(random_bytes(16)), 4));
                 $fields = $common->get_insert_fields($seed);
 
                 $db->insert("INSERT INTO bro_accounts {$fields}", array_values($seed));

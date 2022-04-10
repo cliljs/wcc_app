@@ -3,11 +3,13 @@ require_once '../../autoload.php';
 class AccountModel {
     private $base_table = 'bro_accounts';
 
-    private function get_leader_by_ref($ref_code = null)
+    // @params $name = fullname
+    private function get_leader_by_fullname($name = null)
     {
         global $db, $common;
 
-        return $db->get_row("SELECT * FROM {$this->base_table} WHERE ref_code = ?", [$ref_code]);
+        return $db->get_row("SELECT CONCAT(firstname, ' ', lastname) AS fullname, id
+                            FROM {$this->base_table} WHERE CONCAT(firstname, ' ', lastname) = ? AND is_leader = ?", [$name, 1]);
     }
 
     private function create_hash($password)
@@ -37,7 +39,7 @@ class AccountModel {
     }
 
     // GENERAL ACCOUNT CREATION (PANG DISCIPLE PALANG ATA??)
-    public function create_account($payload = [])
+    public function create_account($payload = [], $files)
     {
         global $db, $common;
 
@@ -47,10 +49,10 @@ class AccountModel {
             return ["error" => true, "msg" => "Username Already Exists"];
         }
 
-        $leader_info = $this->get_leader_by_ref($payload['ref_code']);
-
+        $leader_info = $this->get_leader_by_fullname($payload['leader_name']);
+        
         if (empty($leader_info)) {
-            return ["error" => true, "msg" => "Referral Code Does not Exists"];
+            return ["error" => true, "msg" => "Tribe Leader name does not exists"];
         }
 
         $arr = [
@@ -64,12 +66,27 @@ class AccountModel {
             "birthdate"  => $payload['birthdate'],
             "contact"    => $payload['contact'],
             "branch"     => $payload['branch'],
-            "leader_pk"  => $leader_info['id'],
         ];
 
-        $fields = $common->get_insert_fields($arr);
+        $fields        = $common->get_insert_fields($arr);
+        $last_id       = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
+        
+        if (!empty($files)) {
+            $update_fields = $common->get_update_fields(['profile_pic' => ""]);
+            $profile_pic   = $common->upload($last_id, $files[0]);
 
-        return $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
+            $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$last_id}", [$profile_pic]);
+        }
+
+        $tribe_info = [
+            "leader_pk" => $leader_info['id'],
+            "member_pk" => $last_id,
+        ];
+
+        $tribe_fields = $common->get_insert_fields($tribe_info);
+        $db->insert("INSERT INTO {$this->base_table} {$tribe_fields}", array_values($tribe_info));
+        
+        return $last_id;
     }
 
     public function get_account_details($id = null)

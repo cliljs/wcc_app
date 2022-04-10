@@ -37,9 +37,10 @@ class Helpers {
     }
 
     // FOR $_FILES UPLOAD
-    public function upload($file_path = null, $file =[]) 
+    public function upload($pk = null, $file =[]) 
     {
-        $uploadDirectory = UPLOAD_PATH .  "/{$file_path}/";
+        // for now eto muna yung file path
+        $uploadDirectory = UPLOAD_PATH .  "/images/";
       
         $errors = [];
         $path_parts = pathinfo($file['name']);
@@ -47,10 +48,9 @@ class Helpers {
         $fileName      = $file['name'];
         $fileSize      = $file['size'];
         $fileTmpName   = $file['tmp_name'];
+        $tick          = strtotime(date('Y-m-d H:i:s'));
 
-        $tick = strtotime(date('Y-m-d H:i:s'));
-
-        $uploadPath = $uploadDirectory . $path_parts['filename'].'_'. $tick . '.' . $path_parts['extension']; 
+        $uploadPath = $uploadDirectory . $pk.'_'. $tick . '.' . $path_parts['extension']; 
     
         if ($fileSize > 4000000) {
           $errors['has_error'] = 1;
@@ -62,14 +62,7 @@ class Helpers {
         $didUpload = move_uploaded_file($fileTmpName, $uploadPath);
 
         if ($didUpload) {
-          return [
-            "filename"       => $path_parts['filename'],
-            "filesize"       => $fileSize,
-            "created_by"     => $_SESSION['uid'],
-            "date_created"   => date('Y-m-d H:i:s'),
-            "file_link"      => $uploadPath,
-            "timestamp_tick" => $tick,
-          ];
+          return $uploadPath;
         } else {
            return [
              "has_error" => true,
