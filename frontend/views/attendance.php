@@ -1,0 +1,9 @@
+<div class="card card-primary card-outline">
+  <div class="card-body box-profile">
+    <h3 class="text-center">Sunday Celebration Attendance</h3>
+    <p class="text-muted text-center"><a href="index.php">[Back to Homepage]</a></p>
+
+    <hr>
+  </div>
+
+</div>

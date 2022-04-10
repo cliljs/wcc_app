@@ -3,7 +3,7 @@
       <div class="card-body box-profile">
 
         <a href="index.php?view=tribe" class="btn btn-block bg-orange"><b>My Tribe</b></a>
-        <a href="#" class="btn btn-block bg-orange disabled"><b>Sunday Celebration</b></a>
+        <a href="index.php?view=attendance" class="btn btn-block bg-orange"><b>Sunday Celebration</b></a>
         <a href="#" class="btn btn-block bg-orange disabled"><b>Lifestyle</b></a>
         <a href="#" class="btn btn-block bg-orange disabled"><b>Notifications&nbsp;<span class="badge bg-danger">1</span></b></a>
       </div>

@@ -53,8 +53,9 @@ $is_login = (isset($_SESSION["user_id"])) ? true : false;
     .widget-user .widget-user-header {
       height: 240px !important;
     }
-    .widget-user .widget-user-image>img{
-      width:120px !important;
+
+    .widget-user .widget-user-image>img {
+      width: 120px !important;
     }
   </style>
 </head>
@@ -104,6 +105,9 @@ $is_login = (isset($_SESSION["user_id"])) ? true : false;
                 case "tribe":
                   include "frontend/views/tribe.php";
                   break;
+                case "attendance":
+                  include "frontend/views/attendance.php";
+                  break;
                 default:
                   include "frontend/views/404.php";
                   break;
@@ -122,7 +126,7 @@ $is_login = (isset($_SESSION["user_id"])) ? true : false;
   <script src="frontend/plugins/jquery/jquery.min.js"></script>
   <script src="frontend/plugins/sweetalert2/sweetalert2.min.js"></script>
   <script src="frontend/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+  <script src="frontend/dist/js/common.js"></script>
   <script src="frontend/dist/js/adminlte.min.js"></script>
   <script>
     $(function() {
@@ -134,15 +138,6 @@ $is_login = (isset($_SESSION["user_id"])) ? true : false;
       }
 
     });
-
-    function fireSwal(swalTitle, swalBody, swalIcon) {
-      Swal.fire({
-        title: swalTitle,
-        text: swalBody,
-        icon: swalIcon
-      })
-    }
-
 
     function getUrlVars() {
       let vars = [],

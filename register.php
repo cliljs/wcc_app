@@ -26,6 +26,7 @@ if ($is_login) {
   <link rel="stylesheet" href="frontend/dist/css/adminlte.min.css">
   <link rel="stylesheet" href="frontend/plugins/sweetalert2/sweetalert2.min.css">
   <link rel="stylesheet" href="frontend/plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="frontend/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
   <style>
     .bg-orange {
       color: white !important;
@@ -113,16 +114,40 @@ if ($is_login) {
                       </div>
                       <div class="form-group">
                         <label for="gender">Gender</label>
-                        <select class="form-control select2" style="width: 100%;">
-                          <option selected="selected" disabled>Please select your gender</option>
-                          <option value = "Male">Male</option>
-                          <option value = "Female">Female</option>
+                        <select id="gender" name="gender" class="form-control select2bs4" style="width: 100%;">
+                          <option selected="selected" disabled="disabled">Please select your gender</option>
+                          <option value="Male">Male</option>
+                          <option value="Female">Female</option>
                         </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="profile_picture">Profile Picture</label>
+                        <div class="input-group">
+                          <div class="custom-file">
+                            <input type="image" class="custom-file-input" id="profile_picture">
+                            <label class="custom-file-label" for="profile_picture">Choose Image</label>
+                          </div>
+                          
+                        </div>
                       </div>
                       <hr>
                       <div class="form-group">
-                        <label for="ref_code">Referral Code</label>
-                        <input type="text" class="form-control" id="ref_code" name="ref_code" placeholder="Enter your leader's referral code">
+                        <label for="branch">Branch</label>
+                        <select id="branch" name="branch" class="form-control select2bs4" style="width: 100%;">
+                          <option selected="selected" disabled="disabled">Please select your branch</option>
+                          <option value="Bataan">Bataan</option>
+                          <option value="Gensan">Gensan</option>
+                          <option value="Kalibo">Kalibo</option>
+                          <option value="Valenzuela">Valenzuela</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label for="ref_code">Tribe Leader</label>
+                        <select id="ref_code" name="ref_code" class="form-control select2bs4" style="width: 100%;">
+                          <option selected="selected" disabled="disabled">Please select your tribe leader</option>
+                          <option value="1">Ricardo J. Madlangtuta</option>
+                          <option value="2">Gorgonio M. Magalpoc</option>
+                        </select>
                       </div>
                       <div class="form-group">
                         <label for="password">Password</label>
@@ -133,13 +158,13 @@ if ($is_login) {
                         <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm new password">
                       </div>
                       <div class="row">
-                        <div class="col-4">
+                        <div class="col-4 mt-4">
                           <a href="login.php" class="btn bg-dark btn-block">Back</a>
                         </div>
                         <div class="col-4">
 
                         </div>
-                        <div class="col-4">
+                        <div class="col-4 mt-4">
 
                           <button type="submit" class="btn bg-orange btn-block">Sign In</button>
                         </div>
@@ -165,18 +190,17 @@ if ($is_login) {
   <script src="frontend/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="frontend/plugins/select2/js/select2.full.min.js"></script>
   <script src="frontend/dist/js/adminlte.min.js"></script>
+  <script src="frontend/dist/js/common.js"></script>
   <script>
     $(function() {
-      $('.select2').select2();
+      $('.select2bs4').select2({
+        theme: 'bootstrap4'
+      });
+
+
     });
 
-    function fireSwal(swalTitle, swalBody, swalIcon) {
-      Swal.fire({
-        title: swalTitle,
-        text: swalBody,
-        icon: swalIcon
-      })
-    }
+    
   </script>
 </body>
 
