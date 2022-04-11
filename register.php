@@ -124,7 +124,7 @@ if ($is_login) {
                         <label for="profile_picture">Profile Picture</label>
                         <div class="input-group">
                           <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="profile_picture" name="profile_picture">
+                            <input type="file" accept=".jpg, .png, .jpeg, .bmp" class="custom-file-input" id="profile_picture" name="profile_picture">
                             <label class="custom-file-label" for="profile_picture">Choose Image</label>
                           </div>
 

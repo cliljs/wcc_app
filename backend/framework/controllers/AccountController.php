@@ -20,7 +20,8 @@ switch ($act) {
         break;
 
     case 'get_account_profile':
-        $account = $account_model->get_account_details($_GET['id']);
+        $account = $account_model->get_account_details();
+        $account['birthdate'] = date("F j, Y", strtotime($account['birthdate']));
         echo json_encode(
             $common->create_response("AccountController/action=get_account_profile", $account, 1)
         );

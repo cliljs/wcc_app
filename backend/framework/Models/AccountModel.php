@@ -96,13 +96,18 @@ class AccountModel {
         return $last_id;
     }
 
-    public function get_account_details($id = null)
+    public function get_account_details()
     {
         global $db, $common;
-
-        return $db->get_row("SELECT acc.*, tr.is_approved FROM {$this->base_table} acc
-                             INNER JOIN bro_tribe tr ON acc.id = tr.member_pk
-                             WHERE acc.id = ? AND tr.is_approved = ?", [$id, 1]);
+        //bay pacheck nlng kung gagana sayo tong session based.
+        //login ka muna sa portal bgo ka magtest sa insomnia. alam ko nabypass mo na ung session dati sa reservation api ntn eh
+        //change ko muna tong query bay hnd ko kasi sure kung possible ba na may user account na walang instance sa bro_tribe
+        // return $db->get_row("SELECT acc.*, tr.is_approved FROM {$this->base_table} acc
+        //                      INNER JOIN bro_tribe tr ON acc.id = tr.member_pk
+        //                      WHERE acc.id = ? AND tr.is_approved = ?", [$id, 1]);
+        return $db->get_row("SELECT acc.*,
+        (Select CONCAT(firstname,' ',middlename,' ',lastname) from {$this->base_table} where id = (Select leader_pk from bro_tribe where member_pk = ? and is_approved = 1)) as tlname 
+        FROM {$this->base_table} acc WHERE acc.id = ?", [$_SESSION['pk'],$_SESSION['pk']]);
     }
 
     public function update_account($payload = [], $id = null)

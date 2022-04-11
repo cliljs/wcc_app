@@ -9,6 +9,7 @@ $source = (isset($_GET["view"])) ? $_GET["view"] : "home";
 $is_leader = (isset($_SESSION["is_leader"])) ? true : false;
 $is_pastor = (isset($_SESSION["is_pastor"])) ? true : false;
 $is_login = (isset($_SESSION["pk"])) ? true : false;
+$day_now = date("l");
 
 if (!$is_login) {
   header("Location: login.php");
@@ -21,7 +22,7 @@ if (!$is_login) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WCC | Logged User</title>
+  <title id="app_title">WCC</title>
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
@@ -47,7 +48,9 @@ if (!$is_login) {
     a {
       color: #fd7e14 !important;
     }
-
+    a.btn-dark{
+      color: #ffffff !important;
+    }
     .vh-50 {
       min-width: 60vh !important;
     }
@@ -81,11 +84,11 @@ if (!$is_login) {
               <div class="card card-widget widget-user shadow-lg">
 
                 <div class="widget-user-header text-white" style="background: url('frontend/assets/wcc.jpg ') center center;">
-                  <h3 class="widget-user-username text-right">Father Bro</h3>
-                  <h5 class="widget-user-desc text-right">Bataan Branch</h5>
+                  <h2 id="user_name" class="widget-user-username text-right"></h2>
+                  <h5 id="user_branch" class="widget-user-desc text-right"></h5>
                 </div>
                 <div class="widget-user-image">
-                  <img class="img-circle elevation-1" src="https://via.placeholder.com/250" alt="User Avatar">
+                  <img id="user_dp" class="img-circle elevation-1" src="./backend/framework/uploads/images/user.png" alt="User Avatar">
                 </div>
                 <div class="card-footer">
                   <div class="row">
@@ -151,6 +154,7 @@ if (!$is_login) {
   <script>
     $(function() {
       let me = getUrlVars()['view'];
+      loadHeader();
       if (me == null || me == 'home') {
 
       } else if (me == 'tribe') {
@@ -164,6 +168,34 @@ if (!$is_login) {
     $('.select2bs4').select2({
       theme: 'bootstrap4'
     });
+
+    function loadHeader() {
+      fireAjax("AccountController.php?action=get_account_profile", "", false).then(function(data) {
+        console.log(data);
+        let retval = data.trim();
+        let obj = jQuery.parseJSON(retval);
+        let user_header = obj.data;
+        $("#user_name").html(user_header.firstname + ' ' + user_header.middlename + ' ' + user_header.lastname);
+        $("#user_branch").html(user_header.branch);
+        if (user_header.is_pastor == 1) {
+          $("#user_branch").html('Pastor');
+        }
+        if (user_header.profile_pic != null) {
+          $("#user_dp").attr('src', image_url + user_header.profile_pic);
+        }
+        let me = getUrlVars()['view'];
+        if (me == null || me == 'home') {
+          $("#user_tl").html(user_header.tlname);
+          $("#user_address").html(user_header.address);
+          $("#user_contact").html(user_header.contact);
+          $("#user_birthdate").html(user_header.birthdate);
+        }
+
+        document.title = 'WCC | ' + $("#user_name").html();
+      }).catch(function(err) {
+        console.log(err);
+      });
+    }
 
     function getUrlVars() {
       let vars = [],
