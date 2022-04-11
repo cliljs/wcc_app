@@ -1,17 +1,17 @@
 <div class="card card-primary card-outline">
   <div class="card-body box-profile">
-    <a href="index.php?view=tribe" class="btn btn-block bg-orange"><b>My Tribe</b></a>
+    <a href="index.php?view=tribe" class="btn btn-block btn-lg bg-orange"><b>My Tribe</b></a>
     <?php
     if ($day_now == 'Sunday') {
-      echo '<a href="index.php?view=attendance" class="btn btn-block bg-orange"><b>Sunday Celebration</b></a>';
+      echo '<a href="index.php?view=attendance" class="btn btn-block btn-lg bg-orange"><b>Sunday Celebration</b></a>';
     } else {
-      echo '<a href="Javascript:void(0);" class="btn btn-block bg-orange disabled"><b>Sunday Celebration</b></a>';
+      echo '<a href="Javascript:void(0);" class="btn btn-block btn-lg bg-orange disabled"><b>Sunday Celebration</b></a>';
     }
     ?>
-    <a href="index.php?view=badge" class="btn btn-block bg-orange"><b>My Badge</b></a>
-    <a href="index.php?view=lifestyle" class="btn btn-block bg-orange"><b>Lifestyle</b></a>
-    <a href="Javascript:void(0);" class="btn btn-block bg-orange"><b>Tribe Approval&nbsp;<span class="badge bg-danger">1</span></b></a>
-    <a href="logout.php" class="btn btn-block bg-orange"><b>Logout</b></a>
+    <a href="index.php?view=badge" class="btn btn-block btn-lg bg-orange"><b>My Badge</b></a>
+    <a href="index.php?view=lifestyle" class="btn btn-block btn-lg bg-orange"><b>Lifestyle</b></a>
+    <a href="Javascript:void(0);" class="btn btn-block btn-lg bg-orange"><b>Tribe Approval&nbsp;<span class="badge bg-danger">1</span></b></a>
+    <a href="logout.php" class="btn btn-block btn-lg bg-orange"><b>Logout</b></a>
   </div>
 </div>
 

@@ -32,7 +32,21 @@ if (!$is_login) {
   <link rel="stylesheet" href="frontend/plugins/sweetalert2/sweetalert2.min.css">
   <link rel="stylesheet" href="frontend/plugins/select2/css/select2.min.css">
   <link rel="stylesheet" href="frontend/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+  <link rel="stylesheet" href="frontend/plugins/daterangepicker/daterangepicker.css">
+  <link rel="stylesheet" href="frontend/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
   <style>
+    .left-icon-holder {
+      position: relative;
+    }
+
+    .left-icon-holder .fa {
+      position: absolute;
+      line-height: 24px;
+      top: 50%;
+      margin-top: -12px;
+      left: 10px;
+    }
+
     .bg-orange {
       color: white !important;
     }
@@ -48,9 +62,12 @@ if (!$is_login) {
     a {
       color: #fd7e14 !important;
     }
-    a.btn-dark{
+
+    a.btn-dark,
+    a.btn-success {
       color: #ffffff !important;
     }
+
     .vh-50 {
       min-width: 60vh !important;
     }
@@ -94,14 +111,14 @@ if (!$is_login) {
                   <div class="row">
                     <div class="col-sm-6 border-right">
                       <div class="description-block">
-                        <h5 class="description-header">3,200</h5>
-                        <span class="description-text">Members</span>
+                        <h5 class="description-header">SOL2</h5>
+                        <span class="description-text text-muted">Training</span>
                       </div>
                     </div>
                     <div class="col-sm-6">
                       <div class="description-block">
                         <h5 class="description-header">13,000</h5>
-                        <span class="description-text">Invites</span>
+                        <span class="description-text text-muted">Invites</span>
                       </div>
                     </div>
                   </div>
@@ -124,8 +141,14 @@ if (!$is_login) {
                 case "lifestyle":
                   include "frontend/views/lifestyle.php";
                   break;
+                case "cellgroup":
+                  include "frontend/views/cellgroup.php";
+                  break;
                 case "trainings":
                   include "frontend/views/trainings.php";
+                  break;
+                case "lifeclass":
+                  include "frontend/views/lifeclass.php";
                   break;
                 case "celebration":
                   include "frontend/views/celebration.php";
@@ -149,8 +172,12 @@ if (!$is_login) {
   <script src="frontend/plugins/sweetalert2/sweetalert2.min.js"></script>
   <script src="frontend/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="frontend/plugins/select2/js/select2.full.min.js"></script>
+
+  <script src="frontend/plugins/moment/moment.min.js"></script>
+  <script src="frontend/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
   <script src="frontend/dist/js/common.js"></script>
   <script src="frontend/dist/js/adminlte.min.js"></script>
+  <script src="frontend/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
   <script>
     $(function() {
       let me = getUrlVars()['view'];
@@ -161,6 +188,21 @@ if (!$is_login) {
 
       } else if (me == 'attendance') {
 
+      } else if (me == 'cellgroup') {
+        $('#cg_time').datetimepicker({
+          format: 'LT'
+        });
+        $('#cg_date').datetimepicker({
+          format: 'YYYY-MM-DD'
+        });
+      } else if(me == 'lifeclass'){
+        $('body').on('click','.switchLabel',function(){
+          if($(this).html() == 'Absent'){
+            $(this).html('Attended');
+          } else{
+            $(this).html('Absent');
+          }
+        });
       }
 
     });
