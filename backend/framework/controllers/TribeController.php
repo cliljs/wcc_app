@@ -14,7 +14,7 @@ switch ($act) {
             )
         );
         break;
-    
+
     case 'tribe_pending_disciples':
         echo json_encode(
             $common->create_response(
@@ -24,7 +24,7 @@ switch ($act) {
             )
         );
         break;
-    
+
     case 'tribe_approve_disciple':
         echo json_encode(
             $common->create_response(
@@ -34,7 +34,15 @@ switch ($act) {
             )
         );
         break;
-    
+    case 'get_leader_names':
+        echo json_encode(
+            $common->create_response(
+                "TribeController.php/?action=tribe_approve_disciple",
+                $tribe_model->get_leader_names(),
+                1
+            )
+        );
+        break;
     default:
         # code...
         break;

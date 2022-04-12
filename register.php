@@ -226,7 +226,7 @@ if ($is_login) {
       function getLeaders() {
 
 
-        let data = fireAjax('SuperAdminController.php?action=get_leaders', '', false).then(function(data) {
+        let data = fireAjax('TribeController.php?action=get_leader_names', '', false).then(function(data) {
           console.log(data)
           let obj = jQuery.parseJSON(data.trim());
           let tls = obj.data;

@@ -1,7 +1,7 @@
 <div class="card card-primary card-outline">
   <div class="card-body box-profile">
     <h3 class="text-center">Cell Group</h3>
-    <p class="text-muted text-center"><a href="index.php?view=lifestyle">[Back to Lifestyle]</a></p>
+    <p class="text-muted text-center"><a class = "custom" href="index.php?view=lifestyle">[Back to Lifestyle]</a></p>
 
     <hr>
     <div class="card elevation-2">
@@ -68,8 +68,8 @@
         </table>
       </div>
       <div class="card-footer">
-        <button class="btn btn-block bg-orange">Submit</button>
-        <button class="btn btn-block bg-orange">Show History</button>
+        <button class="btn btn-block btn-secondary">Submit</button>
+        <button class="btn btn-block btn-secondary">Show History</button>
       </div>
     </div>
   </div>

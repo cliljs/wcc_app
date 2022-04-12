@@ -1,7 +1,7 @@
 <div class="card card-primary card-outline">
   <div class="card-body box-profile">
     <h3 class="text-center">Sunday Celebration Attendance</h3>
-    <p class="text-muted text-center"><a href="index.php">[Back to Homepage]</a></p>
+    <p class="text-muted text-center"><a class = "custom" href="index.php">[Back to Homepage]</a></p>
     <hr>
     <div class="card elevation-2">
       <div class="card-header">
@@ -38,16 +38,16 @@
           <tbody>
             <tr>
               <td>VIP #1</td>
-              <td><button class="btn btn-danger btn-sm">Remove</button></td>
+              <td><button class="btn btn-warning btn-sm">Remove</button></td>
             </tr>
             <tr>
               <td>VIP #2</td>
-              <td><button class="btn btn-danger btn-sm">Remove</button></td>
+              <td><button class="btn btn-warning btn-sm">Remove</button></td>
             </tr>
           </tbody>
         </table>
         <div class="form-group">
-          <button class="btn btn-block bg-orange"><b>Scan QR Code</b></button>
+          <button class="btn btn-block btn-secondary"><b>Scan QR Code</b></button>
         </div>
       </div>
 

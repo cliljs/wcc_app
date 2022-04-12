@@ -16,12 +16,7 @@ class SuperAdmin {
             $id
         );
     }
-    public function get_leaders()
-    {
-        global $db, $common, $account_model;
-        return $db->get_list("SELECT id,CONCAT(firstname,' ',middlename,' ',lastname) as fullname FROM {$this->base_table} where is_leader = 1 order by fullname asc");
-      
-    }
+
     public function create_leader($payload = [])
     {
         global $db, $common, $account_model;

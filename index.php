@@ -52,17 +52,19 @@ if (!$is_login) {
     }
 
     .card-primary.card-outline {
-      border-top: 3px solid #fd7e14 !important;
+      border-top: 3px solid #c0392b !important;
     }
 
     .card-primary:not(.card-outline)>.card-header {
-      background-color: #fd7e14 !important;
+      background-color: #c0392b !important;
     }
 
     a {
-      color: #fd7e14 !important;
+      color: #ffffff !important;
     }
-
+    a.custom{
+      color: #c0392b !important;
+    }
     a.btn-dark,
     a.btn-success {
       color: #ffffff !important;
@@ -111,7 +113,7 @@ if (!$is_login) {
                   <div class="row">
                     <div class="col-sm-6 border-right">
                       <div class="description-block">
-                        <h5 class="description-header">SOL2</h5>
+                        <h5 class="description-header">SOL2 - Class 2</h5>
                         <span class="description-text text-muted">Training</span>
                       </div>
                     </div>
@@ -149,6 +151,9 @@ if (!$is_login) {
                   break;
                 case "lifeclass":
                   include "frontend/views/lifeclass.php";
+                  break;
+                case "sol":
+                  include "frontend/views/sol.php";
                   break;
                 case "celebration":
                   include "frontend/views/celebration.php";
@@ -195,11 +200,11 @@ if (!$is_login) {
         $('#cg_date').datetimepicker({
           format: 'YYYY-MM-DD'
         });
-      } else if(me == 'lifeclass'){
-        $('body').on('click','.switchLabel',function(){
-          if($(this).html() == 'Absent'){
+      } else if (me == 'lifeclass') {
+        $('body').on('click', '.switchLabel', function() {
+          if ($(this).html() == 'Absent') {
             $(this).html('Attended');
-          } else{
+          } else {
             $(this).html('Absent');
           }
         });
