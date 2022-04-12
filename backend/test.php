@@ -2,7 +2,7 @@
 <?php
 include_once './autoload.php';
 
-if (ENVIROMENT === 'PROD') {
+if (ENVIRONMENT === 'PROD') {
     echo json_encode('Unauthorize');
     exit;
 }
@@ -33,6 +33,84 @@ $seeds = [
         "birthdate"       => '2022-29-05',
         "contact"         => '09955591932',
         "is_leader"       => 1,
+        "is_pastor"       => 0,
+    ],
+    [
+        "username"        => 'jdoe',
+        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
+        "lastname"        => 'Doe',
+        "firstname"       => 'John',
+        "middlename"      => '',
+        "gender"          => 'Male',
+        "address"         => 'Jan lang',
+        "birthdate"       => '2000-01-01',
+        "contact"         => '091234567',
+        "is_leader"       => 0,
+        "is_pastor"       => 0,
+    ],
+    [
+        "username"        => 'janedoe',
+        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
+        "lastname"        => 'Does',
+        "firstname"       => 'Jane',
+        "middlename"      => '',
+        "gender"          => 'Female',
+        "address"         => 'Jan lang',
+        "birthdate"       => '2001-01-02',
+        "contact"         => '0912354785',
+        "is_leader"       => 0,
+        "is_pastor"       => 0,
+    ],
+    [
+        "username"        => 'fbar',
+        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
+        "lastname"        => 'Bar',
+        "firstname"       => 'Foo',
+        "middlename"      => '',
+        "gender"          => 'Male',
+        "address"         => 'Jan lang',
+        "birthdate"       => '2002-01-03',
+        "contact"         => '098751454',
+        "is_leader"       => 0,
+        "is_pastor"       => 0,
+    ],
+    [
+        "username"        => 'ajoe',
+        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
+        "lastname"        => 'Joe',
+        "firstname"       => 'Average',
+        "middlename"      => '',
+        "gender"          => 'Male',
+        "address"         => 'Jan lang',
+        "birthdate"       => '2002-01-04',
+        "contact"         => '11111111',
+        "is_leader"       => 1,
+        "is_pastor"       => 0,
+    ],
+    [
+        "username"        => 'jpublic',
+        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
+        "lastname"        => 'Public',
+        "firstname"       => 'John',
+        "middlename"      => '',
+        "gender"          => 'Male',
+        "address"         => 'Jan lang',
+        "birthdate"       => '2002-01-05',
+        "contact"         => '0924578454',
+        "is_leader"       => 0,
+        "is_pastor"       => 0,
+    ],
+    [
+        "username"        => 'iroe',
+        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
+        "lastname"        => 'Roe',
+        "firstname"       => 'Ivan',
+        "middlename"      => '',
+        "gender"          => 'Female',
+        "address"         => 'Jan lang',
+        "birthdate"       => '2002-01-06',
+        "contact"         => '096315454',
+        "is_leader"       => 0,
         "is_pastor"       => 0,
     ]
 ];
