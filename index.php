@@ -62,9 +62,11 @@ if (!$is_login) {
     a {
       color: #ffffff !important;
     }
-    a.custom{
+
+    a.custom {
       color: #c0392b !important;
     }
+
     a.btn-dark,
     a.btn-success {
       color: #ffffff !important;
@@ -192,7 +194,31 @@ if (!$is_login) {
       } else if (me == 'tribe') {
 
       } else if (me == 'attendance') {
+        let vip_list = [];
+        let invite_list = [];
 
+        $('body').on('click','.btnRemoveVIP',function(){
+          let row = $(this).closest('tr');
+          let tditem = $(this)
+          .closest('tr')
+          .children('td') 
+          .html();
+          vip_list.splice(vip_list.findIndex(el => el.vip == tditem), 1);
+          row.remove();
+        });
+        $('#btnAddVIP').unbind('click').bind('click',function(e){
+          
+          let vipname = $('#vip_name').val();
+          if(vipname.trim() == ''){
+            fireSwal("Sunday Celebration Attendance","Please input VIP's Full Name","info");
+            return;
+          }
+          vip_list.push({vip:vipname});
+          $('#tblVIPBody').append('<tr><td>' + vipname + '</td><td><button class="btn btn-sm btn-outline-dark btnRemoveVIP">Remove</button></td></tr>');
+          $('#vip_name').val('');
+         
+          console.log(vip_list);
+        });
       } else if (me == 'cellgroup') {
         $('#cg_time').datetimepicker({
           format: 'LT'
@@ -208,6 +234,21 @@ if (!$is_login) {
             $(this).html('Absent');
           }
         });
+        $('#btnSubmitLC').on('click', function() {
+
+        });
+      } else if (me == 'sol') {
+        
+        $('body').on('click', '.switchSOLLabel', function() {
+          if ($(this).html() == 'Absent') {
+            $(this).html('Attended');
+          } else {
+            $(this).html('Absent');
+          }
+        });
+        $('#btnSubmitSOL').on('click', function() {
+
+        });
       }
 
     });
@@ -215,6 +256,7 @@ if (!$is_login) {
     $('.select2bs4').select2({
       theme: 'bootstrap4'
     });
+
 
     function loadHeader() {
       fireAjax("AccountController.php?action=get_account_profile", "", false).then(function(data) {

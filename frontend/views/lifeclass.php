@@ -69,7 +69,7 @@
         </table>
       </div>
       <div class="card-footer">
-            <button class = "btn btn-block btn-secondary">Submit</button>
+            <button id = "btnSubmitLC" class = "btn btn-block btn-secondary">Submit</button>
       </div>
     </div>
   </div>

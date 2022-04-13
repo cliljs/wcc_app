@@ -1,7 +1,7 @@
 <div class="card card-primary card-outline">
   <div class="card-body box-profile">
     <h3 class="text-center">Sunday Celebration Attendance</h3>
-    <p class="text-muted text-center"><a class = "custom" href="index.php">[Back to Homepage]</a></p>
+    <p class="text-muted text-center"><a class="custom" href="index.php">[Back to Homepage]</a></p>
     <hr>
     <div class="card elevation-2">
       <div class="card-header">
@@ -26,7 +26,14 @@
         </div>
         <div class="form-group">
           <label>Expected VIP:</label>
-          <input type="text" class="form-control" id="vip_name" name="vip_name" placeholder="Input VIP's Name then press Enter">
+          <input type="text" class="form-control" id="vip_name" name="vip_name" placeholder="Input VIP's Full Name">
+        </div>
+        <div class="row my-3">
+          <div class="col-12">
+            <div class="d-flex flex-row-reverse">
+              <button id = "btnAddVIP" class="btn btn-info btn-md">Add to Records</button>
+            </div>
+          </div>
         </div>
         <table class="table table-bordered">
           <thead>
@@ -35,15 +42,8 @@
               <th style="width: 40px"></th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td>VIP #1</td>
-              <td><button class="btn btn-warning btn-sm">Remove</button></td>
-            </tr>
-            <tr>
-              <td>VIP #2</td>
-              <td><button class="btn btn-warning btn-sm">Remove</button></td>
-            </tr>
+          <tbody id = "tblVIPBody">
+            
           </tbody>
         </table>
         <div class="form-group">

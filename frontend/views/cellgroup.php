@@ -1,7 +1,7 @@
 <div class="card card-primary card-outline">
   <div class="card-body box-profile">
     <h3 class="text-center">Cell Group</h3>
-    <p class="text-muted text-center"><a class = "custom" href="index.php?view=lifestyle">[Back to Lifestyle]</a></p>
+    <p class="text-muted text-center"><a class="custom" href="index.php?view=lifestyle">[Back to Lifestyle]</a></p>
 
     <hr>
     <div class="card elevation-2">
@@ -15,7 +15,7 @@
                 <div class="input-group-prepend" data-target="#cg_date" data-toggle="datetimepicker">
                   <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                 </div>
-                <input type="text" class="form-control datetimepicker-input" data-target="#cg_date" placeholder="Input date">
+                <input type="text" class="form-control datetimepicker-input" data-target="#cg_date" placeholder="Input Date">
               </div>
             </div>
           </div>
@@ -27,7 +27,7 @@
                   <div class="input-group-prepend" data-target="#cg_time" data-toggle="datetimepicker">
                     <div class="input-group-text"><i class="far fa-clock"></i></div>
                   </div>
-                  <input type="text" class="form-control datetimepicker-input" data-target="#cg_time" placeholder="Input time" />
+                  <input type="text" class="form-control datetimepicker-input" data-target="#cg_time" placeholder="Input Time" />
                 </div>
               </div>
             </div>
@@ -41,35 +41,84 @@
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
             </div>
-            <input type="text" class="form-control" placeholder="Input place">
+            <input type="text" class="form-control" placeholder="Input Place">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Member:</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+            <input type="text" class="form-control" placeholder="Input Member's Name">
+          </div>
+          <label class = "my-2 text-muted">or select an existing member from the list:</label>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
+            </div>
+            <select id="member_name" name="member_name" class="form-control select2bs4">
+              <option selected="selected" disabled="disabled">Please select an existing member</option>
+              <option value="Bataan">Sample Member 1</option>
+              <option value="Gensan">Sample Member 2</option>
+            </select>
+
+          </div>
+          <div class = "row mt-3">
+            <div class = "col-12">
+              <div class = "d-flex flex-row-reverse">
+                <button class = "btn btn-info btn-md">Add to Records</button>
+              </div>
+            </div>
           </div>
         </div>
         <table class="table table-hover table-striped" id="tblCellgroup">
           <thead>
             <tr>
-              <th>Cell Member Attendance</th>
+              <th>Cell Member</th>
+              <th>Place</th>
               <th>Date</th>
+              <th>Time</th>
+              <th></th>
             </tr>
           </thead>
           <tbody id="tblCellgroupBody">
             <tr>
               <td>Sample 1</td>
+              <td>Church</td>
               <td>March 1, 2022</td>
+              <td>18:00</td>
+              <td>
+                <button class="btn btn-sm btn-outline-dark">Remove</button>
+                <button class="btn btn-sm btn-info">Update</button>
+              </td>
             </tr>
             <tr>
               <td>Sample 2</td>
-              <td>March 2, 2022</td>
+              <td>Church</td>
+              <td>March 1, 2022</td>
+              <td>18:00</td>
+              <td>
+                <button class="btn btn-sm btn-outline-dark">Remove</button>
+                <button class="btn btn-sm btn-info">Update</button>
+              </td>
             </tr>
             <tr>
               <td>Sample 3</td>
-              <td>March 3, 2022</td>
+              <td>Church</td>
+              <td>March 1, 2022</td>
+              <td>18:00</td>
+              <td>
+                <button class="btn btn-sm btn-outline-dark">Remove</button>
+                <button class="btn btn-sm btn-info">Update</button>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="card-footer">
-        <button class="btn btn-block btn-secondary">Submit</button>
-        <button class="btn btn-block btn-secondary">Show History</button>
+        <!-- <button class="btn btn-block btn-secondary">Save</button>
+        <button class="btn btn-block btn-secondary">Show History</button> -->
       </div>
     </div>
   </div>
