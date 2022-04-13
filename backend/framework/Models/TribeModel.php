@@ -33,9 +33,18 @@ class TribeModel {
         global $db, $common;
         return $db->get_list("SELECT REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, acc.id
                             FROM bro_accounts acc 
-                            INNER JOIN {$this->base_table} tr ON acc.id = tr.member_pk 
-                            WHERE acc.is_leader = ? AND tr.is_approved = ?",
+                            WHERE acc.is_leader = ? 
+                            ORDER BY acc.firstname asc",
                             [1, 1]);
+    }
+    public function get_inviter_names($payload = [])
+    {
+        global $db, $common;
+        return $db->get_list("SELECT REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, acc.id
+                            FROM bro_accounts acc 
+                            WHERE branch = ? OR is_pastor = 1 
+                            ORDER BY acc.firstname asc",
+                            array_values($payload));
     }
     
     // id = DISCIPLE ID ON BRO_TRIBE

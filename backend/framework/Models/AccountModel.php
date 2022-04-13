@@ -74,6 +74,8 @@ class AccountModel {
             "birthdate"  => $payload['birthdate'],
             "contact"    => $payload['contact'],
             "branch"     => $payload['branch'],
+            "inviter_pk"     => $payload['inviter']
+            
         ];
 
         $fields        = $common->get_insert_fields($arr);

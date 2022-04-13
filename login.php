@@ -31,15 +31,15 @@ if ($is_login) {
     }
 
     .card-primary.card-outline {
-      border-top: 3px solid #fd7e14 !important;
+      border-top: 3px solid #c0392b !important;
     }
 
     .card-primary:not(.card-outline)>.card-header {
-      background-color: #fd7e14 !important;
+      background-color: #c0392b !important;
     }
 
     a {
-      color: #fd7e14 !important;
+      color: #c0392b !important;
     }
 
     .vh-50 {
@@ -114,7 +114,7 @@ if ($is_login) {
                         </div>
 
                         <div class="col-4">
-                          <button type="submit" class="btn bg-orange btn-block">Sign In</button>
+                          <button type="submit" class="btn btn-danger btn-block">Sign In</button>
                         </div>
 
                       </div>

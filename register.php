@@ -33,15 +33,15 @@ if ($is_login) {
     }
 
     .card-primary.card-outline {
-      border-top: 3px solid #fd7e14 !important;
+      border-top: 3px solid #c0392b !important;
     }
 
     .card-primary:not(.card-outline)>.card-header {
-      background-color: #fd7e14 !important;
+      background-color: #c0392b !important;
     }
 
     a {
-      color: #fd7e14 !important;
+      color: #c0392b !important;
     }
 
     .vh-50 {
@@ -142,6 +142,12 @@ if ($is_login) {
                         </select>
                       </div>
                       <div class="form-group">
+                        <label for="inviter">Inviter</label>
+                        <select id="inviter" name="inviter" class="form-control select2bs4" style="width: 100%;">
+                          <option selected="selected" disabled="disabled">Please select your inviter</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
                         <label for="ref_code">Tribe Leader</label>
                         <select id="leader_name" name="leader_name" class="form-control select2bs4" style="width: 100%;">
 
@@ -158,14 +164,14 @@ if ($is_login) {
                       </div>
                       <div class="row">
                         <div class="col-4 mt-4">
-                          <a href="login.php" class="btn bg-dark btn-block">Back</a>
+                          <a style="color:#ffffff !important;" href="login.php" class="btn btn-secondary btn-block">Back</a>
                         </div>
                         <div class="col-4">
 
                         </div>
                         <div class="col-4 mt-4">
 
-                          <button type="submit" class="btn bg-orange btn-block">Sign In</button>
+                          <button type="submit" class="btn btn-danger btn-block">Register</button>
                         </div>
 
                       </div>
@@ -219,9 +225,37 @@ if ($is_login) {
           fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
         });
       });
+      $("#branch").on("change", function() {
+        let payload = {
+          branch: $(this).val()
+        };
+        getInviters(payload);
+      });
       $("#profile_picture").on("change", function() {
         $(".custom-file-label").html("Image Selected");
       });
+
+      function getInviters(branch) {
+        let data = fireAjax('TribeController.php?action=get_inviter_names', branch, false).then(function(data) {
+          console.log(data)
+          let obj = jQuery.parseJSON(data.trim());
+          let tls = obj.data;
+          let renderVal = '<option selected="selected" disabled="disabled">Please select your inviter</option>';
+          $.each(tls, function(k, v) {
+            renderVal += '<option value="' + v.id + '">' + v.fullname + '</option>';
+          });
+          $("#inviter").html(renderVal);
+        }).catch(function(err) {
+          console.log(err)
+          fireSwal('Account Registration', 'Failed to retrieve list of inviters. Please reload the page', 'error');
+        })
+
+
+
+        $('#inviter').select2({
+          theme: 'bootstrap4'
+        });
+      }
 
       function getLeaders() {
 
@@ -242,10 +276,11 @@ if ($is_login) {
 
 
 
-        $('.select2bs4').select2({
+        $('#leader_name').select2({
           theme: 'bootstrap4'
         });
       }
+
     });
   </script>
 </body>

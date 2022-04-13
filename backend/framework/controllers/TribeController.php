@@ -43,6 +43,15 @@ switch ($act) {
             )
         );
         break;
+    case 'get_inviter_names':
+        echo json_encode(
+            $common->create_response(
+                "TribeController.php/?action=get_inviter_names",
+                $tribe_model->get_inviter_names($_POST),
+                1
+            )
+        );
+        break;
     default:
         # code...
         break;
