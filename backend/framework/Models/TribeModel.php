@@ -35,7 +35,7 @@ class TribeModel {
                             FROM bro_accounts acc 
                             WHERE acc.is_leader = ? 
                             ORDER BY acc.firstname asc",
-                            [1, 1]);
+                            [1]);
     }
     public function get_inviter_names($payload = [])
     {

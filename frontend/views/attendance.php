@@ -78,9 +78,25 @@
           </div>
 
         </div>
+        <div id="readerbypass" style="display:none;">
+          <p class="text-muted">Approach any tribe leader and ask for credentials</p>
+          <form id="frmByPass">
+            <div class="form-group">
+              <label>Leader's Username</label>
+              <input class = "form-control" type="text" id="tlusername" name="tlusername" required />
+            </div>
+            <div class="form-group">
+              <label>Leader's Password</label>
+              <input class = "form-control" type="password" id="tlpassword" name="tlpassword" required />
+            </div>
+            <div class="form-group mt-2">
+              <input type = "submit" class = "btn btn-block btn-md btn-info" value = "Submit"/>
+            </div>
+          </form>
+        </div>
         <div id="reader" class="text-center" width="100%"></div>
         <div class="form-group text-center mt-3">
-          <button class="btn btn-outline-dark">QR Scanner not working?</button>
+          <button id="qrmode" class="btn btn-block btn-outline-dark">QR Scanner not working?</button>
         </div>
       </div>
       <div class="modal-footer">

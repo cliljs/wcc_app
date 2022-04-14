@@ -7,71 +7,71 @@
     <div class="card elevation-2">
 
       <div class="card-body">
-        <div class="row">
-          <div class="col-sm-12 col-md-6">
-            <div class="form-group">
-              <label>Date:</label>
-              <div class="input-group date" id="cg_date" data-target-input="nearest">
-                <div class="input-group-prepend" data-target="#cg_date" data-toggle="datetimepicker">
-                  <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
-                </div>
-                <input type="text" class="form-control datetimepicker-input" data-target="#cg_date" placeholder="Input Date">
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-6">
-            <div class="bootstrap-timepicker">
+        <form id="frmCellgroup">
+          <div class="row">
+            <div class="col-sm-12 col-md-6">
               <div class="form-group">
-                <label>Time:</label>
-                <div class="input-group date" id="cg_time" data-target-input="nearest">
-                  <div class="input-group-prepend" data-target="#cg_time" data-toggle="datetimepicker">
-                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                <label>Date:</label>
+                <div class="input-group date" id="cg_date" data-target-input="nearest">
+                  <div class="input-group-prepend" data-target="#cg_date" data-toggle="datetimepicker">
+                    <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
                   </div>
-                  <input type="text" class="form-control datetimepicker-input" data-target="#cg_time" placeholder="Input Time" />
+                  <input id = "event_date" name = "event_date" type="text" class="form-control datetimepicker-input" data-target="#cg_date" placeholder="Input Date">
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <div class="bootstrap-timepicker">
+                <div class="form-group">
+                  <label>Time:</label>
+                  <div class="input-group date" id="cg_time" data-target-input="nearest">
+                    <div class="input-group-prepend" data-target="#cg_time" data-toggle="datetimepicker">
+                      <div class="input-group-text"><i class="far fa-clock"></i></div>
+                    </div>
+                    <input id = "event_time" name = "event_time" type="text" class="form-control datetimepicker-input" data-target="#cg_time" placeholder="Input Time" />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
 
-        <div class="form-group">
-          <label>Place:</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+          <div class="form-group">
+            <label>Place:</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+              </div>
+              <input id = "event_place" name = "event_place" type="text" class="form-control" placeholder="Input Place">
             </div>
-            <input type="text" class="form-control" placeholder="Input Place">
           </div>
-        </div>
-        <div class="form-group">
-          <label>Member:</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-user"></i></span>
+          <div class="form-group">
+            <label>Member:</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+              </div>
+              <input id = "inp_name" name = "inp_name" type="text" class="form-control" placeholder="Input Member's Name">
             </div>
-            <input type="text" class="form-control" placeholder="Input Member's Name">
-          </div>
-          <label class = "my-2 text-muted">or select an existing member from the list:</label>
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text"><i class="fas fa-user"></i></span>
-            </div>
-            <select id="member_name" name="member_name" class="form-control select2bs4">
-              <option selected="selected" disabled="disabled">Please select an existing member</option>
-              <option value="Bataan">Sample Member 1</option>
-              <option value="Gensan">Sample Member 2</option>
-            </select>
+            <label class="my-2 text-muted">or select an existing member from the list:</label>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+              </div>
+              <select id="select_name" name="select_name" class="form-control select2bs4">
+               
+              </select>
 
-          </div>
-          <div class = "row mt-3">
-            <div class = "col-12">
-              <div class = "d-flex flex-row-reverse">
-                <button class = "btn btn-info btn-md">Add to Records</button>
+            </div>
+            <div class="row mt-3">
+              <div class="col-12">
+                <div class="d-flex flex-row-reverse">
+                  <input type = "submit" class="btn btn-info btn-md" value = "Add to Cellgroup">
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </form>
         <table class="table table-hover table-striped" id="tblCellgroup">
           <thead>
             <tr>
@@ -83,36 +83,7 @@
             </tr>
           </thead>
           <tbody id="tblCellgroupBody">
-            <tr>
-              <td>Sample 1</td>
-              <td>Church</td>
-              <td>March 1, 2022</td>
-              <td>18:00</td>
-              <td>
-                <button class="btn btn-sm btn-outline-dark">Remove</button>
-                <button class="btn btn-sm btn-info">Update</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Sample 2</td>
-              <td>Church</td>
-              <td>March 1, 2022</td>
-              <td>18:00</td>
-              <td>
-                <button class="btn btn-sm btn-outline-dark">Remove</button>
-                <button class="btn btn-sm btn-info">Update</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Sample 3</td>
-              <td>Church</td>
-              <td>March 1, 2022</td>
-              <td>18:00</td>
-              <td>
-                <button class="btn btn-sm btn-outline-dark">Remove</button>
-                <button class="btn btn-sm btn-info">Update</button>
-              </td>
-            </tr>
+          
           </tbody>
         </table>
       </div>

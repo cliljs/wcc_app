@@ -1,7 +1,7 @@
-let home_url = "http://localhost/wcc/";
-let image_url = "http://localhost/wcc/backend/framework/uploads/images/";
+let home_url = "http://localhost/wcc_app/";
+let image_url = home_url + "backend/framework/uploads/images/";
 let base_url = home_url + "backend/framework/controllers/";
-
+let varErrMessage = "Failed to process request. Please try again.";
 function fireAjax(path, payload, is_multi) {
     return new Promise(function (resolve, reject) {
      

@@ -10,7 +10,7 @@ class CellGroupModel {
         global $db, $common;
 
         $arr = [
-            "user_pk"     => $payload['user_pk'],
+            "user_pk"     => $_SESSION['pk'],
             "event_date"  => $payload['event_date'],
             "event_time"  => $payload['event_time'],
             "event_place" => $payload['event_place'],
@@ -26,7 +26,7 @@ class CellGroupModel {
     {
         global $db, $common;
         // ganto muna sa ngayon alaws criteria
-        return $db->get_list("SELECT * FROM {$this->base_table}");
+        return $db->get_list("SELECT * FROM {$this->base_table} where user_pk = ?",[$_SESSION['pk']]);
     }
 
     public function get_cell_data($pk = null)
@@ -49,6 +49,16 @@ class CellGroupModel {
        $tobe_deleted = $this->get_cell_data($pk);
        $deleted      = $db->delete("DELETE FROM {$this->base_table} WHERE id = {$pk}");
        return $deleted ? $tobe_deleted : false;
+    }
+
+    public function get_other_names()
+    {
+        global $db, $common;
+        return $db->get_list("SELECT REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, acc.id
+                            FROM bro_accounts acc 
+                            WHERE NOT acc.id = ? and NOT acc.branch = (Select branch from bro_accounts where id = ?)
+                            ORDER BY acc.firstname asc",
+                            [$_SESSION['pk'],$_SESSION['pk']]);
     }
 }
 

@@ -222,7 +222,7 @@ if ($is_login) {
           }
         }).catch(function(err) {
           console.log(err)
-          fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
+          fireSwal("Account Registration", varErrMessage, "error");
         });
       });
       $("#branch").on("change", function() {

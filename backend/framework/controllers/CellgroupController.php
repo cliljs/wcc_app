@@ -24,7 +24,7 @@ switch ($act) {
             )
         );
         break;
-    
+
     case 'remove_cell':
         echo json_encode(
             $common->create_response(
@@ -34,7 +34,7 @@ switch ($act) {
             )
         );
         break;
-    
+
     case 'get_cell_list':
         echo json_encode(
             $common->create_response(
@@ -44,7 +44,7 @@ switch ($act) {
             )
         );
         break;
-    
+
     case 'get_cell_data':
         echo json_encode(
             $common->create_response(
@@ -54,7 +54,15 @@ switch ($act) {
             )
         );
         break;
-    
+    case 'get_other_names':
+        echo json_encode(
+            $common->create_response(
+                "CellgroupController.php/?action=get_other_names",
+                $cellgroup_model->get_other_names(),
+                1
+            )
+        );
+        break;
     default:
         # code...
         break;

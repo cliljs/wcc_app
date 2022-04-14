@@ -157,7 +157,7 @@ if ($is_login) {
           }
         }).catch(function(err){
           console.log(err);
-          fireSwal("Member's Portal","Failed to login. Please try again.","error");
+          fireSwal("Member's Portal",varErrMessage,"error");
         });
       });
     });
