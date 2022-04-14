@@ -47,8 +47,18 @@ switch ($act) {
     case 'get_attendance_list':
        echo json_encode(
            $common->create_response(
-               'AttendanceController.php/?action=get_attendance_details',
-               $attendance_model->get_attendance_list($_GET['user_id']),
+               'AttendanceController.php/?action=get_attendance_list',
+               $attendance_model->get_attendance_list($_GET['year']),
+               1
+            )
+       );
+        break;
+    
+    case 'get_disciple_attendance':
+       echo json_encode(
+           $common->create_response(
+               'AttendanceController.php/?action=get_disciple_attendance',
+               $attendance_model->get_disciple_attendance($_GET['year']),
                1
             )
        );

@@ -6,7 +6,7 @@ class DatabaseController
     public $conn = null;
     public function __construct(
         $host    = "127.0.0.1",
-        $db_name = "papa_quibs",
+        $db_name = "quibs_140422",
         $user    = "root",
         $pass    = ""
     ) {
@@ -22,7 +22,7 @@ class DatabaseController
     }
 
     // execute statement
-    private function execute($query = "", $params = [])
+    private function execute($query = "", $params)
     {
         try {
        

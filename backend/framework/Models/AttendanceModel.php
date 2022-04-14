@@ -27,11 +27,22 @@ require_once '../../autoload.php';
      }
  
     //  ATTENDANCE LIST
-     public function get_attendance_list($user_id = null)
+     public function get_attendance_list($year)
      {
         global $db, $common;
 
-        return $db->get_list("SELECT * FROM {$this->base_table} WHERE account_pk = ?", [$user_id]);
+        return $db->get_list("SELECT * FROM {$this->base_table} 
+                              WHERE YEAR(sunday_date) = ? AND account_pk = ?", 
+                              [$year, $_SESSION['pk']]);
+     }
+
+     public function get_disciple_attendance($year)
+     {
+      global $db, $common;
+
+      return $db->get_list("SELECT * FROM {$this->base_table} 
+                            WHERE YEAR(sunday_date) = ? AND confirmed_by = ?", 
+                            [$year, $_SESSION['pk']]);
      }
  
      public function update_attendance($payload = [], $id = null)

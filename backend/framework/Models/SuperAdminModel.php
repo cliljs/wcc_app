@@ -17,7 +17,7 @@ class SuperAdmin {
         );
     }
 
-    public function create_leader($payload = [])
+    public function create_leader($payload = [], $files)
     {
         global $db, $common, $account_model;
 

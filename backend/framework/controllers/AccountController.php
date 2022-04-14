@@ -54,6 +54,16 @@ switch ($act) {
 
         echo json_encode($response);
         break;
+
+    case 'account_logout': 
+        $response  = $common->create_response(
+            "AccountController/action=account_logout",
+            session_destroy(),
+            1
+        );
+
+        echo json_encode($response);
+        break;
         
     default:
         break;

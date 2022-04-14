@@ -1,5 +1,5 @@
-let home_url = "http://localhost/wcc_app/";
-let image_url = "http://localhost/wcc_app/backend/framework/uploads/images/";
+let home_url = "http://localhost/wcc/";
+let image_url = "http://localhost/wcc/backend/framework/uploads/images/";
 let base_url = home_url + "backend/framework/controllers/";
 
 function fireAjax(path, payload, is_multi) {
