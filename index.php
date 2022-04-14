@@ -73,7 +73,7 @@ if (!$is_login) {
     }
 
     .vh-50 {
-      min-width: 60vh !important;
+      min-width: 45vh !important;
     }
 
     .widget-user .widget-user-image {
@@ -185,6 +185,7 @@ if (!$is_login) {
   <script src="frontend/dist/js/common.js"></script>
   <script src="frontend/dist/js/adminlte.min.js"></script>
   <script src="frontend/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+  <script src="frontend/dist/js/html5-qrcode.min.js"></script>
   <script>
     $(function() {
       let me = getUrlVars()['view'];
@@ -196,29 +197,73 @@ if (!$is_login) {
       } else if (me == 'attendance') {
         let vip_list = [];
         let invite_list = [];
+        const html5QrCode = new Html5Qrcode("reader");
 
-        $('body').on('click','.btnRemoveVIP',function(){
+        $('body').on('click', '.btnRemoveVIP', function() {
           let row = $(this).closest('tr');
           let tditem = $(this)
-          .closest('tr')
-          .children('td') 
-          .html();
+            .closest('tr')
+            .children('td')
+            .html();
           vip_list.splice(vip_list.findIndex(el => el.vip == tditem), 1);
           row.remove();
         });
-        $('#btnAddVIP').unbind('click').bind('click',function(e){
-          
+        $('#btnAddVIP').unbind('click').bind('click', function(e) {
+
           let vipname = $('#vip_name').val();
-          if(vipname.trim() == ''){
-            fireSwal("Sunday Celebration Attendance","Please input VIP's Full Name","info");
+          if (vipname.trim() == '') {
+            fireSwal("Sunday Celebration Attendance", "Please input VIP's Full Name", "info");
             return;
           }
-          vip_list.push({vip:vipname});
+          vip_list.push({
+            vip: vipname
+          });
           $('#tblVIPBody').append('<tr><td>' + vipname + '</td><td><button class="btn btn-sm btn-outline-dark btnRemoveVIP">Remove</button></td></tr>');
           $('#vip_name').val('');
-         
-          console.log(vip_list);
+
+
         });
+        $('#select_invites').on('change', function() {
+          let select_div = $(".select2-selection__rendered li");
+          invite_list = [];
+          select_div.each(function(idx, li) {
+            var imbayt = $(li).attr('title');
+            if (imbayt != null) {
+              invite_list.push({
+                invite: imbayt
+              });
+            }
+
+
+          });
+
+        });
+        $("#btnShowQR").on("click", function() {
+          $('#mdlInvites').html(invite_list.length);
+          $('#mdlVIPs').html(vip_list.length);
+          $("#mdlScanner").modal({
+            backdrop: 'static'
+          });
+          const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+            alert(decodedText);
+          };
+          const config = {
+            fps: 10,
+            rememberLastUsedCamera: true,
+            qrbox: {
+              width: 500,
+              height: 500
+            }
+          };
+          //$('video').attr('style', 'width: ' + $('#mdlScanner').width() + 'px !important');
+          html5QrCode.start({
+            facingMode: "environment"
+          }, config, qrCodeSuccessCallback);
+
+        });
+        $("#mdlScanner").on('hidden.bs.modal', function() {
+          html5QrCode.stop();
+        })
       } else if (me == 'cellgroup') {
         $('#cg_time').datetimepicker({
           format: 'LT'
@@ -238,7 +283,7 @@ if (!$is_login) {
 
         });
       } else if (me == 'sol') {
-        
+
         $('body').on('click', '.switchSOLLabel', function() {
           if ($(this).html() == 'Absent') {
             $(this).html('Attended');

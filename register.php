@@ -45,7 +45,7 @@ if ($is_login) {
     }
 
     .vh-50 {
-      min-width: 60vh !important;
+      min-width: 45vh !important;
     }
 
 

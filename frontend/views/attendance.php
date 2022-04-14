@@ -18,10 +18,11 @@
         </div>
         <div class="form-group">
           <label>Invites:</label>
-          <select class="select2bs4" multiple="multiple" data-placeholder="Select Name of Invites" style="width: 100%;">
-            <option>Sample Name #1</option>
-            <option>Sample Name #2</option>
-            <option>Sample Name #3</option>
+          <select id="select_invites" class="select2bs4" multiple="multiple" data-placeholder="Select Name of Invites" style="width: 100%;">
+            <option id="1">Sample Name #1</option>
+
+            <option id="3">Sample Name #3</option>
+            <option id="4">Sample Name #4</option>
           </select>
         </div>
         <div class="form-group">
@@ -31,7 +32,7 @@
         <div class="row my-3">
           <div class="col-12">
             <div class="d-flex flex-row-reverse">
-              <button id = "btnAddVIP" class="btn btn-info btn-md">Add to Records</button>
+              <button id="btnAddVIP" class="btn btn-info btn-md">Add to Records</button>
             </div>
           </div>
         </div>
@@ -42,16 +43,49 @@
               <th style="width: 40px"></th>
             </tr>
           </thead>
-          <tbody id = "tblVIPBody">
-            
+          <tbody id="tblVIPBody">
+
           </tbody>
         </table>
         <div class="form-group">
-          <button class="btn btn-block btn-secondary"><b>Scan QR Code</b></button>
+          <button id="btnShowQR" class="btn btn-block btn-secondary"><b>Scan QR Code</b></button>
         </div>
       </div>
 
     </div>
   </div>
 
+</div>
+<div class="modal fade" id="mdlScanner" tabindex="-1" role="dialog" aria-labelledby="mdlScannerLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mdlScannerLabel">Scan QR Code</h5>
+
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info alert-dismissible">
+          <h5><i class="icon fas fa-info"></i> Info</h5>
+          IOS users please ung Safari browser
+        </div>
+        <div class="form-group text-center mt-3">
+          <p class="text-muted">Please scan any authorized QR code</p>
+          <div class="card elevation-2">
+            <div class="card-header">
+              <p><i class="fa fa-user"></i> &nbsp; Number of Invite(s): <span id="mdlInvites"></span></p>
+              <p><i class="fa fa-user"></i> &nbsp; Number of VIP(s): <span id="mdlVIPs"></span></p>
+            </div>
+          </div>
+
+        </div>
+        <div id="reader" class="text-center" width="100%"></div>
+        <div class="form-group text-center mt-3">
+          <button class="btn btn-outline-dark">QR Scanner not working?</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
 </div>
