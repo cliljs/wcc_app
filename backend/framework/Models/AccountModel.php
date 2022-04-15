@@ -26,7 +26,7 @@ class AccountModel {
     {
         global $db, $common;
 
-        $has_account = $db->get_row("SELECT acc.*, tr.is_approved FROM {$this->base_table} acc
+        $has_account = $db->get_row("SELECT acc.*, tr.is_approved, tr.leader_pk FROM {$this->base_table} acc
                                     INNER JOIN bro_tribe tr ON acc.id = tr.member_pk
                                     WHERE acc.username = ?", [$payload['username']]);
 
@@ -43,6 +43,7 @@ class AccountModel {
         $_SESSION['is_leader']  = $has_account['is_leader'];
         $_SESSION['is_pastor']  = $has_account['is_pastor'];
         $_SESSION['branch']     = $has_account['branch'];
+        $_SESSION['leader_pk']  = $has_account['leader_pk'];
         $_SESSION['login_name'] = $has_account['firstname'] . ' ' . $has_account['middlename'] . ' ' . $has_account['lastname'];
         return $has_account;
     }
