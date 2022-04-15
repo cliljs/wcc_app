@@ -46,7 +46,12 @@ class QRModel {
     public function update_qr($pk)
     {
         global $db, $common;
-        $updated = $db->update("UPDATE {$this->base_table} SET qr_code = ? WHERE id = {$pk}", [$this->generate_qr()]);
+        $arr = [
+            'qr'            =>  $this->generate_qr(),
+            'created_by'    =>  $_SESSION['login_name'],
+            'pk'            =>  $pk
+        ];
+        $updated = $db->update("UPDATE {$this->base_table} SET qr_code = ?, created_by = ? WHERE id = ?", array_values($arr));
         return $updated ? $this->get_qr_details($pk): false;
     }
 }

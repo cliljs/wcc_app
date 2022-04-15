@@ -165,6 +165,9 @@ if (!$is_login) {
                 case "qrmaintenance":
                   include "frontend/views/qrmaintenance.php";
                   break;
+                case "notifications":
+                  include "frontend/views/notifications.php";
+                  break;
                 default:
                   include "frontend/views/404.php";
                   break;
@@ -458,19 +461,19 @@ if (!$is_login) {
             text: qrcontent
           });
         });
-        $('#newQRCodeMaintenance').on('click',function(){
+        $('#newQRCodeMaintenance').on('click', function() {
           console.log('QRController.php?action=update_qr&id=' + qrID);
-          fireAjax('QRController.php?action=update_qr&id=' + qrID,'',false).then(function(data){
+          fireAjax('QRController.php?action=update_qr&id=' + qrID, '', false).then(function(data) {
             let obj = jQuery.parseJSON(data.trim());
-        
-            if(obj.success == 1){
+
+            if (obj.success == 1) {
               loadAllQR();
               $('#mdlQRMaintenance').modal('hide');
-              fireSwal('QR Maintenance','QR updated successfully','success');
+              fireSwal('QR Maintenance', 'QR updated successfully', 'success');
             }
-          }).catch(function(err){
+          }).catch(function(err) {
             console.log(err);
-            fireSwal('QR Maintenance','Failed to generate new QR. Please try again.','error');
+            fireSwal('QR Maintenance', 'Failed to generate new QR. Please try again.', 'error');
           });
         });
       }
@@ -513,11 +516,11 @@ if (!$is_login) {
       fireAjax('AttendanceController.php?action=create_attendance', payload, false).then(function(data) {
         console.log(data);
         let obj = jQuery.parseJSON(data.trim());
-        if(obj.success == 1){
-          fireSwal('Sunday Celebration Attendance','Attendance updated successfully','success');
+        if (obj.success == 1) {
+          fireSwal('Sunday Celebration Attendance', 'Attendance updated successfully', 'success');
           $("#mdlScanner").modal('hide');
         }
-        
+
       }).catch(function(err) {
         console.log(err);
         fireSwal('Sunday Celebration Attendance', varErrMessage, 'error');

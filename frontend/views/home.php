@@ -13,7 +13,7 @@
     <a href="index.php?view=lifestyle" class="btn btn-block btn-lg btn-secondary"><b>Lifestyle</b></a>
     <?php
       if($is_leader){
-        echo "<a href='index.php?view=approval' class='btn btn-block btn-lg btn-secondary'><b>My Approval</b></a>";
+        echo "<a href='index.php?view=notifications' class='btn btn-block btn-lg btn-secondary'><b>Notifications</b></a>";
       }
       if($is_admin){
         echo '<a href="index.php?view=qrmaintenance" class="btn btn-block btn-lg btn-secondary"><b>QR Maintenance</b></a>';
