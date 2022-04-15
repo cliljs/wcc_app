@@ -19,7 +19,7 @@ switch ($act) {
         echo json_encode(
             $common->create_response(
                 "QRController.php/?action=update_qr",
-                $qr_model->update_qr($_GET['id'], $_POST),
+                $qr_model->update_qr($_GET['id']),
                 1
             )
         );
