@@ -9,7 +9,6 @@ class AccountModel {
     private function get_leader_by_pk($pk = null)
     {
         global $db, $common;
-
         return $db->get_row("SELECT CONCAT(firstname, ' ', middlename, ' ', lastname) AS fullname, id
                             FROM {$this->base_table} WHERE id = ? AND is_leader = ?", [$pk, 1]);
     }
@@ -77,7 +76,6 @@ class AccountModel {
             "contact"    => $payload['contact'],
             "branch"     => $payload['branch'],
             "inviter_pk"     => $payload['inviter']
-            
         ];
 
         $fields        = $common->get_insert_fields($arr);

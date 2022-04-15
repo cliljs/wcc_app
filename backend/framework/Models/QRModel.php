@@ -5,11 +5,11 @@ require_once '../../autoload.php';
 class QRModel {
     private $base_table = 'bro_qr';
 
-    public function validate_qr($payload = [])
+    public function validate_qr($qr = null)
     {
         global $db, $common;
-        $result = $db->get_row("SELECT * FROM {$this->base_table} WHERE qr_code = ?", $payload['qr']);
-        return empty($result);
+        $result = $db->get_row("SELECT * FROM {$this->base_table} WHERE qr_code = ?", [$qr]);
+        return !empty($result);
     }
 
     public function get_qr_details($pk = null)

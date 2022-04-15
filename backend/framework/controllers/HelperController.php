@@ -19,7 +19,7 @@ class Helpers {
       return vsprintf( '%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex(random_bytes(16)), 4));
     }
 
-    public function get_array_key($arry, $find)
+    public function get_array_key($arry, $find = null)
     {
       foreach ($arry as $key => $arr) {
           if ($key === $find) return $key;
