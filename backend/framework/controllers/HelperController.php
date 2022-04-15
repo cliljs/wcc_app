@@ -19,6 +19,13 @@ class Helpers {
       return vsprintf( '%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex(random_bytes(16)), 4));
     }
 
+    public function get_array_key($arry, $find)
+    {
+      foreach ($arry as $key => $arr) {
+          if ($key === $find) return $key;
+      }
+    }
+
     public function fn_print_die($string)
     {
         echo "<pre>";

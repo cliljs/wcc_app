@@ -15,6 +15,7 @@ $seeds = [
         "lastname"        => 'Loyloy',
         "firstname"       => 'Jonathan',
         "middlename"      => '',
+        "branch"          => "Langit",
         "gender"          => 'Male',
         "address"         => 'Wcc Church',
         "birthdate"       => '2022-05-05',
@@ -28,6 +29,7 @@ $seeds = [
         "lastname"        => 'Jaudian',
         "firstname"       => 'Calil Christopher',
         "middlename"      => '',
+        "branch"          => "Langit",
         "gender"          => 'Male',
         "address"         => 'Jan lang',
         "birthdate"       => '2022-29-05',
@@ -41,6 +43,7 @@ $seeds = [
         "lastname"        => 'Doe',
         "firstname"       => 'John',
         "middlename"      => '',
+        "branch"          => "Bataan",
         "gender"          => 'Male',
         "address"         => 'Jan lang',
         "birthdate"       => '2000-01-01',
@@ -54,6 +57,7 @@ $seeds = [
         "lastname"        => 'Does',
         "firstname"       => 'Jane',
         "middlename"      => '',
+        "branch"          => "Bataan",
         "gender"          => 'Female',
         "address"         => 'Jan lang',
         "birthdate"       => '2001-01-02',
@@ -67,6 +71,7 @@ $seeds = [
         "lastname"        => 'Bar',
         "firstname"       => 'Foo',
         "middlename"      => '',
+        "branch"          => "Bataan",
         "gender"          => 'Male',
         "address"         => 'Jan lang',
         "birthdate"       => '2002-01-03',
@@ -80,6 +85,7 @@ $seeds = [
         "lastname"        => 'Joe',
         "firstname"       => 'Average',
         "middlename"      => '',
+        "branch"          => "Bataan",
         "gender"          => 'Male',
         "address"         => 'Jan lang',
         "birthdate"       => '2002-01-04',
@@ -93,6 +99,7 @@ $seeds = [
         "lastname"        => 'Public',
         "firstname"       => 'John',
         "middlename"      => '',
+        "branch"          => "Bataan",
         "gender"          => 'Male',
         "address"         => 'Jan lang',
         "birthdate"       => '2002-01-05',
@@ -106,6 +113,7 @@ $seeds = [
         "lastname"        => 'Roe',
         "firstname"       => 'Ivan',
         "middlename"      => '',
+        "branch"          => "Bataan",
         "gender"          => 'Female',
         "address"         => 'Jan lang',
         "birthdate"       => '2002-01-06',
@@ -147,6 +155,20 @@ switch ($act) {
         echo "bro_lessons rollback <br/>";
         $db->truncate("bro_tribe");
         echo "bro_tribe rollback <br/>";
+        $db->truncate("bro_cellgroup");
+        echo "bro_cellgroup rollback <br/>";
+        $db->truncate("bro_enrollment");
+        echo "bro_enrollment rollback <br/>";
+        $db->truncate("bro_invites");
+        echo "bro_invites rollback <br/>";
+        $db->truncate("bro_lessons");
+        echo "bro_lessons rollback <br/>";
+        $db->truncate("bro_notifications");
+        echo "bro_notifications	 rollback <br/>";
+        $db->truncate("	bro_qr");
+        echo "	bro_qr rollback <br/>";
+        $db->truncate("bro_schooling");
+        echo "bro_schooling	 rollback <br/>";
         break;
     default:
         # code...

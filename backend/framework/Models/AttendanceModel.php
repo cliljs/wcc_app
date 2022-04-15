@@ -8,12 +8,10 @@ require_once '../../autoload.php';
      public function create_attendance($payload = [])
      {
         global $db, $common;
-
         $arr = [
             "sunday_date" => $payload['sunday_date'],
             "account_pk"  => $payload['account_pk'],
         ];
-
         $fields = $common->get_insert_fields($arr);
         return $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
      }
@@ -22,7 +20,6 @@ require_once '../../autoload.php';
      public function get_attendance($id = null)
      {
         global $db, $common;
-
         return $db->get_row("SELECT * FROM {$this->base_table} WHERE id = ?", [$id]);
      }
  
@@ -30,7 +27,6 @@ require_once '../../autoload.php';
      public function get_attendance_list($year)
      {
         global $db, $common;
-
         return $db->get_list("SELECT * FROM {$this->base_table} 
                               WHERE YEAR(sunday_date) = ? AND account_pk = ?", 
                               [$year, $_SESSION['pk']]);
@@ -39,7 +35,6 @@ require_once '../../autoload.php';
      public function get_disciple_attendance($year)
      {
       global $db, $common;
-
       return $db->get_list("SELECT * FROM {$this->base_table} 
                             WHERE YEAR(sunday_date) = ? AND confirmed_by = ?", 
                             [$year, $_SESSION['pk']]);
@@ -48,10 +43,8 @@ require_once '../../autoload.php';
      public function update_attendance($payload = [], $id = null)
      {
         global $db, $common;
-
         $update_fields = $common->get_update_fields($payload);
         $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$id}", array_values($payload));
-
         return $updated ? $this->get_attendance($id) : false;
      }
 
