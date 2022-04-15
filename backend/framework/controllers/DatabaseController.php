@@ -6,7 +6,7 @@ class DatabaseController
     public $conn = null;
     public function __construct(
         $host    = "127.0.0.1",
-        $db_name = "quibs_140422",
+        $db_name = "papa_quibs",
         $user    = "root",
         $pass    = ""
     ) {

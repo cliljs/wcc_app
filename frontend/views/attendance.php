@@ -18,13 +18,26 @@
         </div>
         <div class="form-group">
           <label>Invites:</label>
-          <select id="select_invites" class="select2bs4" multiple="multiple" data-placeholder="Select Name of Invites" style="width: 100%;">
-            <option id="1">Sample Name #1</option>
-
-            <option id="3">Sample Name #3</option>
-            <option id="4">Sample Name #4</option>
-          </select>
+          <input type="text" class="form-control" id="invite_name" name="invite_name" placeholder="Input Invite's Full Name">
         </div>
+        <div class="row my-3">
+          <div class="col-12">
+            <div class="d-flex flex-row-reverse">
+              <button id="btnAddInvite" class="btn btn-info btn-md">Add to Invite Records</button>
+            </div>
+          </div>
+        </div>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Invite</th>
+              <th style="width: 40px"></th>
+            </tr>
+          </thead>
+          <tbody id="tblInviteBody">
+
+          </tbody>
+        </table>
         <div class="form-group">
           <label>Expected VIP:</label>
           <input type="text" class="form-control" id="vip_name" name="vip_name" placeholder="Input VIP's Full Name">
@@ -32,7 +45,7 @@
         <div class="row my-3">
           <div class="col-12">
             <div class="d-flex flex-row-reverse">
-              <button id="btnAddVIP" class="btn btn-info btn-md">Add to Records</button>
+              <button id="btnAddVIP" class="btn btn-info btn-md">Add to VIP Records</button>
             </div>
           </div>
         </div>
@@ -83,14 +96,14 @@
           <form id="frmByPass">
             <div class="form-group">
               <label>Leader's Username</label>
-              <input class = "form-control" type="text" id="tlusername" name="tlusername" required />
+              <input class="form-control" type="text" id="tlusername" name="tlusername" required />
             </div>
             <div class="form-group">
               <label>Leader's Password</label>
-              <input class = "form-control" type="password" id="tlpassword" name="tlpassword" required />
+              <input class="form-control" type="password" id="tlpassword" name="tlpassword" required />
             </div>
             <div class="form-group mt-2">
-              <input type = "submit" class = "btn btn-block btn-md btn-info" value = "Submit"/>
+              <input type="submit" class="btn btn-block btn-md btn-info" value="Submit" />
             </div>
           </form>
         </div>

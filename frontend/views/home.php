@@ -15,7 +15,11 @@
       if($is_leader){
         echo "<a href='index.php?view=approval' class='btn btn-block btn-lg btn-secondary'><b>My Approval</b></a>";
       }
+      if($is_admin){
+        echo '<a href="index.php?view=qrmaintenance" class="btn btn-block btn-lg btn-secondary"><b>QR Maintenance</b></a>';
+      }
     ?>
+    
     <!-- <a href="Javascript:void(0);" class="btn btn-block btn-lg btn-secondary"><b>Tribe Approval&nbsp;<span class="badge bg-danger">1</span></b></a> -->
     <a href="logout.php" class="btn btn-block btn-lg btn-secondary"><b>Logout</b></a>
   </div>

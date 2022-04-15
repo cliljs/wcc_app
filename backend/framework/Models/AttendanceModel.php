@@ -9,9 +9,10 @@ require_once '../../autoload.php';
      {
         global $db, $common;
         $arr = [
-            "sunday_date" => $payload['sunday_date'],
-            "account_pk"  => $payload['account_pk'],
+            "sunday_date" => date('Y-m-d'),
+            "account_pk"  => $_SESSION['pk'],
         ];
+        //add dito ng route ng invites
         $fields = $common->get_insert_fields($arr);
         return $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
      }

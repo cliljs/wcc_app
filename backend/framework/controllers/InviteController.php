@@ -6,8 +6,8 @@ $act = !empty($_GET['action']) ? $_GET['action'] : '';
 
 switch ($act) {
     case 'create_invite':
-        $json        = json_decode(file_get_contents('php://input'), true);
-        $new_invites = $invite_model->create_invite($json);
+        
+        $new_invites = $invite_model->create_invite($_POST);
         $response    = $common->create_response('InviteController.php/action=create_invite');
 
         if (@$new_invites['error']) {

@@ -5,7 +5,9 @@
 //   exit;
 // }
 session_start();
+$_SESSION["is_admin"] = "1";
 $source = (isset($_GET["view"])) ? $_GET["view"] : "home";
+$is_admin = (isset($_SESSION["is_admin"])) ? true : false;
 $is_leader = (isset($_SESSION["is_leader"])) ? true : false;
 $is_pastor = (isset($_SESSION["is_pastor"])) ? true : false;
 $is_login = (isset($_SESSION["pk"])) ? true : false;
@@ -160,6 +162,9 @@ if (!$is_login) {
                 case "celebration":
                   include "frontend/views/celebration.php";
                   break;
+                case "qrmaintenance":
+                  include "frontend/views/qrmaintenance.php";
+                  break;
                 default:
                   include "frontend/views/404.php";
                   break;
@@ -186,6 +191,7 @@ if (!$is_login) {
   <script src="frontend/dist/js/adminlte.min.js"></script>
   <script src="frontend/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
   <script src="frontend/dist/js/html5-qrcode.min.js"></script>
+  <script src="frontend/dist/js/jquery-qrcode.min.js"></script>
   <script>
     $(function() {
       let me = getUrlVars()['view'];
@@ -208,6 +214,15 @@ if (!$is_login) {
           vip_list.splice(vip_list.findIndex(el => el.vip == tditem), 1);
           row.remove();
         });
+        $('body').on('click', '.btnRemoveInvite', function() {
+          let row = $(this).closest('tr');
+          let tditem = $(this)
+            .closest('tr')
+            .children('td')
+            .html();
+          invite_list.splice(invite_list.findIndex(el => el.invite == tditem), 1);
+          row.remove();
+        });
         $('#btnAddVIP').unbind('click').bind('click', function(e) {
 
           let vipname = $('#vip_name').val();
@@ -223,21 +238,19 @@ if (!$is_login) {
 
 
         });
-        $('#select_invites').on('change', function() {
-          let select_div = $(".select2-selection__rendered li");
-          invite_list = [];
-          select_div.each(function(idx, li) {
-            var imbayt = $(li).attr('title');
-            if (imbayt != null) {
-              invite_list.push({
-                invite: imbayt
-              });
-            }
-
-
+        $('#btnAddInvite').unbind('click').bind('click', function(e) {
+          let invite_name = $('#invite_name').val();
+          if (invite_name.trim() == '') {
+            fireSwal("Sunday Celebration Attendance", "Please input Invite's Full Name", "info");
+            return;
+          }
+          invite_list.push({
+            invite: invite_name
           });
-
+          $('#tblInviteBody').append('<tr><td>' + invite_name + '</td><td><button class="btn btn-sm btn-outline-dark btnRemoveInvite">Remove</button></td></tr>');
+          $('#invite_name').val('');
         });
+
         $("#btnShowQR").on("click", function() {
           $('#mdlInvites').html(invite_list.length);
           $('#mdlVIPs').html(vip_list.length);
@@ -245,11 +258,14 @@ if (!$is_login) {
             backdrop: 'static'
           });
           const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+            let mergedArray = vip_list.concat(invite_list);
+            console.log(mergedArray);
             let payload = {
-              vip: vip_list,
-              invite: invite_list,
+              bro: mergedArray,
               qr: decodedText
             };
+            console.log(payload);
+            html5QrCode.stop();
             submitSundayAttendance(payload);
 
           };
@@ -336,8 +352,8 @@ if (!$is_login) {
           let btn = $(this);
           fireAjax('CellgroupController.php?action=remove_cell&id=' + dataID, '', false).then(function(data) {
             let obj = jQuery.parseJSON(data.trim());
-         
-            if(obj.success == 1){
+
+            if (obj.success == 1) {
               btn.closest('tr').remove();
               fireSwal('Cellgroup Attendance', 'Member removed successfully', 'success');
             }
@@ -381,7 +397,7 @@ if (!$is_login) {
               table_body += '<td>' + v.event_place + '</td>';
               table_body += '<td>' + v.event_date + '</td>';
               table_body += '<td>' + v.event_time + '</td>';
-              table_body += '<td>' + renderButton('Remove', v.id, 'btnRemoveCellgroup') + renderButton('Update', v.id, 'btnUpdateCellgroup') + '</td>';
+              table_body += '<td>' + renderButton('Remove', v.id, 'btnRemoveCellgroup') + '</td>';
               table_body += '</tr>';
             });
             $('#tblCellgroupBody').html(table_body);
@@ -427,6 +443,36 @@ if (!$is_login) {
         $('#btnSubmitSOL').on('click', function() {
 
         });
+      } else if (me == 'qrmaintenance') {
+        let qrID = 0;
+        loadAllQR();
+        $('body').on('click', '.qr-card', function() {
+          let qrcontent = $(this).attr('data-qr');
+          qrID = $(this).attr('data-id');
+          $('#mdlQRMaintenance').modal({
+            backdrop: 'static'
+          });
+          $('#qr-view-content').html(qrcontent);
+          $('#viewQRCodeMaintenance').empty();
+          $('#viewQRCodeMaintenance').qrcode({
+            text: qrcontent
+          });
+        });
+        $('#newQRCodeMaintenance').on('click',function(){
+          console.log('QRController.php?action=update_qr&id=' + qrID);
+          fireAjax('QRController.php?action=update_qr&id=' + qrID,'',false).then(function(data){
+            let obj = jQuery.parseJSON(data.trim());
+        
+            if(obj.success == 1){
+              loadAllQR();
+              $('#mdlQRMaintenance').modal('hide');
+              fireSwal('QR Maintenance','QR updated successfully','success');
+            }
+          }).catch(function(err){
+            console.log(err);
+            fireSwal('QR Maintenance','Failed to generate new QR. Please try again.','error');
+          });
+        });
       }
 
     });
@@ -435,11 +481,46 @@ if (!$is_login) {
       theme: 'bootstrap4'
     });
 
-    function submitSundayAttendance(payload) {
-      fireAjax('', payload, false).then(function(data) {
-        $("#mdlScanner").modal('hide');
+    function loadAllQR() {
+      fireAjax('QRController.php?action=get_qr_list', '', false).then(function(data) {
+        let obj = jQuery.parseJSON(data.trim());
+        let objData = obj.data;
+        let retval = '';
+        $.each(objData, function(k, v) {
+          retval += '<div class="card collapsed-card elevation-2 qr-card" data-id = "' + v.id + '" data-qr = "' + v.qr_code + '">';
+          retval += '<div class="card-header">';
+          retval += '<div class="user-block">';
+          retval += '<img class="img-circle img-bordered-sm" src="https://via.placeholder.com/128" alt="user image">';
+          retval += '<span class="username">';
+          retval += '<a class="custom qr_branch" href="Javascript:void(0)">' + v.branch + '</a>';
+          retval += '</span>';
+          retval += '<span class="description qr_content">' + v.qr_code + '</span>';
+          retval += '<span class="description qr_owner">' + v.created_by + ' . ' + v.created_at + '</span>';
+          retval += '</div>  ';
+          retval += '</div>';
+          retval += '<div class="card-body">';
+          retval += '</div>';
+          retval += '</div>';
+        });
+        $('#qrlist').html(retval);
       }).catch(function(err) {
-        fireAjax('Sunday Celebration Attendance', varErrMessage, 'error');
+        console.log(err);
+        fireSwal('QR Maintenance', 'Failed to retrieve list of QR. Please try again.', 'error');
+      })
+    }
+
+    function submitSundayAttendance(payload) {
+      fireAjax('AttendanceController.php?action=create_attendance', payload, false).then(function(data) {
+        console.log(data);
+        let obj = jQuery.parseJSON(data.trim());
+        if(obj.success == 1){
+          fireSwal('Sunday Celebration Attendance','Attendance updated successfully','success');
+          $("#mdlScanner").modal('hide');
+        }
+        
+      }).catch(function(err) {
+        console.log(err);
+        fireSwal('Sunday Celebration Attendance', varErrMessage, 'error');
       });
     }
 

@@ -5,6 +5,7 @@ $act = !empty($_GET['action']) ? $_GET['action'] : '';
 
 switch ($act) {
     case 'create_attendance':
+        
        echo json_encode(
            $common->create_response(
                'AttendanceController.php/?action=create_attendance',
