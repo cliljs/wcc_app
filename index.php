@@ -53,6 +53,10 @@ if (!$is_login) {
       color: white !important;
     }
 
+    .theme-color {
+      color: #c0392b;
+    }
+
     .card-primary.card-outline {
       border-top: 3px solid #c0392b !important;
     }
@@ -179,403 +183,491 @@ if (!$is_login) {
       </section>
 
     </div>
+    <div class="modal fade" id="mdlBadge" tabindex="-1" role="dialog" aria-labelledby="mdlBadgeLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="mdlBadgeLabel">My Badge</h5>
+
+          </div>
+          <div class="modal-body text-center">
+            <h3 class="text-muted" id="badge_name">Jonathan Loyloy</h3>
+            <img class="img-fluid" src="https://via.placeholder.com/500">
+            <div class="card elevation-1 mt-3">
+              <div class="card-header text-center">
+                <h4 class="theme-color">April 15, 2022</h4>
+                <h5 class="theme-color">Sunday Celebration Attendance Submitted</h5>
+
+              </div>
+              </card>
 
 
-  </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-  <script src="frontend/plugins/jquery/jquery.min.js"></script>
-  <script src="frontend/plugins/sweetalert2/sweetalert2.min.js"></script>
-  <script src="frontend/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="frontend/plugins/select2/js/select2.full.min.js"></script>
+    </div>
 
-  <script src="frontend/plugins/moment/moment.min.js"></script>
-  <script src="frontend/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-  <script src="frontend/dist/js/common.js"></script>
-  <script src="frontend/dist/js/adminlte.min.js"></script>
-  <script src="frontend/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
-  <script src="frontend/dist/js/html5-qrcode.min.js"></script>
-  <script src="frontend/dist/js/jquery-qrcode.min.js"></script>
-  <script>
-    $(function() {
-      let me = getUrlVars()['view'];
-      loadHeader();
-      if (me == null || me == 'home') {
+    <script src="frontend/plugins/jquery/jquery.min.js"></script>
+    <script src="frontend/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="frontend/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="frontend/plugins/select2/js/select2.full.min.js"></script>
 
-      } else if (me == 'tribe') {
-
-      } else if (me == 'attendance') {
-        let vip_list = [];
-        let invite_list = [];
-        const html5QrCode = new Html5Qrcode("reader");
-
-        $('body').on('click', '.btnRemoveVIP', function() {
-          let row = $(this).closest('tr');
-          let tditem = $(this)
-            .closest('tr')
-            .children('td')
-            .html();
-          vip_list.splice(vip_list.findIndex(el => el.vip == tditem), 1);
-          row.remove();
-        });
-        $('body').on('click', '.btnRemoveInvite', function() {
-          let row = $(this).closest('tr');
-          let tditem = $(this)
-            .closest('tr')
-            .children('td')
-            .html();
-          invite_list.splice(invite_list.findIndex(el => el.invite == tditem), 1);
-          row.remove();
-        });
-        $('#btnAddVIP').unbind('click').bind('click', function(e) {
-
-          let vipname = $('#vip_name').val();
-          if (vipname.trim() == '') {
-            fireSwal("Sunday Celebration Attendance", "Please input VIP's Full Name", "info");
-            return;
-          }
-          vip_list.push({
-            vip: vipname
-          });
-          $('#tblVIPBody').append('<tr><td>' + vipname + '</td><td><button class="btn btn-sm btn-outline-dark btnRemoveVIP">Remove</button></td></tr>');
-          $('#vip_name').val('');
-
-
-        });
-        $('#btnAddInvite').unbind('click').bind('click', function(e) {
-          let invite_name = $('#invite_name').val();
-          if (invite_name.trim() == '') {
-            fireSwal("Sunday Celebration Attendance", "Please input Invite's Full Name", "info");
-            return;
-          }
-          invite_list.push({
-            invite: invite_name
-          });
-          $('#tblInviteBody').append('<tr><td>' + invite_name + '</td><td><button class="btn btn-sm btn-outline-dark btnRemoveInvite">Remove</button></td></tr>');
-          $('#invite_name').val('');
-        });
-
-        $("#btnShowQR").on("click", function() {
-          $('#mdlInvites').html(invite_list.length);
-          $('#mdlVIPs').html(vip_list.length);
-          $("#mdlScanner").modal({
-            backdrop: 'static'
-          });
-          const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-            let mergedArray = vip_list.concat(invite_list);
-            console.log(mergedArray);
-            let payload = {
-              bro: mergedArray,
-              qr: decodedText
-            };
-            console.log(payload);
-            html5QrCode.stop();
-            submitSundayAttendance(payload);
-
-          };
-          const config = {
-            fps: 10,
-            rememberLastUsedCamera: true,
-            qrbox: {
-              width: 500,
-              height: 500
-            }
-          };
-          //$('video').attr('style', 'width: ' + $('#mdlScanner').width() + 'px !important');
-          html5QrCode.start({
-            facingMode: "environment"
-          }, config, qrCodeSuccessCallback);
-
-        });
-        $("#qrmode").on('click', function() {
-          let divscan = $("#reader");
-          let divaccount = $("#readerbypass");
-          let scanMode = $(this).html().includes('not working') ? false : true;
-          if (!scanMode) {
-            divscan.hide();
-            divaccount.show();
-            $(this).html('Use QR Scanner');
-          } else {
-            divscan.show();
-            divaccount.hide();
-            $(this).html('QR Scanner not working?');
-
-          }
-        })
-
-        $("#frmByPass").on('submit', function(e) {
-          e.preventDefault();
-          let payload = {
-            vip: vip_list,
-            invite: invite_list,
-            tlusername: $("#tlusername").val(),
-            tlpassword: $("#tlpassword").val(),
-          };
-          submitSundayAttendance(payload);
-        })
-        $("#mdlScanner").on('hidden.bs.modal', function() {
-          html5QrCode.stop();
-        })
-      } else if (me == 'cellgroup') {
-        loadCellMembers();
-        loadCellgroup();
-        $('#cg_time').datetimepicker({
-          format: 'LT'
-        });
-        $('#cg_date').datetimepicker({
-          format: 'YYYY-MM-DD'
-        });
-        $('#frmCellgroup').on('submit', function(e) {
-          e.preventDefault();
-          let member = $('#inp_name').val() == '' ? $('#select_name').val() : $('#inp_name').val();
-          let payload = {
-            member_name: member,
-            event_place: $("#event_place").val(),
-            event_date: $("#event_date").val(),
-            event_time: $("#event_time").val()
-          };
-
-          fireAjax('CellgroupController.php?action=add_cell', payload, false).then(function(data) {
-            let obj = jQuery.parseJSON(data.trim());
-
-            if (obj.success == 1) {
-              loadCellgroup();
-              $('#inp_name').val('');
-              $('#select_name').val(null).trigger('change');
-
-              fireSwal('Cellgroup Attendance', 'Member added to cellgroup successfully', 'success');
-            }
-          }).catch(function(err) {
-            console.log(err);
-            fireSwal('Cellgroup Attendance', varErrMessage, 'error');
-          });
-        });
-
-        $('body').on('click', '.btnRemoveCellgroup', function() {
-          let dataID = $(this).attr('data-id');
-          let btn = $(this);
-          fireAjax('CellgroupController.php?action=remove_cell&id=' + dataID, '', false).then(function(data) {
-            let obj = jQuery.parseJSON(data.trim());
-
-            if (obj.success == 1) {
-              btn.closest('tr').remove();
-              fireSwal('Cellgroup Attendance', 'Member removed successfully', 'success');
-            }
-          }).catch(function(err) {
-            console.log(err);
-            fireSwal('Cellgroup Attendance', varErrMessage, 'error');
-          })
-        });
-
-        function loadCellMembers() {
-          let data = fireAjax('CellgroupController.php?action=get_other_names', '', false).then(function(data) {
-            console.log(data)
-            let obj = jQuery.parseJSON(data.trim());
-            let tls = obj.data;
-            let renderVal = '<option selected="selected" disabled="disabled">Please select a member from the list</option>';
-            $.each(tls, function(k, v) {
-              renderVal += '<option value="' + v.fullname + '">' + v.fullname + '</option>';
+    <script src="frontend/plugins/moment/moment.min.js"></script>
+    <script src="frontend/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+    <script src="frontend/dist/js/common.js"></script>
+    <script src="frontend/dist/js/adminlte.min.js"></script>
+    <script src="frontend/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+    <script src="frontend/dist/js/html5-qrcode.min.js"></script>
+    <script src="frontend/dist/js/jquery-qrcode.min.js"></script>
+    <script>
+      $(function() {
+        let me = getUrlVars()['view'];
+        let act = getUrlVars()['action'];
+        loadHeader();
+        if (me == null || me == 'home') {
+          $('#btnShowBadge').on('click', function() {
+            $("#mdlBadge").modal({
+              backdrop: 'static'
             });
-            $("#select_name").html(renderVal);
-          }).catch(function(err) {
-            console.log(err)
-            fireSwal('Cellgroup Attendance', 'Failed to retrieve list of members. Please reload the page', 'error');
+          });
+
+          if (act == 1) {
+            showBadge();
+          }
+        } else if (me == 'tribe') {
+
+        } else if (me == 'attendance') {
+          let vip_list = [];
+          let invite_list = [];
+          const html5QrCode = new Html5Qrcode("reader");
+
+          $('body').on('click', '.btnRemoveVIP', function() {
+            let row = $(this).closest('tr');
+            let tditem = $(this)
+              .closest('tr')
+              .children('td')
+              .html();
+            vip_list.splice(vip_list.findIndex(el => el.vip == tditem), 1);
+            row.remove();
+          });
+          $('body').on('click', '.btnRemoveInvite', function() {
+            let row = $(this).closest('tr');
+            let tditem = $(this)
+              .closest('tr')
+              .children('td')
+              .html();
+            invite_list.splice(invite_list.findIndex(el => el.invite == tditem), 1);
+            row.remove();
+          });
+          $('#btnAddVIP').unbind('click').bind('click', function(e) {
+
+            let vipname = $('#vip_name').val();
+            if (vipname.trim() == '') {
+              fireSwal("Sunday Celebration Attendance", "Please input VIP's Full Name", "info");
+              return;
+            }
+            vip_list.push({
+              vip: vipname
+            });
+            $('#tblVIPBody').append('<tr><td>' + vipname + '</td><td><button class="btn btn-sm btn-outline-dark btnRemoveVIP">Remove</button></td></tr>');
+            $('#vip_name').val('');
+
+
+          });
+          $('#select_invites').on('change', function() {
+            let select_div = $(".select2-selection__rendered li");
+            invite_list = [];
+            select_div.each(function(idx, li) {
+              var imbayt = $(li).attr('title');
+              if (imbayt != null) {
+                invite_list.push({
+                  invite: imbayt
+                });
+              }
+            });
+          });
+          $("#btnShowQR").on("click", function() {
+            $('#mdlInvites').html(invite_list.length);
+            $('#mdlVIPs').html(vip_list.length);
+            $("#mdlScanner").modal({
+              backdrop: 'static'
+            });
+            const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+              let mergedArray = vip_list.concat(invite_list);
+              console.log(mergedArray);
+              let payload = {
+                bro: mergedArray,
+                qr: decodedText
+              };
+              console.log(payload);
+              html5QrCode.stop();
+              submitSundayAttendance(payload);
+
+            };
+            const config = {
+              fps: 10,
+              rememberLastUsedCamera: true,
+              qrbox: {
+                width: 500,
+                height: 500
+              }
+            };
+            //$('video').attr('style', 'width: ' + $('#mdlScanner').width() + 'px !important');
+            html5QrCode.start({
+              facingMode: "environment"
+            }, config, qrCodeSuccessCallback);
+
+          });
+          $("#qrmode").on('click', function() {
+            let divscan = $("#reader");
+            let divaccount = $("#readerbypass");
+            let scanMode = $(this).html().includes('not working') ? false : true;
+            if (!scanMode) {
+              divscan.hide();
+              divaccount.show();
+              $(this).html('Use QR Scanner');
+            } else {
+              divscan.show();
+              divaccount.hide();
+              $(this).html('QR Scanner not working?');
+
+            }
           })
 
+          $("#frmByPass").on('submit', function(e) {
+            e.preventDefault();
+            let payload = {
+              vip: vip_list,
+              invite: invite_list,
+              tlusername: $("#tlusername").val(),
+              tlpassword: $("#tlpassword").val(),
+            };
+            submitSundayAttendance(payload);
+          })
+          $("#mdlScanner").on('hidden.bs.modal', function() {
+            html5QrCode.stop();
+          });
+
+          getMyInvites();
+        } else if (me == 'cellgroup') {
+          loadCellMembers();
+          loadCellgroup();
+          $('#cg_time').datetimepicker({
+            format: 'LT'
+          });
+          $('#cg_date').datetimepicker({
+            format: 'YYYY-MM-DD'
+          });
+          $('#frmCellgroup').on('submit', function(e) {
+            e.preventDefault();
+            let member = $('#inp_name').val() == '' ? $('#select_name').val() : $('#inp_name').val();
+            let payload = {
+              member_name: member,
+              event_place: $("#event_place").val(),
+              event_date: $("#event_date").val(),
+              event_time: $("#event_time").val()
+            };
+
+            fireAjax('CellgroupController.php?action=add_cell', payload, false).then(function(data) {
+              let obj = jQuery.parseJSON(data.trim());
+
+              if (obj.success == 1) {
+                loadCellgroup();
+                $('#inp_name').val('');
+                $('#select_name').val(null).trigger('change');
+
+                fireSwal('Cellgroup Attendance', 'Member added to cellgroup successfully', 'success');
+              }
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Cellgroup Attendance', varErrMessage, 'error');
+            });
+          });
+
+          $('body').on('click', '.btnRemoveCellgroup', function() {
+            let dataID = $(this).attr('data-id');
+            let btn = $(this);
+            fireAjax('CellgroupController.php?action=remove_cell&id=' + dataID, '', false).then(function(data) {
+              let obj = jQuery.parseJSON(data.trim());
+
+              if (obj.success == 1) {
+                btn.closest('tr').remove();
+                fireSwal('Cellgroup Attendance', 'Member removed successfully', 'success');
+              }
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Cellgroup Attendance', varErrMessage, 'error');
+            })
+          });
+
+          function loadCellMembers() {
+            let data = fireAjax('CellgroupController.php?action=get_other_names', '', false).then(function(data) {
+              console.log(data)
+              let obj = jQuery.parseJSON(data.trim());
+              let tls = obj.data;
+              let renderVal = '<option selected="selected" disabled="disabled">Please select a member from the list</option>';
+              $.each(tls, function(k, v) {
+                renderVal += '<option value="' + v.fullname + '">' + v.fullname + '</option>';
+              });
+              $("#select_name").html(renderVal);
+            }).catch(function(err) {
+              console.log(err)
+              fireSwal('Cellgroup Attendance', 'Failed to retrieve list of members. Please reload the page', 'error');
+            })
 
 
-          $('#select_name').select2({
-            theme: 'bootstrap4'
+
+            $('#select_name').select2({
+              theme: 'bootstrap4'
+            });
+          }
+
+          function loadCellgroup() {
+            fireAjax('CellgroupController.php?action=get_cell_list', '', false).then(function(data) {
+              let obj = jQuery.parseJSON(data.trim());
+              let objData = obj.data;
+
+              let table_body = '';
+              $.each(objData, function(k, v) {
+                table_body += '<tr>';
+                table_body += '<td>' + v.member_name + '</td>';
+                table_body += '<td>' + v.event_place + '</td>';
+                table_body += '<td>' + v.event_date + '</td>';
+                table_body += '<td>' + v.event_time + '</td>';
+                table_body += '<td>' + renderButton('Remove', v.id, 'btnRemoveCellgroup') + '</td>';
+                table_body += '</tr>';
+              });
+              $('#tblCellgroupBody').html(table_body);
+            }).catch(function(err) {
+              console.log(err);
+              fireAjax('Cellgroup Attendance', 'Failed to retrieve list of members. Please try again.', 'error');
+            })
+          }
+
+          function renderButton(caption, attr, custom_class) {
+            let retClass = '';
+            switch (caption) {
+              case 'Delete':
+              case 'Update':
+                retClass = 'btn btn-sm btn-info '
+                break;
+              case 'Remove':
+                retClass = 'btn btn-sm btn-outline-dark ';
+                break;
+            }
+            return '<button class="' + retClass + custom_class + '" data-id = "' + attr + '">' + caption + '</button>&nbsp;';
+          }
+        } else if (me == 'lifeclass') {
+          $('body').on('click', '.switchLabel', function() {
+            if ($(this).html() == 'Absent') {
+              $(this).html('Attended');
+            } else {
+              $(this).html('Absent');
+            }
+          });
+          $('#btnSubmitLC').on('click', function() {
+
+          });
+        } else if (me == 'sol') {
+
+          $('body').on('click', '.switchSOLLabel', function() {
+            if ($(this).html() == 'Absent') {
+              $(this).html('Attended');
+            } else {
+              $(this).html('Absent');
+            }
+          });
+          $('#btnSubmitSOL').on('click', function() {
+
+          });
+        } else if (me == 'qrmaintenance') {
+          let qrID = 0;
+          loadAllQR();
+          $('body').on('click', '.qr-card', function() {
+            let qrcontent = $(this).attr('data-qr');
+            qrID = $(this).attr('data-id');
+            $('#mdlQRMaintenance').modal({
+              backdrop: 'static'
+            });
+            $('#qr-view-content').html(qrcontent);
+            $('#viewQRCodeMaintenance').empty();
+            $('#viewQRCodeMaintenance').qrcode({
+              text: qrcontent
+            });
+          });
+          $('#newQRCodeMaintenance').on('click', function() {
+            console.log('QRController.php?action=update_qr&id=' + qrID);
+            fireAjax('QRController.php?action=update_qr&id=' + qrID, '', false).then(function(data) {
+              let obj = jQuery.parseJSON(data.trim());
+
+              if (obj.success == 1) {
+                loadAllQR();
+                $('#mdlQRMaintenance').modal('hide');
+                fireSwal('QR Maintenance', 'QR updated successfully', 'success');
+              }
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('QR Maintenance', 'Failed to generate new QR. Please try again.', 'error');
+            });
+          });
+        } else if (me == 'celebration') {
+          let selectedYear = $('#select_year').val();
+          render_calendar(selectedYear);
+          $('#select_year').on('change',function(){
+            render_calendar($(this).val());
           });
         }
 
-        function loadCellgroup() {
-          fireAjax('CellgroupController.php?action=get_cell_list', '', false).then(function(data) {
+      });
+
+      // $('.select2bs4').select2({
+      //   theme: 'bootstrap4'
+      // });
+      function showBadge() {
+        $('#mdlBadge').modal({
+          backdrop: 'static'
+        });
+      }
+
+      function render_calendar(selectedYear) {
+        fireAjax('AttendanceController.php?action=render_table&year=' + selectedYear, '', false).then(function(data) {
+
+          let obj = jQuery.parseJSON(data.trim());
+          let objData = obj.data;
+          $('#tblAttendanceBody').html(objData);
+          fireAjax('AttendanceController.php?action=get_attendance_list&year=' + selectedYear, '', false).then(function(data) {
             let obj = jQuery.parseJSON(data.trim());
             let objData = obj.data;
-
-            let table_body = '';
+            console.log(objData);
             $.each(objData, function(k, v) {
-              table_body += '<tr>';
-              table_body += '<td>' + v.member_name + '</td>';
-              table_body += '<td>' + v.event_place + '</td>';
-              table_body += '<td>' + v.event_date + '</td>';
-              table_body += '<td>' + v.event_time + '</td>';
-              table_body += '<td>' + renderButton('Remove', v.id, 'btnRemoveCellgroup') + '</td>';
-              table_body += '</tr>';
+              $('.' + v.sunday_date).html("<i class = 'fa fa-circle' style = 'color:green'></i>");
             });
-            $('#tblCellgroupBody').html(table_body);
           }).catch(function(err) {
             console.log(err);
-            fireAjax('Cellgroup Attendance', 'Failed to retrieve list of members. Please try again.', 'error');
+            fireSwal('Sunday Celebration', 'Failed to retrieve attendance list. Please try again', 'error');
           })
-        }
-
-        function renderButton(caption, attr, custom_class) {
-          let retClass = '';
-          switch (caption) {
-            case 'Delete':
-            case 'Update':
-              retClass = 'btn btn-sm btn-info '
-              break;
-            case 'Remove':
-              retClass = 'btn btn-sm btn-outline-dark ';
-              break;
-          }
-          return '<button class="' + retClass + custom_class + '" data-id = "' + attr + '">' + caption + '</button>&nbsp;';
-        }
-      } else if (me == 'lifeclass') {
-        $('body').on('click', '.switchLabel', function() {
-          if ($(this).html() == 'Absent') {
-            $(this).html('Attended');
-          } else {
-            $(this).html('Absent');
-          }
-        });
-        $('#btnSubmitLC').on('click', function() {
-
-        });
-      } else if (me == 'sol') {
-
-        $('body').on('click', '.switchSOLLabel', function() {
-          if ($(this).html() == 'Absent') {
-            $(this).html('Attended');
-          } else {
-            $(this).html('Absent');
-          }
-        });
-        $('#btnSubmitSOL').on('click', function() {
-
-        });
-      } else if (me == 'qrmaintenance') {
-        let qrID = 0;
-        loadAllQR();
-        $('body').on('click', '.qr-card', function() {
-          let qrcontent = $(this).attr('data-qr');
-          qrID = $(this).attr('data-id');
-          $('#mdlQRMaintenance').modal({
-            backdrop: 'static'
-          });
-          $('#qr-view-content').html(qrcontent);
-          $('#viewQRCodeMaintenance').empty();
-          $('#viewQRCodeMaintenance').qrcode({
-            text: qrcontent
-          });
-        });
-        $('#newQRCodeMaintenance').on('click', function() {
-          console.log('QRController.php?action=update_qr&id=' + qrID);
-          fireAjax('QRController.php?action=update_qr&id=' + qrID, '', false).then(function(data) {
-            let obj = jQuery.parseJSON(data.trim());
-
-            if (obj.success == 1) {
-              loadAllQR();
-              $('#mdlQRMaintenance').modal('hide');
-              fireSwal('QR Maintenance', 'QR updated successfully', 'success');
-            }
-          }).catch(function(err) {
-            console.log(err);
-            fireSwal('QR Maintenance', 'Failed to generate new QR. Please try again.', 'error');
-          });
+        }).catch(function(err) {
+          console.log(err);
+          fireSwal('Sunday Celebration', 'Failed to retrieve attendance list. Please try again', 'error');
         });
       }
 
-    });
+      function getMyInvites() {
+        fireAjax('InviteController.php?action=get_invite_list', '', false).then(function(data) {
+          console.log(data);
+          let retval = '';
+          let obj = jQuery.parseJSON(data.trim());
+          let objData = obj.data;
+          $.each(objData, function(k, v) {
+            retval += '<option value = "' + v.id + '">' + v.invitee_name + '</option>';
+          });
+          $('#select_invites').html(retval);
+          $('#select_invites').select2({
+            theme: 'bootstrap4'
+          });
+        }).catch(function(err) {
+          console.log(err);
+          fireSwal('Sunday Celebration Attendance', 'Failed to retrieve list of invites. Please reload the page.', 'error');
+        })
 
-    $('.select2bs4').select2({
-      theme: 'bootstrap4'
-    });
-
-    function loadAllQR() {
-      fireAjax('QRController.php?action=get_qr_list', '', false).then(function(data) {
-        let obj = jQuery.parseJSON(data.trim());
-        let objData = obj.data;
-        let retval = '';
-        $.each(objData, function(k, v) {
-          retval += '<div class="card collapsed-card elevation-2 qr-card" data-id = "' + v.id + '" data-qr = "' + v.qr_code + '">';
-          retval += '<div class="card-header">';
-          retval += '<div class="user-block">';
-          retval += '<img class="img-circle img-bordered-sm" src="https://via.placeholder.com/128" alt="user image">';
-          retval += '<span class="username">';
-          retval += '<a class="custom qr_branch" href="Javascript:void(0)">' + v.branch + '</a>';
-          retval += '</span>';
-          retval += '<span class="description qr_content">' + v.qr_code + '</span>';
-          retval += '<span class="description qr_owner">' + v.created_by + ' . ' + v.created_at + '</span>';
-          retval += '</div>  ';
-          retval += '</div>';
-          retval += '<div class="card-body">';
-          retval += '</div>';
-          retval += '</div>';
-        });
-        $('#qrlist').html(retval);
-      }).catch(function(err) {
-        console.log(err);
-        fireSwal('QR Maintenance', 'Failed to retrieve list of QR. Please try again.', 'error');
-      })
-    }
-
-    function submitSundayAttendance(payload) {
-      fireAjax('AttendanceController.php?action=create_attendance', payload, false).then(function(data) {
-        console.log(data);
-        let obj = jQuery.parseJSON(data.trim());
-        if (obj.success == 1) {
-          fireSwal('Sunday Celebration Attendance', 'Attendance updated successfully', 'success');
-          $("#mdlScanner").modal('hide');
-        }
-
-      }).catch(function(err) {
-        console.log(err);
-        fireSwal('Sunday Celebration Attendance', varErrMessage, 'error');
-      });
-    }
-
-    function renderTR(table_body, tds) {
-      let tr = '<tr>';
-      $.each(tds, function(k, v) {
-        tr += '<td>' + v + '</td>';
-      });
-      tr += '</tr>';
-      table_body.append(tr);
-    }
-
-    function loadHeader() {
-      fireAjax("AccountController.php?action=get_account_profile", "", false).then(function(data) {
-        console.log(data);
-        let retval = data.trim();
-        let obj = jQuery.parseJSON(retval);
-        let user_header = obj.data;
-        $("#user_name").html(user_header.firstname + ' ' + user_header.middlename + ' ' + user_header.lastname);
-        $("#user_branch").html(user_header.branch);
-        if (user_header.is_pastor == 1) {
-          $("#user_branch").html('Pastor');
-        }
-        if (user_header.profile_pic != null) {
-          $("#user_dp").attr('src', image_url + user_header.profile_pic);
-        }
-        let me = getUrlVars()['view'];
-        if (me == null || me == 'home') {
-          $("#user_tl").html(user_header.tlname);
-          $("#user_address").html(user_header.address);
-          $("#user_contact").html(user_header.contact);
-          $("#user_birthdate").html(user_header.birthdate);
-        }
-
-        document.title = 'WCC | ' + $("#user_name").html();
-      }).catch(function(err) {
-        console.log(err);
-      });
-    }
-
-    function getUrlVars() {
-      let vars = [],
-        hash;
-      let hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-      for (let i = 0; i < hashes.length; i++) {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1]
       }
-      return vars
-    }
-  </script>
+
+      function loadAllQR() {
+        fireAjax('QRController.php?action=get_qr_list', '', false).then(function(data) {
+          let obj = jQuery.parseJSON(data.trim());
+          let objData = obj.data;
+          let retval = '';
+          $.each(objData, function(k, v) {
+            retval += '<div class="card collapsed-card elevation-2 qr-card" data-id = "' + v.id + '" data-qr = "' + v.qr_code + '">';
+            retval += '<div class="card-header">';
+            retval += '<div class="user-block">';
+            retval += '<img class="img-circle img-bordered-sm" src="https://via.placeholder.com/128" alt="user image">';
+            retval += '<span class="username">';
+            retval += '<a class="custom qr_branch" href="Javascript:void(0)">' + v.branch + '</a>';
+            retval += '</span>';
+            retval += '<span class="description qr_content">' + v.qr_code + '</span>';
+            retval += '<span class="description qr_owner">' + v.created_by + ' . ' + v.created_at + '</span>';
+            retval += '</div>  ';
+            retval += '</div>';
+            retval += '<div class="card-body">';
+            retval += '</div>';
+            retval += '</div>';
+          });
+          $('#qrlist').html(retval);
+        }).catch(function(err) {
+          console.log(err);
+          fireSwal('QR Maintenance', 'Failed to retrieve list of QR. Please try again.', 'error');
+        })
+      }
+
+      function submitSundayAttendance(payload) {
+        fireAjax('AttendanceController.php?action=create_attendance', payload, false).then(function(data) {
+          console.log(data);
+          let obj = jQuery.parseJSON(data.trim());
+          if (obj.success == 1) {
+            window.location.href = home_url + 'index.php?view=home&action=1';
+          }
+
+        }).catch(function(err) {
+          console.log(err);
+          fireSwal('Sunday Celebration Attendance', varErrMessage, 'error');
+        });
+      }
+
+      function renderTR(table_body, tds) {
+        let tr = '<tr>';
+        $.each(tds, function(k, v) {
+          tr += '<td>' + v + '</td>';
+        });
+        tr += '</tr>';
+        table_body.append(tr);
+      }
+
+      function loadHeader() {
+        fireAjax("AccountController.php?action=get_account_profile", "", false).then(function(data) {
+          console.log(data);
+          let retval = data.trim();
+          let obj = jQuery.parseJSON(retval);
+          let user_header = obj.data;
+          $("#user_name").html(user_header.firstname + ' ' + user_header.middlename + ' ' + user_header.lastname);
+          $("#user_branch").html(user_header.branch);
+          if (user_header.is_pastor == 1) {
+            $("#user_branch").html('Pastor');
+          }
+          if (user_header.profile_pic != null) {
+            $("#user_dp").attr('src', image_url + user_header.profile_pic);
+          }
+          let me = getUrlVars()['view'];
+          if (me == null || me == 'home') {
+            $("#user_tl").html(user_header.tlname);
+            $("#user_address").html(user_header.address);
+            $("#user_contact").html(user_header.contact);
+            $("#user_birthdate").html(user_header.birthdate);
+          }
+
+          document.title = 'WCC | ' + $("#user_name").html();
+        }).catch(function(err) {
+          console.log(err);
+        });
+      }
+
+      function getUrlVars() {
+        let vars = [],
+          hash;
+        let hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (let i = 0; i < hashes.length; i++) {
+          hash = hashes[i].split('=');
+          vars.push(hash[0]);
+          vars[hash[0]] = hash[1]
+        }
+        return vars
+      }
+    </script>
 </body>
 
 </html>

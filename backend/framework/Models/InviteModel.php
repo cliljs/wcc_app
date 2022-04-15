@@ -34,7 +34,7 @@ class InviteModel {
     public function get_invite_list()
     {
         global $db, $common;
-        return $db->get_list("SELECT * FROM {$this->base_table} WHERE inviter_pk = ?", [$_SESSION['pk']]);
+        return $db->get_list("SELECT id, invitee_name FROM {$this->base_table} WHERE inviter_pk = ?", [$_SESSION['pk']]);
     }
 
     public function get_invite_details($pk = null)
