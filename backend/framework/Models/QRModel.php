@@ -28,7 +28,7 @@ class QRModel {
     {
         global $db, $common;
         $arr = [
-            "qr_code"    => strtotime(date('Y-m-d H:i:s')) . $_SESSION['branch'] . '_' . $common->generate_random(),
+            "qr_code"    => $this->generate_qr(),
             "branch"     => $_SESSION['branch'],
             "created_by" => $_SESSION['login_name'] 
         ];
@@ -37,12 +37,16 @@ class QRModel {
         return $this->get_qr_details($last_id);
     }
 
-    public function update_qr($pk, $payload = [])
+    private function generate_qr()
+    {
+        global $common;
+        return strtotime(date('Y-m-d H:i:s')) . $_SESSION['branch'] . '_' . $common->generate_random();
+    }
+
+    public function update_qr($pk)
     {
         global $db, $common;
-
-        $update_fields = $common->get_update_fields($payload);
-        $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$pk}", array_values($payload));
+        $updated = $db->update("UPDATE {$this->base_table} SET qr_code = ? WHERE id = {$pk}", [$this->generate_qr()]);
         return $updated ? $this->get_qr_details($pk): false;
     }
 }
