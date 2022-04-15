@@ -5,17 +5,20 @@
 //   exit;
 // }
 session_start();
-$_SESSION["is_admin"] = "1";
+// $_SESSION["is_admin"] = "1";
 $source = (isset($_GET["view"])) ? $_GET["view"] : "home";
-$is_admin = (isset($_SESSION["is_admin"])) ? true : false;
-$is_leader = (isset($_SESSION["is_leader"])) ? true : false;
-$is_pastor = (isset($_SESSION["is_pastor"])) ? true : false;
 $is_login = (isset($_SESSION["pk"])) ? true : false;
-$day_now = date("l");
-print_r($_SESSION);
 if (!$is_login) {
   header("Location: login.php");
 }
+
+$is_admin = ($_SESSION["is_admin"] == "1") ? true : false;
+$is_leader = ($_SESSION["is_leader"] == "1") ? true : false;
+$is_pastor = ($_SESSION["is_pastor"] == "1") ? true : false;
+
+$day_now = date("l");
+print_r($_SESSION);
+
 ?>
 
 <!DOCTYPE html>
@@ -518,9 +521,112 @@ if (!$is_login) {
         } else if (me == 'celebration') {
           let selectedYear = $('#select_year').val();
           render_calendar(selectedYear);
-          $('#select_year').on('change',function(){
+          $('#select_year').on('change', function() {
             render_calendar($(this).val());
           });
+        } else if (me == 'trainings') {
+          $('#btnLifeClass, #btnSOL1, #btnSOL2, #btnSOL3, #btnReencounter').on('click', function() {
+            if($(this).hasClass('btn-warning')){
+              fireSwal('Training Enrollment','Kindly wait for admin\'s approval','info');
+              return;
+            } 
+            let lesson_type = {
+              'lesson_type': $(this).attr('data-lesson')
+            };
+            let this_button = $(this);
+            let this_span = $(this).children().first();
+       
+            Swal.fire({
+              title: 'Training Enrollment',
+              text: 'Are you sure you want to enroll in this training?',
+              showCancelButton: true,
+          
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              icon: 'info',
+              confirmButtonText: 'Yes, Enroll',
+              cancelButtonText: 'No',
+            }).then((result) => {
+              if (result.isConfirmed) {
+                fireAjax('EnrollmentController.php?action=create_enrollment', lesson_type, false).then(function(data) {
+                  console.log(data);
+                  let obj = jQuery.parseJSON(data.trim());
+                  if (obj.success == 1) {
+                    this_button.removeClass('btn-secondary');
+                    this_button.addClass('btn-warning');
+                    this_span.removeClass('fa-plus');
+                    this_span.addClass('fa-clock');
+                    fireSwal('Training Enrollment', 'Training has been successfully enrolled. Please wait for admin\'s approval.', 'success');
+                  }
+                }).catch(function(err) {
+                  console.log(err);
+                  fireSwal('Training Enrollment', varErrMessage, 'error');
+                })
+              }
+            })
+          });
+          fireAjax('EnrollmentController.php?action=get_enrollment_list','',false).then(function(data){
+            console.log(data);
+            let obj = jQuery.parseJSON(data.trim());
+            let btnHrefs = ['lifeclass','sol','sol','sol','reencounter'];
+            let btnIDs = ['#btnLifeClass', '#btnSOL1', '#btnSOL2', '#btnSOL3', '#btnReencounter'];
+            let trainings = ['LIFE_CLASS', 'SOL1', 'SOL2', 'SOL3', 'RE_ENCOUNTER'];
+            $.each(obj.data,function(k,v){
+              let lessonIndex = trainings.indexOf(v.lesson_type);
+              let btn = $(btnIDs[lessonIndex]);
+              let set_href = 'index.php?view=' + btnHrefs[lessonIndex];
+              let btn_span = btn.children().first();
+              btn.removeClass('disabled');
+              if(v.is_graduated == 1){
+                btn.attr('href',set_href);
+                btn.unbind('click');
+                btn.addClass('btn-success')
+                btn_span.addClass('fa-check');
+
+                //btn.removeClass('btn-warning');
+                btn.removeClass('btn-secondary');
+                btn_span.removeClass('fa-lock');
+                //btn_span.removeClass('fa-clock');
+                //btn_span.removeClass('fa-book');
+                btn_span.removeClass('fa-plus');
+                if((lessonIndex + 1) != trainings.length){
+                  let next_button = btn.next();
+                  let next_button_span = next_button.children().first();
+                  next_button.removeClass('disabled');
+                  next_button_span.removeClass('fa-lock');
+                  next_button_span.addClass('fa-plus');
+
+
+                }
+              } else if(v.is_enrolled == 1){
+                btn.attr('href',set_href);
+                btn.unbind('click');
+                btn.addClass('btn-success')
+                btn_span.addClass('fa-book');
+                
+                //btn.removeClass('btn-warning');
+                btn.removeClass('btn-secondary');
+                btn_span.removeClass('fa-lock');
+                //btn_span.removeClass('fa-clock');
+                //btn_span.removeClass('fa-check');
+                btn_span.removeClass('fa-plus');
+              } else if(v.is_enrolled == 0){
+                btn.addClass('btn-warning')
+                btn_span.addClass('fa-clock');
+                
+                //btn.removeClass('btn-success');
+                btn.removeClass('btn-secondary');
+                btn_span.removeClass('fa-lock');
+                //btn_span.removeClass('fa-book');
+                //btn_span.removeClass('fa-check');
+                btn_span.removeClass('fa-plus');
+              }
+            });
+          }).catch(function(err){
+            console.log(err);
+            fireSwal('Trainings','Failed to retrieve enrolled trainings. Please reload the page','error');
+          })
+
         }
 
       });
@@ -545,7 +651,12 @@ if (!$is_login) {
             let objData = obj.data;
             console.log(objData);
             $.each(objData, function(k, v) {
-              $('.' + v.sunday_date).html("<i class = 'fa fa-circle' style = 'color:green'></i>");
+              if (v.confirmed_by == 0) {
+                $('.' + v.sunday_date).html("<i class = 'fa fa-circle' style = 'color:orange'></i>");
+              } else {
+                $('.' + v.sunday_date).html("<i class = 'fa fa-circle' style = 'color:green'></i>");
+              }
+
             });
           }).catch(function(err) {
             console.log(err);

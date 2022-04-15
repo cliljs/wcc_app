@@ -54,7 +54,7 @@ class AttendanceModel
          $retval .= "<tr>";
          foreach ($days as $day) {
             $className = $year . "-" . sprintf("%02d", $i) . "-" . sprintf("%02d", $day);
-            $retval .= "<td class = 'text-center $className'><i class = 'fa fa-circle' style = 'color:red'></i></td>";
+            $retval .= "<td class = 'text-center $className'><i class = 'fa fa-circle' style = 'color:#2c3e50'></i></td>";
          }
 
          $retval .= "</tr>";

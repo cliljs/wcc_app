@@ -7,19 +7,19 @@
       <div class="card card-primary card-outline">
         <div class="card-body box-profile">
           <h5 class="text-center">Starting up your new life with Jesus</h5><br>
-          <a href="index.php?view=lifeclass" class="btn btn-block btn-success left-icon-holder">
-            <i class="fa fa-check"></i> Life Class
+          <a href="Javascript:void(0);" id = "btnLifeClass" data-lesson = "LIFE_CLASS" class="btn btn-block btn-secondary left-icon-holder">
+            <i class="fa fa-plus"></i> Life Class
           </a>
-          <a href="index.php?view=sol" class="btn btn-block btn-success left-icon-holder">
-            <i class="fa fa-check"></i> SOL1
+          <a href="Javascript:void(0);" id = "btnSOL1" data-lesson = "SOL1" class="btn btn-block btn-secondary left-icon-holder disabled">
+            <i class="fa fa-lock"></i> SOL1
           </a>
-          <a href="index.php?view=sol" class="btn btn-block btn-secondary left-icon-holder">
-            <i class="fa fa-book"></i> SOL2
+          <a href="Javascript:void(0);" id = "btnSOL2" data-lesson = "SOL2" class="btn btn-block btn-secondary left-icon-holder disabled">
+            <i class="fa fa-lock"></i> SOL2
           </a>
-          <a href="index.php?view=sol" class="btn btn-block btn-secondary left-icon-holder disabled">
+          <a href="Javascript:void(0);" id = "btnSOL3" data-lesson = "SOL3" class="btn btn-block btn-secondary left-icon-holder disabled">
             <i class="fa fa-lock"></i> SOL3
           </a>
-          <a href="index.php?view=reencounter" class="btn btn-block btn-secondary left-icon-holder disabled">
+          <a href="Javascript:void(0);" id = "btnReencounter" data-lesson = "RE_ENCOUNTER" class="btn btn-block btn-secondary left-icon-holder disabled">
             <i class="fa fa-lock"></i> Re-encounter
           </a>
 

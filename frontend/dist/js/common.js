@@ -43,6 +43,7 @@ function fireSwal(swalTitle, swalBody, swalIcon) {
         title: swalTitle,
         text: swalBody,
         icon: swalIcon,
-        allowOutsideClick: false
+        allowOutsideClick: false,
+        allowEscapeKey: false
     })
 }

@@ -12,8 +12,7 @@ class EnrollmentModel {
 
         $arr = [
             "lesson_type" => $payload['lesson_type'],
-            "user_pk"     => $_SESSION['pk'],
-            "leader_pk"   => $_SESSION['leader_pk'],
+            "user_pk"     => $_SESSION['pk']
         ];
         $fields  = $common->get_insert_fields($arr);
         $last_id = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));

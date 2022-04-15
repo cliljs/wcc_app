@@ -19,9 +19,11 @@
             ?>
           </select>
         </div>
-
-
-        <table class="table table-bordered">
+        
+        <i class = 'fa fa-circle' style = 'color:#2c3e50'></i> &nbsp; Absent &nbsp;
+        <i class = 'fa fa-circle' style = 'color:orange'></i> &nbsp; Waiting Confirmation &nbsp;
+        <i class = 'fa fa-circle' style = 'color:green'></i> &nbsp; Attended &nbsp;
+        <table class="table table-bordered mt-3">
           <thead>
 
           </thead>
