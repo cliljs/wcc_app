@@ -6,17 +6,14 @@ $act = !empty($_GET['action']) ? $_GET['action'] : '';
 
 switch ($act) {
     case 'create_invite':
-        
         $new_invites = $invite_model->create_invite($_POST);
         $response    = $common->create_response('InviteController.php/action=create_invite');
-
         if (@$new_invites['error']) {
             $response['msg'] = $new_invites['msg'];
         } else {
             $response['data']    =  $new_invites;
             $response['success'] =  1;
         }
-
         echo json_encode($response);
         break;
 

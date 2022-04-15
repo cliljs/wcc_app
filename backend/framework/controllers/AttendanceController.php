@@ -1,18 +1,20 @@
 <?php
 include_once '../models/AttendanceModel.php';
+include_once '../models/InviteModel.php';
 
 $act = !empty($_GET['action']) ? $_GET['action'] : '';
 
 switch ($act) {
     case 'create_attendance':
-        
-       echo json_encode(
-           $common->create_response(
-               'AttendanceController.php/?action=create_attendance',
-               $attendance_model->create_attendance($_POST),
-               1
-            )
-       );
+        $attendance_model->create_attendance();
+        $new_invite =  $invite_model->create_invite($_POST);
+        echo json_encode(
+            $common->create_response(
+                'AttendanceController.php/?action=create_attendance',
+                $new_invite,
+                1
+                )
+        );
         break;
     
     case 'update_attendance':

@@ -9,7 +9,7 @@ class InviteModel {
     public function create_invite($payload = [])
     {
         global $db, $common, $qr_model;
-
+       
         $is_qr_valid = $qr_model->validate_qr($payload['qr']);
 
         if (!$is_qr_valid) {
