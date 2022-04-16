@@ -52,6 +52,16 @@ switch ($act) {
             )
         );
         break;
+
+    case 'get_disciples':
+        echo json_encode(
+            $common->create_response(
+                "TribeController.php/?action=get_disciples",
+                $tribe_model->get_disciples($_GET),
+                1
+            )
+        );
+        break;
     default:
         # code...
         break;

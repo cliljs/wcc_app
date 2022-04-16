@@ -54,16 +54,6 @@ switch ($act) {
             )
         );
         break;
-
-    case 'get_enrollment_list':
-        echo json_encode(
-            $common->create_response(
-                "EnrollmentController.php/?action=get_enrollment_list",
-                $enroll_model->get_enrollment_list(),
-                1
-            )
-        );
-        break;
     
     case 'approve_enrollment':
         echo json_encode(

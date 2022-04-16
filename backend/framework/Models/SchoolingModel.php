@@ -10,8 +10,7 @@ class SchoolingModel {
 
         $arr = [
             "user_pk"     => $_SESSION['pk'],
-            "lesson_pk"   => $payload['lesson_pk'],
-            "leader_pk"   => $_SESSION['leader_pk'],
+            "lesson_pk"   => $payload['lesson_pk']
         ];
         $fields = $common->get_insert_fields($arr);
         return $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));

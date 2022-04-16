@@ -1,6 +1,6 @@
 <div class="card card-primary card-outline">
   <div class="card-body box-profile">
-    <h3 class="text-center">SOL1</h3>
+    <h3 class="text-center" id = "trainingLabel"></h3>
     <p class="text-muted text-center"><a class="custom" href="index.php?view=trainings">[Back to Trainings]</a></p>
 
     <hr>
@@ -14,7 +14,7 @@
               <th>Confirmed By</th>
             </tr>
           </thead>
-          <tbody id="tblSOLBody">
+          <tbody id="tblLessonBody">
             <?php
             for ($i = 1; $i < 6; $i++) {
               echo "<tr>";

@@ -57,6 +57,15 @@ class TribeModel {
 
         return $updated ? $account_model->get_account_details($id) : false;
     }
+    //to be continued.pang kuha ng mga disciples
+    public function get_disciples()
+    {
+        global $db;
+        $pk = isset($_GET['id']) ? $_GET['id'] : $_SESSION['pk'];
+        
+        return $db->get_list("",
+        [$pk]);
+    }
 }
 
 $tribe_model = new TribeModel();

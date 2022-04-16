@@ -18,5 +18,5 @@ $request_controller = basename(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH))
 if (file_exists(CONTROLLER_PATH . $request_controller)) {
     include_once  CONTROLLER_PATH .  $request_controller; 
 } 
-
+//$_SESSION['pk'] = 1;
 // $common->fn_print_die($_SESSION);

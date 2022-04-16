@@ -241,6 +241,7 @@ if ($is_login) {
           let obj = jQuery.parseJSON(data.trim());
           let tls = obj.data;
           let renderVal = '<option selected="selected" disabled="disabled">Please select your inviter</option>';
+          renderVal = '<option value = "0">None</option>';
           $.each(tls, function(k, v) {
             renderVal += '<option value="' + v.id + '">' + v.fullname + '</option>';
           });

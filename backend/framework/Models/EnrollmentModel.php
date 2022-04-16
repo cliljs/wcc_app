@@ -53,6 +53,7 @@ class EnrollmentModel {
         global $db, $common, $school_model;
         $is_approved = $this->update_enrollment($pk, 
                                                 [
+                                                    'is_enrolled'   => 1,
                                                     'date_approved' => strtotime(date('Y-m-d H:i:s'))
                                                 ]
                                             );
