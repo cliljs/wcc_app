@@ -78,18 +78,21 @@ class TribeModel {
         $disciple_data       = $account_model->get_account_details($id);
         return $updated ? $disciple_data : false;
     }
-    //to be continued.pang kuha ng mga disciples
+   
     public function get_disciples()
     {
         global $db;
         $pk = isset($_GET['id']) ? $_GET['id'] : $_SESSION['pk'];
-        
-        return $db->get_list("Select REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname 
+        $arr = [
+            "param1"    =>  $pk,
+            "param2"    =>  $pk
+        ];
+        return $db->get_list("Select tr.leader_pk,acc.id,acc.profile_pic,REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, (Select COUNT(id) from bro_tribe where leader_pk = tr.member_pk and is_approved = 1) as member_count  
         from bro_accounts acc 
         INNER JOIN {$this->base_table} tr 
         ON acc.id = tr.member_pk 
-        WHERE tr.leader_pk = ? and is_approved = 1",
-        [$pk]);
+        WHERE tr.leader_pk = ? and is_approved = 1 and NOT tr.member_pk = ?",
+        array_values($arr));
     }
 }
 

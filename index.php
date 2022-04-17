@@ -40,6 +40,7 @@ print_r($_SESSION);
   <link rel="stylesheet" href="frontend/plugins/daterangepicker/daterangepicker.css">
   <link rel="stylesheet" href="frontend/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
   <link rel="stylesheet" href="frontend/dist/css/materialdesignicons.css" />
+
   <style>
     .dropdown-list-image {
       position: relative;
@@ -105,7 +106,7 @@ print_r($_SESSION);
     }
 
     .widget-user .widget-user-image {
-      top: 185px !important;
+      top: 150px !important;
       margin-left: -60px !important;
     }
 
@@ -116,10 +117,12 @@ print_r($_SESSION);
     .widget-user .widget-user-image>img {
       width: 120px !important;
     }
+
   </style>
 </head>
 
 <body class="hold-transition login-page pt-5" style="justify-content:flex-start !important">
+ 
   <div class="wrapper">
 
     <div class="container">
@@ -143,13 +146,13 @@ print_r($_SESSION);
                   <div class="row">
                     <div class="col-sm-6 border-right">
                       <div class="description-block">
-                        <h5 class="description-header" id = "user_training">N/A</h5>
+                        <h5 class="description-header" id="user_training">N/A</h5>
                         <span class="description-text text-muted">Training</span>
                       </div>
                     </div>
                     <div class="col-sm-6">
                       <div class="description-block">
-                        <h5 class="description-header" id = "user_invites">-</h5>
+                        <h5 class="description-header" id="user_invites">-</h5>
                         <span class="description-text text-muted">Invites</span>
                       </div>
                     </div>
@@ -248,12 +251,15 @@ print_r($_SESSION);
     <script src="frontend/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
     <script src="frontend/dist/js/html5-qrcode.min.js"></script>
     <script src="frontend/dist/js/jquery-qrcode.min.js"></script>
+
     <script>
       $(function() {
+
         let me = getUrlVars()['view'];
         let act = getUrlVars()['action'];
         loadHeader();
         loadSubheader();
+
         if (me == null || me == 'home') {
           $('#btnShowBadge').on('click', function() {
             $("#mdlBadge").modal({
@@ -265,7 +271,12 @@ print_r($_SESSION);
             showBadge();
           }
         } else if (me == 'tribe') {
-
+          loadDisciples();
+          $('body').on('click', '.viewTribeMembers', function() {
+            if ($(this).hasClass('fa-minus')) return;
+            let tribeID = $(this).attr('data-id');
+            loadSubDisciples(tribeID);
+          });
         } else if (me == 'attendance') {
           let vip_list = [];
           let invite_list = [];
@@ -650,39 +661,118 @@ print_r($_SESSION);
           })
 
         } else if (me == 'notifications') {
-          $('body').on('click','.btnNotifDecline, .btnNotifApprove',function(){
+          $('body').on('click', '.btnNotifDecline, .btnNotifApprove', function() {
             let decision = $(this).hasClass('btnNotifDecline') ? 0 : 1;
             let notif_pk = $(this).attr('data-id');
           });
-          $('body').on('click','.notifName',function(){
+          $('body').on('click', '.notifName', function() {
             let user_pk = $(this).attr('data-id');
           });
-        } else if (me == 'tribe'){
-          loadDisciples();
         }
 
       });
+      preload('body', true);
 
-      // $('.select2bs4').select2({
-      //   theme: 'bootstrap4'
-      // });
+      function preload(element, is_show) {
+      
+      };
+ 
       function showBadge() {
         $('#mdlBadge').modal({
           backdrop: 'static'
         });
       }
-    
+
       function loadLessons(lesson_type) {
 
       }
 
-      function loadDisciples(){
-        fireAjax('TribeController.php?action=get_disciples','',false).then(function(data){
-
-        }).catch(function(err){
-
+      function loadDisciples(leader_pk = 0) {
+        let ajaxURL = (leader_pk == 0) ? 'TribeController.php?action=get_disciples' : 'TribeController.php?action=get_disciples&id=' + leader_pk;
+        fireAjax(ajaxURL, '', false).then(function(data) {
+          let obj = jQuery.parseJSON(data.trim());
+          let retval = '';
+          let member_type = '';
+          let member_numbers = '';
+          let user_url = '';
+          console.log(obj);
+          $.each(obj.data, function(k, v) {
+            user_url = (v.profile_pic == null) ? 'user.png' : v.profile_pic;
+            member_type = (v.leader_pk == 1) ? 'P12' : '144';
+            switch (v.member_count) {
+              case 0:
+                member_numbers = 'No members';
+                break;
+              case 1:
+                member_numbers = '1 Member';
+                break;
+              default:
+                member_numbers = v.member_count + ' Members';
+                break;
+            }
+            retval += '<div class="card collapsed-card elevation-2">';
+            retval += '<div class="card-header">';
+            retval += '<div class="user-block">';
+            retval += '<img class="img-circle img-bordered-sm" src="' + image_url + user_url + '" alt="' + v.fullname + '">';
+            retval += '<span class="username">';
+            retval += '<a class="custom linkProfile" href="Javascript:void(0);" data-id = "' + v.id + '">' + v.fullname + '</a>';
+            retval += '</span>';
+            retval += '<span class="description">' + member_type + ' . ' + member_numbers + '</span>';
+            retval += '</div>';
+            retval += '<div class="card-tools mt-3">';
+            retval += '<button type="button" class="btn btn-tool" data-card-widget="collapse">';
+            retval += '<i class="fas fa-plus viewTribeMembers" data-id = "' + v.id + '"></i>';
+            retval += '</button>';
+            retval += '</div>';
+            retval += '</div>';
+            retval += '<div class="card-body subDisciple' + v.id + '">';
+            retval += '</div>';
+            retval += '</div>';
+          });
+          $('#tribeContainer').html(retval);
+        }).catch(function(err) {
+          fireSwal('My Tribe', 'Failed to retrieve tribe members. Please reload the page', 'error')
         });
       }
+
+      function loadSubDisciples(leader_pk = 0) {
+
+        let ajaxURL = (leader_pk == 0) ? 'TribeController.php?action=get_disciples' : 'TribeController.php?action=get_disciples&id=' + leader_pk;
+        console.log(ajaxURL);
+        fireAjax(ajaxURL, '', false).then(function(data) {
+          console.log(data);
+          let obj = jQuery.parseJSON(data.trim());
+          let retval = '';
+          let member_type = '';
+          let member_numbers = '';
+          let user_url = '';
+
+          $.each(obj.data, function(k, v) {
+            user_url = (v.profile_pic == null) ? 'user.png' : v.profile_pic;
+            member_type = (v.leader_pk == 1) ? 'P12' : '144';
+            retval += '<div class="card collapsed-card elevation-2">';
+            retval += '<div class="card-header">';
+            retval += '<div class="user-block">';
+            retval += '<img class="img-circle img-bordered-sm" src="' + image_url + user_url + '" alt="' + v.fullname + '">';
+            retval += '<span class="username">';
+            retval += '<a class="custom linkProfile" href="Javascript:void(0);" data-id = "' + v.id + '">' + v.fullname + '</a>';
+            retval += '<br><button type="button" data-id = "' + v.id + '" class="mt-3 btn btn-outline-dark btn-sm btnTribeLifestyle">Lifestyle</button>';
+            retval += '&nbsp;&nbsp;<button type="button" data-id = "' + v.id + '" class="mt-3 btn btn-info btn-sm btnTribeTransfer">Transfer</button>';
+            retval += '</span>';
+            retval += '</div>';
+            retval += '</div>';
+            retval += '</div>';
+          });
+          if (obj.data.length == 0) {
+            retval = 'No members found';
+          }
+          $('.subDisciple' + leader_pk).html(retval);
+        }).catch(function(err) {
+          console.log(err);
+          fireSwal('My Tribe', 'Failed to retrieve tribe members. Please reload the page', 'error')
+        });
+      }
+
       function render_calendar(selectedYear) {
         fireAjax('AttendanceController.php?action=render_table&year=' + selectedYear, '', false).then(function(data) {
 
@@ -782,22 +872,23 @@ print_r($_SESSION);
         table_body.append(tr);
       }
 
-      function loadSubheader(){
+      function loadSubheader() {
         fireAjax("AccountController.php?action=get_headers", "", false).then(function(data) {
           console.log(data);
           let retval = data.trim();
           let obj = jQuery.parseJSON(retval);
           let user_header = obj.data;
-          if(user_header.current_lesson != null){
+          if (user_header.current_lesson != null) {
             $("#user_training").html(user_header.current_lesson);
           }
-          
+
           $("#user_invites").html(user_header.invite_count);
-        
+
         }).catch(function(err) {
           console.log(err);
         });
       }
+
       function loadHeader() {
         fireAjax("AccountController.php?action=get_account_profile", "", false).then(function(data) {
           console.log(data);
