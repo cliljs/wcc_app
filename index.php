@@ -40,6 +40,23 @@ print_r($_SESSION);
   <link rel="stylesheet" href="frontend/plugins/daterangepicker/daterangepicker.css">
   <link rel="stylesheet" href="frontend/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
   <style>
+    .dropdown-list-image {
+      position: relative;
+      height: 2.5rem;
+      width: 2.5rem;
+    }
+
+    .dropdown-list-image img {
+      height: 2.5rem;
+      width: 2.5rem;
+    }
+
+    .btn-light {
+      color: #2cdd9b;
+      background-color: #e5f7f0;
+      border-color: #d8f7eb;
+    }
+
     .left-icon-holder {
       position: relative;
     }
@@ -72,7 +89,8 @@ print_r($_SESSION);
       color: #ffffff !important;
     }
 
-    a.custom {
+    a.custom,
+    a.notifName {
       color: #c0392b !important;
     }
 
@@ -629,6 +647,14 @@ print_r($_SESSION);
             fireSwal('Trainings', 'Failed to retrieve enrolled trainings. Please reload the page', 'error');
           })
 
+        } else if (me == 'notifications') {
+          $('body').on('click','.btnNotifDecline, .btnNotifApprove',function(){
+            let decision = $(this).hasClass('btnNotifDecline') ? 0 : 1;
+            let notif_pk = $(this).attr('data-id');
+          });
+          $('body').on('click','.notifName',function(){
+            let user_pk = $(this).attr('data-id');
+          });
         }
 
       });
@@ -642,9 +668,10 @@ print_r($_SESSION);
         });
       }
 
-      function loadLessons(lesson_type){
-        
+      function loadLessons(lesson_type) {
+
       }
+
       function render_calendar(selectedYear) {
         fireAjax('AttendanceController.php?action=render_table&year=' + selectedYear, '', false).then(function(data) {
 
