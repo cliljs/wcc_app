@@ -1,6 +1,7 @@
 <?php
 
 require_once '../../autoload.php';
+require_once MODEL_PATH . 'NotificationModel.php';
 
 class AttendanceModel
 {
@@ -61,6 +62,7 @@ class AttendanceModel
       }
       return $retval;
    }
+
    public function get_disciple_attendance($year)
    {
       global $db, $common;
@@ -73,10 +75,30 @@ class AttendanceModel
 
    public function update_attendance($payload = [], $id = null)
    {
-      global $db, $common;
+      global $db, $common, $notif_model;
       $update_fields = $common->get_update_fields($payload);
       $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$id}", array_values($payload));
+    
       return $updated ? $this->get_attendance($id) : false;
+   }
+
+   public function approve_attendance($pk)
+   {
+      global $db, $common, $notif_model;
+      $arr = [
+         "confirmed_by" => $_SESSION['pk'],
+         "date_confirmed" => date('Y-m-d'),
+      ];
+      $confirmed = $this->update_attendance($arr, $pk);
+      $notif_arr = [
+         "sender_pk"   => $_SESSION['pk'],
+         "receiver_pk" => $confirmed['account_pk'],
+         "subject_pk"  => $confirmed['account_pk'],
+         "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
+         "action"      => 'ATTENDANCE',
+     ];
+     $notif_model->create_notification($notif_arr);
+     return $confirmed;
    }
 
    public function remove_attendance($id = null)

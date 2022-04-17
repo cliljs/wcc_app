@@ -1,6 +1,7 @@
 <?php
 require_once '../../autoload.php';
 require_once MODEL_PATH . 'AccountModel.php';
+require_once MODEL_PATH . 'NotificationModel.php';
 
 class TribeModel {
 
@@ -17,6 +18,25 @@ class TribeModel {
 
         $tribe_fields = $common->get_insert_fields($tribe_info);
         return $db->insert("INSERT INTO {$this->base_table} {$tribe_fields}", array_values($tribe_info));
+    }
+
+    public function transfer_disciple($pk, $query)
+    {
+        global $db, $common, $notif_model;
+        $arr = [
+            "leader_pk"   => $query['new_leader_pk'],
+            "is_approved" => 0
+        ];
+        $updated = $db->update("UPDATE {$this->base_table} {$common->get_update_fields($arr)} WHERE id = {$pk}", array_values($arr));
+        $notif_arr = [
+            "sender_pk"   => $_SESSION['pk'],
+            "receiver_pk" => 1,
+            "subject_pk"  => 1,
+            "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
+            "action"      => 'TRANSFER',
+        ];
+        $notif_model = $notif_model->create_notification($notif_arr);
+        return $updated;
     }
 
     public function get_pending_disciple()
@@ -37,6 +57,7 @@ class TribeModel {
                             ORDER BY acc.firstname asc",
                             [1]);
     }
+
     public function get_inviter_names($payload = [])
     {
         global $db, $common;
@@ -52,10 +73,10 @@ class TribeModel {
     {
         global $db, $common, $account_model;
 
-        $update_fields = $common->get_update_fields($payload);
-        $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE member_pk = {$id}", array_values($payload));
-
-        return $updated ? $account_model->get_account_details($id) : false;
+        $update_fields       = $common->get_update_fields($payload);
+        $updated             = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE member_pk = {$id}", array_values($payload));
+        $disciple_data       = $account_model->get_account_details($id);
+        return $updated ? $disciple_data : false;
     }
     //to be continued.pang kuha ng mga disciples
     public function get_disciples()

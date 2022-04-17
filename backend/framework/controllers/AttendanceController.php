@@ -26,7 +26,17 @@ switch ($act) {
             )
         );
         break;
-
+ 
+    case 'approve_attendance':
+        echo json_encode(
+            $common->create_response(
+                'AttendanceController.php/?action=update_attendance',
+                $attendance_model->approve_attendance($_GET['id']),
+                1
+            )
+        );
+        break;
+ 
     case 'remove_attendance':
         echo json_encode(
             $common->create_response(

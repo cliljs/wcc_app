@@ -2,13 +2,14 @@
 
 require_once '../../autoload.php';
 require_once MODEL_PATH . 'SchoolingModel.php';
+require_once MODEL_PATH . 'NotificationModel.php';
 
 class EnrollmentModel {
     private $base_table = 'bro_enrollment';
 
     public function create_enrollment($payload = [])
     {
-        global $db, $common;
+        global $db, $common, $notif_model;
 
         $arr = [
             "lesson_type" => $payload['lesson_type'],
@@ -16,6 +17,14 @@ class EnrollmentModel {
         ];
         $fields  = $common->get_insert_fields($arr);
         $last_id = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
+        $notif_arr = [
+            "sender_pk"   => $_SESSION['pk'],
+            "receiver_pk" => 0,
+            "subject_pk"  => $_SESSION['pk'],
+            "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
+            "action"      => 'ENROLL',
+        ];
+        $notif_model = $notif_model->create_notification($notif_arr);
         return $this->get_enrollment_details($last_id);
     }
 
@@ -48,9 +57,17 @@ class EnrollmentModel {
         return $deleted ? $tobe_deleted : false;
     }
 
+    public function get_pending_enrollment()
+    {
+        global $db, $common;
+        return $db->get_list("SELECT be.* FROM {$this->base_table} be 
+                            INNER JOIN bro_tribe bt ON be.user_pk = bt.member_pk
+                            WHERE be.is_enrolled = 0 AND bt.leader_pk = ?", [$_SESSION['pk']]);
+    }
+
     public function approve_user($pk = null)
     {
-        global $db, $common, $school_model;
+        global $db, $common, $school_model, $notif_model;
         $is_approved = $this->update_enrollment($pk, 
                                                 [
                                                     'is_enrolled'   => 1,
@@ -62,6 +79,15 @@ class EnrollmentModel {
            foreach ($lessons as $key => $lesson) {
              $school_model->create_schooling($lesson);      
            }
+
+           $notif_arr = [
+                "sender_pk"   => $_SESSION['pk'],
+                "receiver_pk" => 0,
+                "subject_pk"  => $is_approved['user_pk'],
+                "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
+                "action"      => 'ENROLL',
+            ];
+            $notif_model = $notif_model->create_notification($notif_arr);
         }
         return true;
     }

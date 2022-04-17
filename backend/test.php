@@ -517,7 +517,7 @@ switch ($act) {
                 echo "{$seed['username']} Created <br/>";
 
                 $tribe_payload = [
-                    'leader_pk' =>  '1',
+                    'leader_pk' => $seed['is_leader'] > 0 ? 1 : 2,
                     'member_pk' => $last_insert,
                     'is_approved' => 1
                 ];

@@ -1,6 +1,7 @@
 <?php
 require_once '../../autoload.php';
 require_once MODEL_PATH . 'TribeModel.php';
+require_once MODEL_PATH . 'NotificationModel.php';
 
 class AccountModel
 {
@@ -19,7 +20,6 @@ class AccountModel
         $bcrypt_options = [
             'cost' => 12,
         ];
-
         return password_hash($password, PASSWORD_BCRYPT, $bcrypt_options);
     }
 
@@ -43,7 +43,7 @@ class AccountModel
         $_SESSION['pk']         = $has_account['id'];
         $_SESSION['is_leader']  = $has_account['is_leader'];
         $_SESSION['is_pastor']  = $has_account['is_pastor'];
-        $_SESSION['is_admin']  = $has_account['is_admin'];
+        $_SESSION['is_admin']   = $has_account['is_admin'];
         $_SESSION['branch']     = $has_account['branch'];
         $_SESSION['leader_pk']  = $has_account['leader_pk'];
         $_SESSION['login_name'] = $has_account['firstname'] . ' ' . $has_account['middlename'] . ' ' . $has_account['lastname'];
@@ -53,7 +53,7 @@ class AccountModel
     // GENERAL ACCOUNT CREATION (PANG DISCIPLE PALANG ATA??)
     public function create_account($payload = [], $files)
     {
-        global $db, $common, $tribe_model;
+        global $db, $common, $tribe_model, $notif_model;
 
         $username_exists = $db->get_row("SELECT * FROM bro_accounts WHERE username = ?", [$payload['username']]);
 
@@ -78,18 +78,15 @@ class AccountModel
             "birthdate"  => $payload['birthdate'],
             "contact"    => $payload['contact'],
             "branch"     => $payload['branch'],
-            "inviter_pk"     => $payload['inviter']
+            "inviter_pk" => $payload['inviter']
         ];
 
         $fields        = $common->get_insert_fields($arr);
         $last_id       = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
 
         if (!empty($files)) {
-
             $update_fields = $common->get_update_fields(['profile_pic' => ""]);
-
             $profile_pic   = $common->upload($last_id, $files['profile_picture']);
-
             $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$last_id}", [$profile_pic]);
         }
 
@@ -98,6 +95,14 @@ class AccountModel
             "insert_id" => $last_id
         ]);
 
+        $notif_arr = [
+            "sender_pk"   => $last_id,
+            "receiver_pk" => $leader_info['id'],
+            "subject_pk"  => $leader_info['id'],
+            "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
+            "action"      => 'SIGNUP',
+        ];
+        $notif_model = $notif_model->create_notification($notif_arr);
         return $last_id;
     }
 

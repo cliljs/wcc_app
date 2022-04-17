@@ -65,6 +65,16 @@ switch ($act) {
         );
         break;
     
+    case 'get_pending_enrollment':
+        echo json_encode(
+            $common->create_response(
+                "EnrollmentController.php/?action=get_pending_enrollment",
+                $enroll_model->get_pending_enrollment(),
+                1
+            )
+        );
+        break;
+    
     default:
         break;
 }
