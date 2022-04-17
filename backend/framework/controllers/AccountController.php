@@ -10,7 +10,6 @@ switch ($act) {
 
         if (@$new_account['error']) {
             $response['msg'] = $new_account['msg'];
-
         } else {
             $response['data']    = $new_account;
             $response['success'] = 1;
@@ -18,7 +17,12 @@ switch ($act) {
 
         echo json_encode($response);
         break;
-
+    case 'get_headers':
+        $account = $account_model->get_headers();
+        echo json_encode(
+            $common->create_response("AccountController/action=get_headers", $account, 1)
+        );
+        break;
     case 'get_account_profile':
         $account = $account_model->get_account_details();
         $account['birthdate'] = date("F j, Y", strtotime($account['birthdate']));
@@ -40,8 +44,8 @@ switch ($act) {
             $common->create_response("AccountController/action=delete_account", $deleted_account, 1)
         );
         break;
-    
-    case 'account_login': 
+
+    case 'account_login':
         $auth_user = $account_model->login($_POST);
         $response  = $common->create_response("AccountController/action=account_login");
 
@@ -55,7 +59,7 @@ switch ($act) {
         echo json_encode($response);
         break;
 
-    case 'account_logout': 
+    case 'account_logout':
         $response  = $common->create_response(
             "AccountController/action=account_logout",
             session_destroy(),
@@ -64,7 +68,7 @@ switch ($act) {
 
         echo json_encode($response);
         break;
-        
+
     default:
         break;
 }

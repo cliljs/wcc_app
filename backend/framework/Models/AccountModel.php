@@ -2,7 +2,8 @@
 require_once '../../autoload.php';
 require_once MODEL_PATH . 'TribeModel.php';
 
-class AccountModel {
+class AccountModel
+{
     private $base_table = 'bro_accounts';
 
     // @params $name = fullname
@@ -14,13 +15,13 @@ class AccountModel {
     }
 
     private function create_hash($password)
-	{
-		$bcrypt_options = [
-			'cost' => 12,
-		];
-		
-		return password_hash($password, PASSWORD_BCRYPT, $bcrypt_options);
-	}
+    {
+        $bcrypt_options = [
+            'cost' => 12,
+        ];
+
+        return password_hash($password, PASSWORD_BCRYPT, $bcrypt_options);
+    }
 
     public function login($payload = [])
     {
@@ -30,14 +31,14 @@ class AccountModel {
                                     INNER JOIN bro_tribe tr ON acc.id = tr.member_pk
                                     WHERE acc.username = ?", [$payload['username']]);
 
-        if(empty($has_account) || $has_account['is_approved'] === 0) {
+        if (empty($has_account) || $has_account['is_approved'] === 0) {
             return ['error' => true, "msg" => "Account does not exists"];
         }
 
         if (!password_verify($payload['password'], $has_account['password'])) {
             return ['error' => true, "msg" => "Password does not match"];
-		}
-        
+        }
+
         // DAGDAGAN MO NALANG MABOSS NEED MONG DETAILS
         $_SESSION['pk']         = $has_account['id'];
         $_SESSION['is_leader']  = $has_account['is_leader'];
@@ -61,7 +62,7 @@ class AccountModel {
         }
 
         $leader_info = $this->get_leader_by_pk($payload['leader_name']);
-        
+
         if (empty($leader_info)) {
             return ["error" => true, "msg" => "Tribe Leader name does not exists"];
         }
@@ -82,9 +83,9 @@ class AccountModel {
 
         $fields        = $common->get_insert_fields($arr);
         $last_id       = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
-        
+
         if (!empty($files)) {
-           
+
             $update_fields = $common->get_update_fields(['profile_pic' => ""]);
 
             $profile_pic   = $common->upload($last_id, $files['profile_picture']);
@@ -96,13 +97,13 @@ class AccountModel {
             "leader_pk" => $leader_info['id'],
             "insert_id" => $last_id
         ]);
-        
+
         return $last_id;
     }
 
     public function get_account_details()
     {
-        global $db, $common;
+        global $db;
         //bay pacheck nlng kung gagana sayo tong session based.
         //login ka muna sa portal bgo ka magtest sa insomnia. alam ko nabypass mo na ung session dati sa reservation api ntn eh
         //change ko muna tong query bay hnd ko kasi sure kung possible ba na may user account na walang instance sa bro_tribe
@@ -111,9 +112,14 @@ class AccountModel {
         //                      WHERE acc.id = ? AND tr.is_approved = ?", [$id, 1]);
         return $db->get_row("SELECT acc.*,
         (Select CONCAT(firstname,' ',middlename,' ',lastname) from {$this->base_table} where id = (Select leader_pk from bro_tribe where member_pk = ? and is_approved = 1)) as tlname 
-        FROM {$this->base_table} acc WHERE acc.id = ?", [$_SESSION['pk'],$_SESSION['pk']]);
+        FROM {$this->base_table} acc WHERE acc.id = ?", [$_SESSION['pk'], $_SESSION['pk']]);
     }
 
+    public function get_headers()
+    {
+        global $db;
+        return $db->get_row("SELECT COUNT(id) as invite_count,(Select lesson_type from bro_enrollment where user_pk = ? and is_enrolled = 1 order by id desc LIMIT 1) as current_lesson from {$this->base_table} where inviter_pk = ?", [$_SESSION['pk'], $_SESSION['pk']]);
+    }
     public function update_account($payload = [], $id = null)
     {
         global $db, $common;
@@ -121,9 +127,9 @@ class AccountModel {
         $update_fields = $common->get_update_fields($payload);
         $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$id}", array_values($payload));
 
-        return $updated ? $this->get_account_details($id): false;
+        return $updated ? $this->get_account_details($id) : false;
     }
-    
+
     public function delete_account($id = null)
     {
         global $db, $common;
@@ -136,11 +142,13 @@ class AccountModel {
     public function get_leader_names()
     {
         global $db, $common;
-        return $db->get_list("SELECT tr.is_approved, acc.* 
+        return $db->get_list(
+            "SELECT tr.is_approved, acc.* 
                               FROM {$this->base_table} acc 
                               INNER JOIN bro_tribe tr ON acc.id = tr.member_pk 
                               WHERE acc.is_leader = ? AND tr.is_approved = ?",
-                              [1, 1]);
+            [1, 1]
+        );
     }
 }
 

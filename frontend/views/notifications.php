@@ -7,7 +7,7 @@
 
     <div class="card collapsed-card elevation-1">
       <div class="card-header">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.css" integrity="sha256-NAxhqDvtY0l4xn+YVa6WjAcmd94NNfttjNsDmNatFVc=" crossorigin="anonymous" />
+        
 
         <div class="container">
           <div class="row">

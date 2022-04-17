@@ -63,7 +63,11 @@ class TribeModel {
         global $db;
         $pk = isset($_GET['id']) ? $_GET['id'] : $_SESSION['pk'];
         
-        return $db->get_list("",
+        return $db->get_list("Select REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname 
+        from bro_accounts acc 
+        INNER JOIN {$this->base_table} tr 
+        ON acc.id = tr.member_pk 
+        WHERE tr.leader_pk = ? and is_approved = 1",
         [$pk]);
     }
 }

@@ -39,6 +39,7 @@ print_r($_SESSION);
   <link rel="stylesheet" href="frontend/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
   <link rel="stylesheet" href="frontend/plugins/daterangepicker/daterangepicker.css">
   <link rel="stylesheet" href="frontend/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+  <link rel="stylesheet" href="frontend/dist/css/materialdesignicons.css" />
   <style>
     .dropdown-list-image {
       position: relative;
@@ -142,13 +143,13 @@ print_r($_SESSION);
                   <div class="row">
                     <div class="col-sm-6 border-right">
                       <div class="description-block">
-                        <h5 class="description-header">SOL2 - Class 2</h5>
+                        <h5 class="description-header" id = "user_training">N/A</h5>
                         <span class="description-text text-muted">Training</span>
                       </div>
                     </div>
                     <div class="col-sm-6">
                       <div class="description-block">
-                        <h5 class="description-header">13,000</h5>
+                        <h5 class="description-header" id = "user_invites">-</h5>
                         <span class="description-text text-muted">Invites</span>
                       </div>
                     </div>
@@ -252,6 +253,7 @@ print_r($_SESSION);
         let me = getUrlVars()['view'];
         let act = getUrlVars()['action'];
         loadHeader();
+        loadSubheader();
         if (me == null || me == 'home') {
           $('#btnShowBadge').on('click', function() {
             $("#mdlBadge").modal({
@@ -655,6 +657,8 @@ print_r($_SESSION);
           $('body').on('click','.notifName',function(){
             let user_pk = $(this).attr('data-id');
           });
+        } else if (me == 'tribe'){
+          loadDisciples();
         }
 
       });
@@ -667,11 +671,18 @@ print_r($_SESSION);
           backdrop: 'static'
         });
       }
-
+    
       function loadLessons(lesson_type) {
 
       }
 
+      function loadDisciples(){
+        fireAjax('TribeController.php?action=get_disciples','',false).then(function(data){
+
+        }).catch(function(err){
+
+        });
+      }
       function render_calendar(selectedYear) {
         fireAjax('AttendanceController.php?action=render_table&year=' + selectedYear, '', false).then(function(data) {
 
@@ -771,6 +782,22 @@ print_r($_SESSION);
         table_body.append(tr);
       }
 
+      function loadSubheader(){
+        fireAjax("AccountController.php?action=get_headers", "", false).then(function(data) {
+          console.log(data);
+          let retval = data.trim();
+          let obj = jQuery.parseJSON(retval);
+          let user_header = obj.data;
+          if(user_header.current_lesson != null){
+            $("#user_training").html(user_header.current_lesson);
+          }
+          
+          $("#user_invites").html(user_header.invite_count);
+        
+        }).catch(function(err) {
+          console.log(err);
+        });
+      }
       function loadHeader() {
         fireAjax("AccountController.php?action=get_account_profile", "", false).then(function(data) {
           console.log(data);
