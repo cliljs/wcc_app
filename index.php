@@ -17,7 +17,7 @@ $is_leader = ($_SESSION["is_leader"] == "1") ? true : false;
 $is_pastor = ($_SESSION["is_pastor"] == "1") ? true : false;
 
 $day_now = date("l");
-print_r($_SESSION);
+//print_r($_SESSION);
 
 ?>
 
@@ -117,12 +117,11 @@ print_r($_SESSION);
     .widget-user .widget-user-image>img {
       width: 120px !important;
     }
-
   </style>
 </head>
 
-<body class="hold-transition login-page pt-5" style="justify-content:flex-start !important">
- 
+<body class="hold-transition login-page pt-2" style="justify-content:flex-start !important">
+
   <div class="wrapper">
 
     <div class="container">
@@ -333,31 +332,51 @@ print_r($_SESSION);
             $("#mdlScanner").modal({
               backdrop: 'static'
             });
-            const qrCodeSuccessCallback = (decodedText, decodedResult) => {
-              let mergedArray = vip_list.concat(invite_list);
-              console.log(mergedArray);
-              let payload = {
-                bro: mergedArray,
-                qr: decodedText
-              };
-              console.log(payload);
-              html5QrCode.stop();
-              submitSundayAttendance(payload);
 
-            };
-            const config = {
-              fps: 10,
-              rememberLastUsedCamera: true,
-              qrbox: {
-                width: 500,
-                height: 500
-              }
-            };
+            // const config = {
+            //   fps: 10,
+            //   rememberLastUsedCamera: true,
+            //   qrbox: {
+            //     width: 500,
+            //     height: 500
+            //   }
+            // };
             //$('video').attr('style', 'width: ' + $('#mdlScanner').width() + 'px !important');
-            html5QrCode.start({
-              facingMode: "environment"
-            }, config, qrCodeSuccessCallback);
+            // html5QrCode.start({
+            //   facingMode: "environment"
+            // }, config, qrCodeSuccessCallback);
+            Html5Qrcode.getCameras().then(devices => {
+              if (devices && devices.length) {
+                var cameraId = devices[0].id;
+                html5QrCode.start(
+                    cameraId, {
+                      fps: 30,
+                      qrbox: {
+                        width: 500,
+                        height: 500
+                      }
+                    },
+                    (decodedText, decodedResult) => {
+                      let mergedArray = vip_list.concat(invite_list);
+                      console.log(mergedArray);
+                      let payload = {
+                        bro: mergedArray,
+                        qr: decodedText
+                      };
+                      console.log(payload);
+                      html5QrCode.stop();
+                      submitSundayAttendance(payload);
+                    },
+                    (errorMessage) => {
 
+                    })
+                  .catch((err) => {
+
+                  });
+              }
+            }).catch(err => {
+              fireSwal('QR Scanner', err, 'error');
+            });
           });
           $("#qrmode").on('click', function() {
             let divscan = $("#reader");
@@ -521,6 +540,12 @@ print_r($_SESSION);
           $('#btnSubmitSOL').on('click', function() {
 
           });
+          fireAjax('','',false).then(function(data){
+
+          }).catch(function(err){
+            console.log(err);
+            fireAjax('Training','Failed to retrieve list of topics. Please reload the page','error');
+          });
         } else if (me == 'qrmaintenance') {
           let qrID = 0;
           loadAllQR();
@@ -668,15 +693,52 @@ print_r($_SESSION);
           $('body').on('click', '.notifName', function() {
             let user_pk = $(this).attr('data-id');
           });
+          fireAjax('NotificationController.php?action=get_user_notifications', '', false).then(function(data) {
+            console.log(data);
+            let objData = $.parseJSON(data.trim()).data;
+            let notifCaption = '';
+            let retval = '';
+            console.log(objData);
+            $.each(objData, function(k, v) {
+            
+              switch (v.action) {
+                case "SIGNUP":
+                  notifCaption = ' created an account';
+                  break;
+                case "ENROLL":
+                  break;
+                case "TRANSFER":
+                  break;
+                case "ATTENDANCE":
+                  break;
+                case "SCHOOL":
+                  break;
+              }
+              retval += '<div class="p-3 d-flex align-items-center border-bottom osahan-post-header">';
+              retval += '<div class="dropdown-list-image mr-3">';
+              retval += '<img class="rounded-circle" src="' + image_url + v.sender_pic + '" alt="user_avatar" />';
+              retval += '</div>';
+              retval += '<div class="font-weight-bold mr-3">';
+              retval += '<div><span class="font-weight-normal"><a data-user = "' + v.sender_pk + '" href = "Javascript:void(0);" class = "notifName"><b>' + v.sender_name + '</b>' + notifCaption + '</div>';
+              retval += '<div class="mb-2"><span class="font-weight-light">' + v.date_created + '</span></div>';
+              retval += '<button type="button" data-id = "' + v.id + '" class="btn btn-outline-dark btn-sm btnNotifDecline">Decline</button>&nbsp;';
+              retval += '<button type="button" data-id = "' + v.id + '" class="btn btn-info btn-sm btnNotifApprove">Approve</button>';
+              retval += '</div>';
+              retval += '</div>';
+            });
+            $('#notifTodayContainer').html(retval);
+          }).catch(function(err) {
+            console.log(err);
+            fireSwal('Notifications', 'Failed to retrieve list of notifications. Please reload the page.', 'error');
+          })
         }
 
       });
-      preload('body', true);
 
       function preload(element, is_show) {
-      
+
       };
- 
+
       function showBadge() {
         $('#mdlBadge').modal({
           backdrop: 'static'

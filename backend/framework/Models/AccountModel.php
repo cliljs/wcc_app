@@ -98,7 +98,7 @@ class AccountModel
         $notif_arr = [
             "sender_pk"   => $last_id,
             "receiver_pk" => $leader_info['id'],
-            "subject_pk"  => $leader_info['id'],
+            "subject_pk"  => $last_id,
             "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
             "action"      => 'SIGNUP',
         ];

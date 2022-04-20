@@ -26,7 +26,7 @@
               echo "</div>";
               echo "</td>";
               echo "<td>";
-              echo "Ricardo J. Madlangtuta";
+              echo "Sample Name";
               echo "</td>";
               echo "</tr>";
             }

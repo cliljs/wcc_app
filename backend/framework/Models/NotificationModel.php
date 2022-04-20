@@ -28,7 +28,11 @@ class NotificationModel {
     public function get_notification_list()
     {
         global $db, $common;
-        return $db->get_list("SELECT * FROM {$this->base_table} WHERE receiver_pk = ?", [$_SESSION['pk']]);
+        $kwiri = ($_SESSION['is_admin'] == 1) ? 
+        "SELECT id,date_created,sender_pk,action,(Select profile_pic from bro_accounts where id = n.subject_pk) as sender_pic, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = n.subject_pk) as sender_name FROM {$this->base_table} n WHERE (receiver_pk = ? or receiver_pk = 0) order by date_created asc" : 
+        "SELECT id,date_created,sender_pk,action,(Select profile_pic from bro_accounts where id = n.subject_pk) as sender_pic, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = n.subject_pk) as sender_name FROM {$this->base_table} n WHERE receiver_pk = ? order by date_created asc";
+
+        return $db->get_list($kwiri, [$_SESSION['pk']]);
     }
 
     public function update_notif($pk = null, $payload = [])
@@ -44,6 +48,14 @@ class NotificationModel {
     {
         global $db, $common;
         return $this->update_notif($pk, ["status" => 1]);
+    }
+
+    public function notification_decision($payload=[]){
+        //payload nito decision(1/0), tska notif_pk
+        //select mo muna ano ung action nung notif(ENROLL/SIGNUP/etc...)
+        //switch mo ung action para alam mo kung anong table ung iuupdate
+        //e.g: action=SIGNUP, approve mo ung signup nya sa bro_tribes, action=ENROLL, set mo ung is_enrolled nya sa bro_enrollment
+        
     }
 }
 
