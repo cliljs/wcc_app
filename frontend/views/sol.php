@@ -15,24 +15,7 @@
             </tr>
           </thead>
           <tbody id="tblLessonBody">
-            <?php
-            for ($i = 1; $i < 6; $i++) {
-              echo "<tr>";
-              echo "<td>Lesson $i</td>";
-              echo "<td>";
-              echo "<div class='custom-control custom-switch custom-switch-off-danger custom-switch-on-success'>";
-              echo "<input data-attribute='{$i}' type='checkbox' class='custom-control-input switchSOLInput' id='swSOLLesson{$i}' name='swSOLLesson{$i}'>";
-              echo "<label class='custom-control-label switchSOLLabel' for='swSOLLesson{$i}'>Absent</label>";
-              echo "</div>";
-              echo "</td>";
-              echo "<td>";
-              echo "Sample Name";
-              echo "</td>";
-              echo "</tr>";
-            }
-
-            ?>
-
+           
           </tbody>
         </table>
       </div>

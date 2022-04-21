@@ -14,7 +14,7 @@ switch ($act) {
             )
         );
         break;
-    
+
     case 'update_enrollment':
         echo json_encode(
             $common->create_response(
@@ -24,7 +24,7 @@ switch ($act) {
             )
         );
         break;
-    
+
     case 'remove_enrollment':
         echo json_encode(
             $common->create_response(
@@ -34,7 +34,7 @@ switch ($act) {
             )
         );
         break;
-    
+
     case 'get_enrollment':
         echo json_encode(
             $common->create_response(
@@ -44,7 +44,15 @@ switch ($act) {
             )
         );
         break;
-    
+    case 'graduate':
+        echo json_encode(
+            $common->create_response(
+                "EnrollmentController.php/?action=graduate",
+                $enroll_model->graduate(),
+                1
+            )
+        );
+        break;
     case 'get_enrollment_list':
         echo json_encode(
             $common->create_response(
@@ -54,7 +62,7 @@ switch ($act) {
             )
         );
         break;
-    
+
     case 'approve_enrollment':
         echo json_encode(
             $common->create_response(
@@ -64,7 +72,7 @@ switch ($act) {
             )
         );
         break;
-    
+
     case 'get_pending_enrollment':
         echo json_encode(
             $common->create_response(
@@ -74,7 +82,7 @@ switch ($act) {
             )
         );
         break;
-    
+
     default:
         break;
 }

@@ -49,6 +49,14 @@ class EnrollmentModel {
         return $updated ? $this->get_enrollment_details($pk) : false;
     }
 
+    public function graduate()
+    {
+        global $db, $common;
+
+        $updated  = $db->update("UPDATE {$this->base_table} SET is_graduated = 1 WHERE id = (Select id from {$this->base_table} where user_pk = ? and is_graduated = 0)", [$_SESSION['pk']]);
+        return $updated ? true : false;
+    }
+
     public function remove_enrollment($pk = null)
     {
         global $db, $common;
@@ -75,7 +83,7 @@ class EnrollmentModel {
                                                 ]
                                             );
         if (!empty($is_approved)) {
-           $lessons =  $db->get_list("SELECT id as lesson_pk FROM bro_lessons WHERE lesson_type = ?", [$is_approved['lesson_type']]);
+           $lessons =  $db->get_list("SELECT id as lesson_pk,(Select user_pk from bro_enrollment where id = ?) as student_pk FROM bro_lessons WHERE lesson_type = ?", [$pk,$is_approved['lesson_type']]);
            foreach ($lessons as $key => $lesson) {
              $school_model->create_schooling($lesson);      
            }

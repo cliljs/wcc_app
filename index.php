@@ -519,32 +519,155 @@ $day_now = date("l");
           }
         } else if (me == 'lifeclass') {
           $('body').on('click', '.switchLabel', function() {
-            if ($(this).html() == 'Absent') {
-              $(this).html('Attended');
+            let my_attendance = 0;
+            let dataID = $(this).attr('data-id');
+            if ($(this).is(':checked')) {
+              $(this).next().html('Attended');
+              my_attendance = 1;
             } else {
-              $(this).html('Absent');
+              $(this).next().html('Absent');
             }
+            let payload = {
+              attendance: my_attendance
+            }
+            fireAjax('SchoolingController.php?action=schooling_attendance&id=' + dataID, payload, false).then(function(data) {
+              console.log(data);
+              let objData = $.parseJSON(data.trim()).data;
+              console.log(objData);
+              if (objData.length === 0) {
+                fireSwal('Training', 'Failed to update attendance. Please reload the page', 'error');
+
+              } else {
+                fireSwal('Training', 'Attendance updated successfully. Please wait for your leader\'s confirmation', 'success');
+              }
+
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Training', 'Failed to update attendance. Please reload the page', 'error');
+            })
           });
           $('#btnSubmitLC').on('click', function() {
+            fireAjax('EnrollmentController.php?action=graduate', '', false).then(function(data) {
+              console.log(data);
+              let objData = $.parseJSON(data.trim()).data;
+              //index.php?view=trainings
+              if (objData == false) {
+                fireSwal('Training', 'Failed to complete training. Please try again', 'error');
+              } else {
+                fireSwal('Training', 'Training completed successfully', 'success');
+              }
 
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Training', 'Failed to complete training. Please try again', 'error');
+            });
+          });
+          let payload = {
+            lesson_type: 'LIFE_CLASS'
+          };
+          fireAjax('SchoolingController.php?action=get_user_schooling', payload, false).then(function(data) {
+            console.log(data);
+            let objData = $.parseJSON(data.trim()).data;
+            let retval = '';
+            $.each(objData, function(k, v) {
+              retval += '<tr>';
+              retval += '<td>' + v.lesson_title + '</td>';
+              retval += '<td>';
+              retval += '<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">';
+              retval += '<input data-id="' + v.id + '" type="checkbox" class="custom-control-input switchInput" id="swW' + v.id + '" name="swW' + v.id + '" ';
+              retval += (v.attendance == null || v.attendance == 0) ? '' : 'checked ';
+              retval += (v.leader_pk == 0) ? '>' : 'disabled>';
+              retval += '<label class="custom-control-label switchLabel" for="swW' + v.id + '">';
+              retval += (v.attendance == null || v.attendance == 0) ? 'Absent' : 'Attended ';
+              retval += '</label>';
+              retval += '</div>';
+              retval += '</td>';
+              retval += '<td>';
+              retval += (v.leader_pk == 0) ? ' ' : v.approve_name;
+              retval += '</td>';
+              retval += '</tr>';
+            });
+            $('#tblLifeClassBody').html(retval);
+          }).catch(function(err) {
+            console.log(err);
+            fireAjax('Training', 'Failed to retrieve list of topics. Please reload the page', 'error');
           });
         } else if (me.includes('sol')) {
           $('#trainingLabel').html(me.toUpperCase());
-          $('body').on('click', '.switchSOLLabel', function() {
-            if ($(this).html() == 'Absent') {
-              $(this).html('Attended');
+          $('body').on('change', '.switchSOLInput', function() {
+            let my_attendance = 0;
+            let dataID = $(this).attr('data-id');
+            if ($(this).is(':checked')) {
+              $(this).next().html('Attended');
+              my_attendance = 1;
             } else {
-              $(this).html('Absent');
+              $(this).next().html('Absent');
             }
+            let payload = {
+              attendance: my_attendance
+            }
+
+            fireAjax('SchoolingController.php?action=schooling_attendance&id=' + dataID, payload, false).then(function(data) {
+              console.log(data);
+              let objData = $.parseJSON(data.trim()).data;
+
+              if (objData.length === 0) {
+                fireSwal('Training', 'Failed to update attendance. Please reload the page', 'error');
+
+              } else {
+                fireSwal('Training', 'Attendance updated successfully. Please wait for your leader\'s confirmation', 'success');
+              }
+
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Training', 'Failed to update attendance. Please reload the page', 'error');
+            })
           });
           $('#btnSubmitSOL').on('click', function() {
+            fireAjax('EnrollmentController.php?action=graduate', '', false).then(function(data) {
+              console.log(data);
+              let objData = $.parseJSON(data.trim()).data;
+              //index.php?view=trainings
+              if (objData == false) {
+                fireSwal('Training', 'Failed to complete training. Please try again', 'error');
+              } else {
+                fireSwal('Training', 'Training completed successfully', 'success');
+              }
 
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Training', 'Failed to complete training. Please try again', 'error');
+            });
           });
-          fireAjax('','',false).then(function(data){
-
-          }).catch(function(err){
+          let loadpay = {
+            lesson_type: me
+          };
+          fireAjax('SchoolingController.php?action=get_user_schooling', loadpay, false).then(function(data) {
+            console.log(data);
+            let objData = $.parseJSON(data.trim()).data;
+            let retval = '';
+            $.each(objData, function(k, v) {
+              retval += '<tr>';
+              retval += '<td>' + v.lesson_title + '</td>';
+              retval += '<td>';
+              retval += '<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">';
+              retval += '<input data-id="' + v.id + '" type="checkbox" class="custom-control-input switchSOLInput" id="swSOLLesson' + v.id + '" name="swSOLLesson' + v.id + '" ';
+              retval += (v.attendance == null || v.attendance == 0) ? '' : 'checked ';
+              retval += (v.leader_pk == 0) ? '>' : 'disabled>';
+              retval += '<label class="custom-control-label switchSOLLabel" for="swSOLLesson' + v.id + '">';
+              retval += (v.attendance == null || v.attendance == 0) ? 'Absent' : 'Attended ';
+              retval += '</label>';
+              retval += '</div>';
+              retval += '</td>';
+              retval += '<td>';
+              retval += (v.leader_pk == 0) ? ' ' : v.approve_name;
+              retval += '</td>';
+              retval += '</tr>';
+            });
+            $('#tblLessonBody').html(retval);
+          }).catch(function(err) {
             console.log(err);
-            fireAjax('Training','Failed to retrieve list of topics. Please reload the page','error');
+            fireAjax('Training', 'Failed to retrieve list of topics. Please reload the page', 'error');
           });
         } else if (me == 'qrmaintenance') {
           let qrID = 0;
@@ -700,7 +823,7 @@ $day_now = date("l");
             let retval = '';
             console.log(objData);
             $.each(objData, function(k, v) {
-            
+
               switch (v.action) {
                 case "SIGNUP":
                   notifCaption = ' created an account';
