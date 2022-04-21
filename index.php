@@ -17,7 +17,7 @@ $is_leader = ($_SESSION["is_leader"] == "1") ? true : false;
 $is_pastor = ($_SESSION["is_pastor"] == "1") ? true : false;
 
 $day_now = date("l");
-//print_r($_SESSION);
+print_r($_SESSION);
 
 ?>
 
@@ -217,12 +217,12 @@ $day_now = date("l");
 
           </div>
           <div class="modal-body text-center">
-            <h3 class="text-muted" id="badge_name">Jonathan Loyloy</h3>
-            <img class="img-fluid" src="https://via.placeholder.com/500">
+            <h3 class="text-muted" id="badge_name"><?php echo $_SESSION['login_name']; ?></h3>
+            <img id="badge_training" class="img-fluid" src="https://via.placeholder.com/500">
             <div class="card elevation-1 mt-3">
               <div class="card-header text-center">
-                <h4 class="theme-color">April 15, 2022</h4>
-                <h5 class="theme-color">Sunday Celebration Attendance Submitted</h5>
+                <h4 id="badge_date" class="theme-color"><?php echo date('F j, Y'); ?></h4>
+                <h5 id="badge_attendance" class="theme-color"></h5>
 
               </div>
               </card>
@@ -861,11 +861,46 @@ $day_now = date("l");
       function preload(element, is_show) {
 
       };
-
+      //todo - kuha ng attendance ngaun
       function showBadge() {
-        $('#mdlBadge').modal({
-          backdrop: 'static'
-        });
+        fireAjax('', '', false).then(function(data) {
+          console.log(data);
+          var objData = $.parseJSON(data.trim()).data;
+          let badge_src = image_url;
+          switch (objData.current_lesson) {
+            case "LIFE_CLASS":
+              image_url += 'lc.png';
+              break;
+            case "SOL1":
+              image_url += 'sol1.png';
+              break;
+            case "SOL2":
+              image_url += 'sol2.png';
+              break;
+            case "SOL3":
+              image_url += 'sol3.png';
+              break;
+            case "RE_ENCOUNTER":
+              image_url += 're.png';
+              break;
+            default:
+              break;
+
+          }
+          $('#badge_training').attr('src',badge_src);
+          if(objData.attendance == null){
+            $('#badge_attendance').html('No Attendance Found');
+          } else{
+            $('#badge_attendance').html('Sunday Celebration Attendance Submitted');
+          }
+          $('#mdlBadge').modal({
+            backdrop: 'static'
+          });
+        }).catch(function(err) {
+          console.log(err);
+          fireSwal('Badge', 'Failed to retrieve badge information. Please reload the page', 'error');
+        })
+
       }
 
       function loadLessons(lesson_type) {

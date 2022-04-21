@@ -28,10 +28,11 @@ class NotificationModel {
     public function get_notification_list()
     {
         global $db, $common;
-        $kwiri = ($_SESSION['is_admin'] == 1) ? 
-        "SELECT id,date_created,sender_pk,action,(Select profile_pic from bro_accounts where id = n.subject_pk) as sender_pic, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = n.subject_pk) as sender_name FROM {$this->base_table} n WHERE (receiver_pk = ? or receiver_pk = 0) order by date_created asc" : 
-        "SELECT id,date_created,sender_pk,action,(Select profile_pic from bro_accounts where id = n.subject_pk) as sender_pic, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = n.subject_pk) as sender_name FROM {$this->base_table} n WHERE receiver_pk = ? order by date_created asc";
+        $criteria = ($_SESSION['is_admin'] == 1) ? 
+        "(receiver_pk = ? or receiver_pk = 0)" : 
+        "receiver_pk = ?";
 
+        $kwiri = "SELECT id,date_created,sender_pk,action,(Select profile_pic from bro_accounts where id = n.subject_pk) as sender_pic, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = n.subject_pk) as sender_name FROM {$this->base_table} n WHERE {$criteria} order by date_created asc";
         return $db->get_list($kwiri, [$_SESSION['pk']]);
     }
 
@@ -52,10 +53,15 @@ class NotificationModel {
 
     public function notification_decision($payload=[]){
         //payload nito decision(1/0), tska notif_pk
-        //select mo muna ano ung action nung notif(ENROLL/SIGNUP/etc...)
+        //nag add ako ng new column sa bro_notifications
+        //select mo muna ano ung table_pk tska action nung notif(ENROLL/SIGNUP/etc...)
         //switch mo ung action para alam mo kung anong table ung iuupdate
-        //e.g: action=SIGNUP, approve mo ung signup nya sa bro_tribes, action=ENROLL, set mo ung is_enrolled nya sa bro_enrollment
+        //e.g: action=SIGNUP, approve mo ung signup nya sa bro_tribe where id = table_pk, action=ENROLL, set mo ung is_enrolled nya sa bro_enrollment where id = table_pk
         
+        //may new table, bro_mentoring. ako na bahala bumanat dun tska sa mga adjustments sa API, tska sa mga validation.
+        //prepare ka nlng sa fitness app. muka namang desidido na sila eh.
+        //gawa ka nalang new repo. same structure sa ganto. nakahiwalay backend tska frontend
+
     }
 }
 

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 21, 2022 at 07:52 AM
+-- Generation Time: Apr 21, 2022 at 04:34 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.3.31
 
@@ -228,6 +228,20 @@ INSERT INTO `bro_lessons` (`id`, `lesson_type`, `lesson_title`, `sequence`, `cre
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `bro_mentoring`
+--
+
+CREATE TABLE `bro_mentoring` (
+  `id` int(11) NOT NULL,
+  `mentor_date` date NOT NULL,
+  `attendance` tinyint(1) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `created_by` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `bro_notifications`
 --
 
@@ -236,29 +250,13 @@ CREATE TABLE `bro_notifications` (
   `sender_pk` int(11) DEFAULT NULL,
   `receiver_pk` int(11) NOT NULL DEFAULT 0 COMMENT '0 - all admin',
   `subject_pk` int(11) DEFAULT NULL,
+  `table_pk` int(11) NOT NULL COMMENT 'PK ng row sa table na i-uupdate',
   `caption` varchar(200) DEFAULT NULL,
   `action` varchar(50) DEFAULT NULL,
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0 - unread / 1 - read',
   `date_created` timestamp NULL DEFAULT current_timestamp(),
   `date_updated` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `bro_notifications`
---
-
-INSERT INTO `bro_notifications` (`id`, `sender_pk`, `receiver_pk`, `subject_pk`, `caption`, `action`, `status`, `date_created`, `date_updated`) VALUES
-(1, 6, 0, 6, NULL, 'ENROLL', 0, '2022-04-19 13:14:57', NULL),
-(2, 6, 0, 6, NULL, 'ENROLL', 0, '2022-04-19 13:15:53', NULL),
-(3, 9, 6, 9, NULL, 'SIGNUP', 0, '2022-04-20 12:36:09', NULL),
-(4, 1, 0, 6, NULL, 'ENROLL', 0, '2022-04-20 13:47:28', NULL),
-(5, 1, 0, 6, NULL, 'ENROLL', 0, '2022-04-21 01:16:36', NULL),
-(6, 6, 0, 6, NULL, 'ENROLL', 0, '2022-04-21 05:18:33', NULL),
-(7, NULL, 0, 6, NULL, 'ENROLL', 0, '2022-04-21 05:20:33', NULL),
-(8, 6, 0, 6, NULL, 'ENROLL', 0, '2022-04-21 05:23:00', NULL),
-(9, NULL, 0, 6, NULL, 'ENROLL', 0, '2022-04-21 05:23:09', NULL),
-(10, 6, 0, 6, NULL, 'ENROLL', 0, '2022-04-21 05:26:11', NULL),
-(11, NULL, 0, 6, NULL, 'ENROLL', 0, '2022-04-21 05:26:29', NULL);
 
 -- --------------------------------------------------------
 
@@ -428,6 +426,12 @@ ALTER TABLE `bro_lessons`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `bro_mentoring`
+--
+ALTER TABLE `bro_mentoring`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `bro_notifications`
 --
 ALTER TABLE `bro_notifications`
@@ -490,6 +494,12 @@ ALTER TABLE `bro_invites`
 --
 ALTER TABLE `bro_lessons`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
+
+--
+-- AUTO_INCREMENT for table `bro_mentoring`
+--
+ALTER TABLE `bro_mentoring`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `bro_notifications`
