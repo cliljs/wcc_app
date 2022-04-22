@@ -8,6 +8,7 @@
         <div class="card-body box-profile">
           <a href="index.php?view=cellgroup" class="btn btn-block btn-lg btn-secondary"><b>Cellgroup</b></a>
           <a href="index.php?view=trainings" class="btn btn-block btn-lg btn-secondary"><b>Training</b></a>
+          <a href="index.php?view=mentoring" class="btn btn-block btn-lg btn-secondary"><b>Mentoring</b></a>
           <a href="index.php?view=celebration" class="btn btn-block btn-lg btn-secondary"><b>Sunday Celebration</b></a>
         </div>
       </div>

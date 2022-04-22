@@ -15,7 +15,7 @@
             <div class="col-md-12">
               <div class="box shadow-sm rounded bg-white mb-3">
                 <div class="box-title border-bottom p-3">
-                  <h6 class="m-0">Today</h6>
+                  <h6 class="m-0">Unread</h6>
                 </div>
                 <div id="notifTodayContainer" class="box-body p-0">
                   
@@ -23,7 +23,7 @@
               </div>
               <div class="box shadow-sm rounded bg-white mb-3">
                 <div class="box-title border-bottom p-3">
-                  <h6 class="m-0">Earlier</h6>
+                  <h6 class="m-0">Recent</h6>
                 </div>
                 <div id="notifEarlierContainer" class="box-body p-0">
                   <p class = "text-muted text-center">No notifications available</p>

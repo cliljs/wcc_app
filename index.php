@@ -184,6 +184,9 @@ print_r($_SESSION);
                 case "lifeclass":
                   include "frontend/views/lifeclass.php";
                   break;
+                case "mentoring":
+                  include "frontend/views/mentoring.php";
+                  break;
                 case "sol1":
                 case "sol2":
                 case "sol3":
@@ -810,8 +813,31 @@ print_r($_SESSION);
 
         } else if (me == 'notifications') {
           $('body').on('click', '.btnNotifDecline, .btnNotifApprove', function() {
-            let decision = $(this).hasClass('btnNotifDecline') ? 0 : 1;
-            let notif_pk = $(this).attr('data-id');
+            let trigger_button = $(this);
+            let var_decision = $(this).hasClass('btnNotifDecline') ? 0 : 1;
+            let str_decition = $(this).hasClass('btnNotifDecline') ? 'disapproved' : 'approved';
+            let var_notif_pk = $(this).attr('data-id');
+            let payload = {
+              decision: var_decision,
+              notif_pk: var_notif_pk
+            };
+
+
+            fireAjax('', payload, false).then(function(data) {
+              console.log(data);
+              let objData = $.parseJSON(data.trim());
+              if (objData.success == 1) {
+                trigger_button.closest('.osahan-post-header').fadeOut('fast', function() {
+                  $(this).remove();
+                });
+                fireSwal('Notifications', 'Notification ' + str_decision + ' successfully', 'success');
+              } else {
+                fireSwal('Notifications', 'Failed to update notifications. Please reload the page', 'error');
+              }
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Notifications', 'Failed to update notifications. Please reload the page', 'error');
+            });
           });
           $('body').on('click', '.notifName', function() {
             let user_pk = $(this).attr('data-id');
@@ -854,6 +880,50 @@ print_r($_SESSION);
             console.log(err);
             fireSwal('Notifications', 'Failed to retrieve list of notifications. Please reload the page.', 'error');
           })
+        } else if (me == 'mentoring') {
+          loadMentoring();
+          $('#mentoring_date').datetimepicker({
+            format: 'YYYY-MM-DD'
+          });
+          $('#frmMentoring').on('submit', function(e) {
+            e.preventDefault();
+            let mentoring_form = $(this);
+            let fd = new FormData(this);
+            console.log(fd);
+            fireAjax('MentoringController.php?action=create_mentoring', fd, true).then(function(data) {
+              console.log(data);
+              let objData = $.parseJSON(data.trim());
+              if(objData.success == 1){
+                loadMentoring();
+                fireSwal('Mentoring', 'Entry added successfully', 'success');
+              } else{
+                fireSwal('Mentoring', 'Failed to add entry. Please try again', 'error');
+              }
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Mentoring', 'Failed to add entry. Please try again', 'error');
+            })
+
+          });
+
+          function loadMentoring() {
+            fireAjax('MentoringController.php?action=get_mentoring', '', false).then(function(data) {
+              console.log(data);
+              let objData = $.parseJSON(data.trim()).data;
+              let retval = '';
+              $.each(objData,function(k,v){
+                retval += '<tr>';
+                retval += '<td>' + v.mentor_date + '</td>';
+                retval += '<td>' + v.attendance + '</td>';
+                retval += '<td></td>';
+                retval += '</tr>';
+              });
+              $('#tblMentoringBody').html(retval);
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Mentoring', 'Failed to load mentoring list. Please reload the page', 'error');
+            })
+          }
         }
 
       });
@@ -887,10 +957,10 @@ print_r($_SESSION);
               break;
 
           }
-          $('#badge_training').attr('src',badge_src);
-          if(objData.attendance == null){
+          $('#badge_training').attr('src', badge_src);
+          if (objData.attendance == null) {
             $('#badge_attendance').html('No Attendance Found');
-          } else{
+          } else {
             $('#badge_attendance').html('Sunday Celebration Attendance Submitted');
           }
           $('#mdlBadge').modal({
