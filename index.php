@@ -274,10 +274,39 @@ print_r($_SESSION);
           }
         } else if (me == 'tribe') {
           loadDisciples();
+          getLeaders();
           $('body').on('click', '.viewTribeMembers', function() {
             if ($(this).hasClass('fa-minus')) return;
             let tribeID = $(this).attr('data-id');
             loadSubDisciples(tribeID);
+          });
+          $('body').on('click', '.btnTribeTransfer', function() {
+            let thisButton = $(this);
+            $('#txTransferName').attr('data-id', thisButton.attr('data-id'));
+            $('#txTransferName').val(thisButton.attr('data-name'));
+            $('#mdlTransfer').modal({
+              backdrop: 'static'
+            });
+          });
+          $('#btnTransferMember').on('click', function() {
+            let payload = {
+              new_leader_pk: $('#new_leader_name').val()
+            };
+            let member_id = $('#txTransferName').attr('data-id');
+            fireAjax('TribeController.php?action=transfer_disciple&pk=' + member_id, payload, false).then(function(data) {
+              console.log(data);
+              let obj = $.parseJSON(data.trim()).success;
+              if (obj == 1) {
+                loadDisciples();
+                $('#mdlTransfer').modal('hide');
+                fireSwal('Transfer Member', 'Member transferred successfully. Please wait for pastor\'s confirmation', 'success');
+              } else {
+                fireSwal('Transfer Member', 'Failed to transfer member. Please reload the page', 'error');
+              }
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Transfer Member', 'Failed to transfer member. Please reload the page', 'error');
+            });
           });
         } else if (me == 'attendance') {
           let vip_list = [];
@@ -842,44 +871,57 @@ print_r($_SESSION);
           $('body').on('click', '.notifName', function() {
             let user_pk = $(this).attr('data-id');
           });
-          fireAjax('NotificationController.php?action=get_user_notifications', '', false).then(function(data) {
-            console.log(data);
-            let objData = $.parseJSON(data.trim()).data;
-            let notifCaption = '';
-            let retval = '';
-            console.log(objData);
-            $.each(objData, function(k, v) {
+          getNotifications(0);
+          getNotifications(1);
 
-              switch (v.action) {
-                case "SIGNUP":
-                  notifCaption = ' created an account';
-                  break;
-                case "ENROLL":
-                  break;
-                case "TRANSFER":
-                  break;
-                case "ATTENDANCE":
-                  break;
-                case "SCHOOL":
-                  break;
+          function getNotifications(read) {
+            fireAjax('NotificationController.php?action=get_user_notifications&read=' + read, '', false).then(function(data) {
+              console.log(data);
+              let objData = $.parseJSON(data.trim()).data;
+              let notifCaption = '';
+              let retval = '';
+
+              $.each(objData, function(k, v) {
+
+                switch (v.action) {
+                  case "SIGNUP":
+                    notifCaption = ' created an account';
+                    break;
+                  case "ENROLL":
+                    break;
+                  case "TRANSFER":
+                    break;
+                  case "ATTENDANCE":
+                    break;
+                  case "SCHOOL":
+                    break;
+                }
+                retval += '<div class="p-3 d-flex align-items-center border-bottom osahan-post-header">';
+                retval += '<div class="dropdown-list-image mr-3">';
+                retval += '<img class="rounded-circle" src="' + image_url + v.sender_pic + '" alt="user_avatar" />';
+                retval += '</div>';
+                retval += '<div class="font-weight-bold mr-3">';
+                retval += '<div><span class="font-weight-normal"><a data-user = "' + v.sender_pk + '" href = "Javascript:void(0);" class = "notifName"><b>' + v.sender_name + '</b>' + notifCaption + '</div>';
+                retval += '<div class="mb-2"><span class="font-weight-light">' + v.date_created + '</span></div>';
+                if (read == 0) {
+                  retval += '<button type="button" data-id = "' + v.id + '" class="btn btn-outline-dark btn-sm btnNotifDecline">Decline</button>&nbsp;';
+                  retval += '<button type="button" data-id = "' + v.id + '" class="btn btn-info btn-sm btnNotifApprove">Approve</button>';
+                }
+                retval += '</div>';
+                retval += '</div>';
+              });
+              retval = (retval == '') ? 'No notifications available' : retval;
+              if(read == 0){
+                $('#notifTodayContainer').html(retval);
+              } else{
+                $('#notifEarlierContainer').html(retval);
               }
-              retval += '<div class="p-3 d-flex align-items-center border-bottom osahan-post-header">';
-              retval += '<div class="dropdown-list-image mr-3">';
-              retval += '<img class="rounded-circle" src="' + image_url + v.sender_pic + '" alt="user_avatar" />';
-              retval += '</div>';
-              retval += '<div class="font-weight-bold mr-3">';
-              retval += '<div><span class="font-weight-normal"><a data-user = "' + v.sender_pk + '" href = "Javascript:void(0);" class = "notifName"><b>' + v.sender_name + '</b>' + notifCaption + '</div>';
-              retval += '<div class="mb-2"><span class="font-weight-light">' + v.date_created + '</span></div>';
-              retval += '<button type="button" data-id = "' + v.id + '" class="btn btn-outline-dark btn-sm btnNotifDecline">Decline</button>&nbsp;';
-              retval += '<button type="button" data-id = "' + v.id + '" class="btn btn-info btn-sm btnNotifApprove">Approve</button>';
-              retval += '</div>';
-              retval += '</div>';
-            });
-            $('#notifTodayContainer').html(retval);
-          }).catch(function(err) {
-            console.log(err);
-            fireSwal('Notifications', 'Failed to retrieve list of notifications. Please reload the page.', 'error');
-          })
+              
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Notifications', 'Failed to retrieve list of notifications. Please reload the page.', 'error');
+            })
+          }
         } else if (me == 'mentoring') {
           loadMentoring();
           $('#mentoring_date').datetimepicker({
@@ -893,10 +935,10 @@ print_r($_SESSION);
             fireAjax('MentoringController.php?action=create_mentoring', fd, true).then(function(data) {
               console.log(data);
               let objData = $.parseJSON(data.trim());
-              if(objData.success == 1){
+              if (objData.success == 1) {
                 loadMentoring();
                 fireSwal('Mentoring', 'Entry added successfully', 'success');
-              } else{
+              } else {
                 fireSwal('Mentoring', 'Failed to add entry. Please try again', 'error');
               }
             }).catch(function(err) {
@@ -906,16 +948,38 @@ print_r($_SESSION);
 
           });
 
+          $('body').on('click', '.btnRemoveMentoring', function() {
+            let thisButton = $(this);
+            let dataID = thisButton.attr('data-id');
+            fireAjax('MentoringController.php?action=remove_mentoring&pk=' + dataID, '', false).then(function(data) {
+              console.log(data);
+              let obj = $.parseJSON(data.trim());
+              if (obj.success == 1) {
+                thisButton.closest('tr').remove();
+                fireSwal('Mentoring', 'Entry removed successfully', 'success');
+              } else {
+                fireSwal('Mentoring', 'Failed to remove entry. Please reload the page', 'error');
+              }
+
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Mentoring', 'Failed to remove entry. Please reload the page', 'error');
+            });
+          });
+
           function loadMentoring() {
             fireAjax('MentoringController.php?action=get_mentoring', '', false).then(function(data) {
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
               let retval = '';
-              $.each(objData,function(k,v){
+              let attended = '';
+
+              $.each(objData, function(k, v) {
+                attended = (v.attendance == 1) ? '<button class = "btn btn-md btn-success disabled">Attended</button>' : '<button class = "btn btn-md btn-danger disabled">Absent</button>';
                 retval += '<tr>';
                 retval += '<td>' + v.mentor_date + '</td>';
-                retval += '<td>' + v.attendance + '</td>';
-                retval += '<td></td>';
+                retval += '<td>' + attended + '</td>';
+                retval += '<td><button class = "btn btn-outline-dark btn-md btnRemoveMentoring" data-id = "' + v.id + '">Remove</button></td>';
                 retval += '</tr>';
               });
               $('#tblMentoringBody').html(retval);
@@ -977,6 +1041,25 @@ print_r($_SESSION);
 
       }
 
+      function getLeaders() {
+        let data = fireAjax('TribeController.php?action=get_leader_names&me=0', '', false).then(function(data) {
+          console.log(data)
+          let obj = jQuery.parseJSON(data.trim());
+          let tls = obj.data;
+          let renderVal = '<option selected="selected" disabled="disabled">Please select a new tribe leader</option>';
+          $.each(tls, function(k, v) {
+            renderVal += '<option value="' + v.id + '">' + v.fullname + '</option>';
+          });
+          $("#new_leader_name").html(renderVal);
+        }).catch(function(err) {
+          console.log(err)
+          fireSwal('Member Transfer', 'Failed to retrieve list of tribe leaders. Please reload the page', 'error');
+        })
+        $('#new_leader_name').select2({
+          theme: 'bootstrap4'
+        });
+      }
+
       function loadDisciples(leader_pk = 0) {
         let ajaxURL = (leader_pk == 0) ? 'TribeController.php?action=get_disciples' : 'TribeController.php?action=get_disciples&id=' + leader_pk;
         fireAjax(ajaxURL, '', false).then(function(data) {
@@ -1006,6 +1089,11 @@ print_r($_SESSION);
             retval += '<img class="img-circle img-bordered-sm" src="' + image_url + user_url + '" alt="' + v.fullname + '">';
             retval += '<span class="username">';
             retval += '<a class="custom linkProfile" href="Javascript:void(0);" data-id = "' + v.id + '">' + v.fullname + '</a>';
+            if (member_type == '144') {
+              retval += '<br><button type="button" data-id = "' + v.id + '" class="my-1 btn btn-outline-dark btn-sm btnTribeLifestyle">Lifestyle</button>';
+              retval += '&nbsp;&nbsp;<button type="button" data-id = "' + v.id + '" data-name = "' + v.fullname + '" class="my-1 btn btn-info btn-sm btnTribeTransfer">Transfer</button>';
+            }
+
             retval += '</span>';
             retval += '<span class="description">' + member_type + ' . ' + member_numbers + '</span>';
             retval += '</div>';

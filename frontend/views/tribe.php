@@ -6,12 +6,36 @@
     <div id="tribeContainer">
 
     </div>
-    
+
   </div>
 
 </div>
 
+<div class="modal fade" id="mdlTransfer" tabindex="-1" role="dialog" aria-labelledby="mdlTransferLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mdlTransferLabel">Transfer Member</h5>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Member's Name:</label>
+          <input type="text" id="txTransferName" name="txTransferName" class="form-control" disabled>
+        </div>
+        <div class="form-group">
+          <label>Transfer to:</label>
+          <select id="new_leader_name" name="new_leader_name" class="form-control select2bs4" style="width: 100%;">
+          </select>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-info" id="btnTransferMember">Trasfer</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
+</div>
 
 <!-- <div class="card collapsed-card elevation-1">
               <div class="card-header">

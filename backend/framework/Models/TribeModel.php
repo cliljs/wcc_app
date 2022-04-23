@@ -31,7 +31,7 @@ class TribeModel {
         $notif_arr = [
             "sender_pk"   => $_SESSION['pk'],
             "receiver_pk" => 1,
-            "subject_pk"  => 1,
+            "subject_pk"  => $pk,
             "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
             "action"      => 'TRANSFER',
         ];
@@ -48,13 +48,14 @@ class TribeModel {
                             WHERE tr.leader_pk = ? AND tr.is_approved = ?", [$_SESSION['pk'], 0]);
     }
 
-    public function get_leader_names()
+    public function get_leader_names($payload = [])
     {
         global $db, $common;
+        $kwiri = (isset($payload["me"])) ? "AND NOT acc.id = " . $_SESSION['pk'] . " ORDER BY acc.firstname asc" : "ORDER BY acc.firstname asc";
         return $db->get_list("SELECT REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, acc.id
                             FROM bro_accounts acc 
                             WHERE acc.is_leader = ? 
-                            ORDER BY acc.firstname asc",
+                            {$kwiri}",
                             [1]);
     }
 

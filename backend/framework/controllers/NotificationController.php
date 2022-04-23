@@ -9,7 +9,7 @@ switch ($act) {
         echo json_encode(
             $common->create_response(
                 "NotificationController.php/?action=get_user_notifications",
-                $notif_model->get_notification_list(),
+                $notif_model->get_notification_list($_GET['read']),
                 1
             )
         );

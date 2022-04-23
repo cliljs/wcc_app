@@ -38,7 +38,7 @@ switch ($act) {
         echo json_encode(
             $common->create_response(
                 "TribeController.php/?action=tribe_approve_disciple",
-                $tribe_model->get_leader_names(),
+                $tribe_model->get_leader_names($_GET),
                 1
             )
         );

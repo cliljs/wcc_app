@@ -25,14 +25,14 @@ class NotificationModel {
         return $db->get_row("SELECT * FROM {$this->base_table} WHERE id = ?", [$pk]);
     }
 
-    public function get_notification_list()
+    public function get_notification_list($read)
     {
         global $db, $common;
         $criteria = ($_SESSION['is_admin'] == 1) ? 
         "(receiver_pk = ? or receiver_pk = 0)" : 
         "receiver_pk = ?";
 
-        $kwiri = "SELECT id,date_created,sender_pk,action,(Select profile_pic from bro_accounts where id = n.subject_pk) as sender_pic, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = n.subject_pk) as sender_name FROM {$this->base_table} n WHERE {$criteria} order by date_created asc";
+        $kwiri = "SELECT id,date_created,sender_pk,action,(Select profile_pic from bro_accounts where id = n.subject_pk) as sender_pic, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = n.subject_pk) as sender_name FROM {$this->base_table} n WHERE {$criteria} AND status = {$read} order by date_created asc";
         return $db->get_list($kwiri, [$_SESSION['pk']]);
     }
 
