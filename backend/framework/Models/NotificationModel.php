@@ -1,6 +1,7 @@
 <?php
 require_once '../../autoload.php';
-
+require_once MODEL_PATH . 'TribeModel.php';
+require_once MODEL_PATH . 'EnrollmentModel.php';
 class NotificationModel {
     private $base_table = 'bro_notifications';
 
@@ -13,6 +14,7 @@ class NotificationModel {
             "subject_pk"  => $payload['subject_pk'],
             "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
             "action"      => $payload['action'],
+            "table_pk"    => $payload['table_pk'],
         ];
         $fields  = $common->get_insert_fields($arr);
         $last_id = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
@@ -51,17 +53,35 @@ class NotificationModel {
         return $this->update_notif($pk, ["status" => 1]);
     }
 
-    public function notification_decision($payload=[]){
-        //payload nito decision(1/0), tska notif_pk
-        //nag add ako ng new column sa bro_notifications
-        //select mo muna ano ung table_pk tska action nung notif(ENROLL/SIGNUP/etc...)
-        //switch mo ung action para alam mo kung anong table ung iuupdate
-        //e.g: action=SIGNUP, approve mo ung signup nya sa bro_tribe where id = table_pk, action=ENROLL, set mo ung is_enrolled nya sa bro_enrollment where id = table_pk
-        
-        //may new table, bro_mentoring. ako na bahala bumanat dun tska sa mga adjustments sa API, tska sa mga validation.
-        //prepare ka nlng sa fitness app. muka namang desidido na sila eh.
-        //gawa ka nalang new repo. same structure sa ganto. nakahiwalay backend tska frontend
+    /* 
+        @params payload
+        id = notif pk
+        sender_pk
+        receiver_pk
+        subject_pk
+        table_pk
+        caption
+        action
+        status
+    */
+    public function notification_decision($payload = []){
+        global $db, $common, $tribe_model, $enroll_model;
+        switch ($payload['action']) {
+            case 'TRANSFER':
+            case 'SIGNUP':
+                $tribe_model->approve_disciple(["is_approved" => $payload['decision']], $payload['table_pk']);
+                break;
+            
+            case 'ENROLL':
+                $enroll_model->approve_user($payload['table_pk']);
+                break;
+            default:
+                # code...
+                break;
+        }
 
+        // @payload[id] = notif pk
+       return $this->read_notif($payload['id']);
     }
 }
 

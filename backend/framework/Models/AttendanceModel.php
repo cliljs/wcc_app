@@ -95,7 +95,8 @@ class AttendanceModel
          "receiver_pk" => $confirmed['account_pk'],
          "subject_pk"  => $confirmed['account_pk'],
          "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
-         "action"      => 'ATTENDANCE',
+         "action"      => 'NONE',
+         "table_pk"    => $pk
      ];
      $notif_model->create_notification($notif_arr);
      return $confirmed;

@@ -20,6 +20,13 @@ class TribeModel {
         return $db->insert("INSERT INTO {$this->base_table} {$tribe_fields}", array_values($tribe_info));
     }
 
+    // GET ROW FROM BASE TABLE
+    public function get_tribe_details($pk = null)
+    {
+        global $db, $common;
+        return $db->get_row("SELECT * FROM {$this->base_table} WHERE id = {$pk}");
+    }
+
     public function transfer_disciple($pk, $query)
     {
         global $db, $common, $notif_model;
@@ -27,13 +34,15 @@ class TribeModel {
             "leader_pk"   => $query['new_leader_pk'],
             "is_approved" => 0
         ];
+        $tribe_disciple = $db->get_row("SELECT member_pk FROM {$this->base_table} WHERE id = {$pk}");
         $updated = $db->update("UPDATE {$this->base_table} {$common->get_update_fields($arr)} WHERE id = {$pk}", array_values($arr));
         $notif_arr = [
             "sender_pk"   => $_SESSION['pk'],
             "receiver_pk" => 1,
-            "subject_pk"  => $pk,
+            "subject_pk"  => $tribe_disciple['member_pk'],
             "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
             "action"      => 'TRANSFER',
+            "table_pk"    => $pk
         ];
         $notif_model = $notif_model->create_notification($notif_arr);
         return $updated;
@@ -42,7 +51,6 @@ class TribeModel {
     public function get_pending_disciple()
     {
         global $db, $common;
-        
         return $db->get_list("SELECT acc.*, tr.is_approved FROM bro_accounts acc
                             INNER JOIN {$this->base_table} tr ON acc.id = tr.member_pk
                             WHERE tr.leader_pk = ? AND tr.is_approved = ?", [$_SESSION['pk'], 0]);

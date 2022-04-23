@@ -90,7 +90,7 @@ class AccountModel
             $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$last_id}", [$profile_pic]);
         }
 
-        $tribe_model->create_leader([
+       $tribe_pk =  $tribe_model->create_leader([
             "leader_pk" => $leader_info['id'],
             "insert_id" => $last_id
         ]);
@@ -98,9 +98,10 @@ class AccountModel
         $notif_arr = [
             "sender_pk"   => $last_id,
             "receiver_pk" => $leader_info['id'],
-            "subject_pk"  => $last_id,
+            "subject_pk"  => 0,
             "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
             "action"      => 'SIGNUP',
+            "table_pk"    => $tribe_pk
         ];
         $notif_model = $notif_model->create_notification($notif_arr);
         return $last_id;

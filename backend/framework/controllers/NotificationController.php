@@ -15,6 +15,16 @@ switch ($act) {
         );
         break;
     
+    case 'notif_decision':
+        echo json_encode(
+            $common->create_response(
+                "NotificationController.php/?action=notif_decision",
+                $notif_model->notification_decision($_POST),
+                1
+            )
+        );
+        break;
+    
     default:
         # code...
         break;

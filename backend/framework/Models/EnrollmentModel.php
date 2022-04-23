@@ -23,6 +23,7 @@ class EnrollmentModel {
             "subject_pk"  => $_SESSION['pk'],
             "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
             "action"      => 'ENROLL',
+            "table_pk"    => $last_id
         ];
         $notif_model = $notif_model->create_notification($notif_arr);
         return $this->get_enrollment_details($last_id);
@@ -88,12 +89,14 @@ class EnrollmentModel {
              $school_model->create_schooling($lesson);      
            }
 
+            // PABALIK PAPUNTANG DISCIPLE ETO    
            $notif_arr = [
                 "sender_pk"   => $_SESSION['pk'],
                 "receiver_pk" => 0,
                 "subject_pk"  => $is_approved['user_pk'],
                 "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
                 "action"      => 'ENROLL',
+                "table_pk"    => $pk
             ];
             $notif_model = $notif_model->create_notification($notif_arr);
         }

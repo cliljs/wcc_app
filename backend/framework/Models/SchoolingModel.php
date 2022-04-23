@@ -36,15 +36,6 @@ class SchoolingModel {
             "date_approved" => date('Y-m-d H:i:s')
         ];
         $updated_schooling = $this->update_schooling($pk, $arr);
-        // $notif_arr = [
-        //     "sender_pk"   => $updated_schooling['leader_pk'],
-        //     "receiver_pk" => $updated_schooling['user_pk'],
-        //     "subject_pk"  => $updated_schooling['user_pk'],
-        //     "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
-        //     "action"      => 'SCHOOL',
-        // ];
-        // $notif_model->create_notification($notif_arr);
-
         return $updated_schooling;
     }
 
