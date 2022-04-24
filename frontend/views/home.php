@@ -12,7 +12,7 @@
     <a href="Javascript:void(0);" id="btnShowBadge" class="btn btn-block btn-lg btn-secondary"><b>My Badge</b></a>
     <a href="index.php?view=lifestyle" class="btn btn-block btn-lg btn-secondary"><b>Lifestyle</b></a>
     <?php
-    if ($is_leader) {
+    if ($is_leader || $is_admin) {
       echo "<a href='index.php?view=notifications' class='btn btn-block btn-lg btn-secondary'><b>Notifications</b></a>";
     }
     if ($is_admin) {

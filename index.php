@@ -844,15 +844,19 @@ print_r($_SESSION);
           $('body').on('click', '.btnNotifDecline, .btnNotifApprove', function() {
             let trigger_button = $(this);
             let var_decision = $(this).hasClass('btnNotifDecline') ? 0 : 1;
-            let str_decition = $(this).hasClass('btnNotifDecline') ? 'disapproved' : 'approved';
+            let str_decision = $(this).hasClass('btnNotifDecline') ? 'disapproved' : 'approved';
             let var_notif_pk = $(this).attr('data-id');
+            let var_table_pk = $(this).attr('data-table');
+            let var_notif_action = $(this).attr('data-action');
             let payload = {
+              id: var_notif_pk,
               decision: var_decision,
-              notif_pk: var_notif_pk
+              table_pk: var_table_pk,
+              action:var_notif_action
             };
 
 
-            fireAjax('', payload, false).then(function(data) {
+            fireAjax('NotificationController.php?action=notif_decision', payload, false).then(function(data) {
               console.log(data);
               let objData = $.parseJSON(data.trim());
               if (objData.success == 1) {
@@ -880,32 +884,34 @@ print_r($_SESSION);
               let objData = $.parseJSON(data.trim()).data;
               let notifCaption = '';
               let retval = '';
-
+              let userpic = '';
               $.each(objData, function(k, v) {
 
-                switch (v.action) {
-                  case "SIGNUP":
-                    notifCaption = ' created an account';
-                    break;
-                  case "ENROLL":
-                    break;
-                  case "TRANSFER":
-                    break;
-                  case "ATTENDANCE":
-                    break;
-                  case "SCHOOL":
-                    break;
-                }
+                // switch (v.action) {
+                //   case "SIGNUP":
+                //     notifCaption = ' created an account';
+                //     break;
+                //   case "ENROLL":
+                //     break;
+                //   case "TRANSFER":
+                //     notifCaption = ' has been transferred';
+                //     break;
+                //   case "ATTENDANCE":
+                //     break;
+                //   case "SCHOOL":
+                //     break;
+                // }
+                userpic = (v.sender_pic == null) ? 'user.png' : v.sender_pic;
                 retval += '<div class="p-3 d-flex align-items-center border-bottom osahan-post-header">';
                 retval += '<div class="dropdown-list-image mr-3">';
-                retval += '<img class="rounded-circle" src="' + image_url + v.sender_pic + '" alt="user_avatar" />';
+                retval += '<img class="rounded-circle" src="' + image_url + userpic + '" alt="user_avatar" />';
                 retval += '</div>';
                 retval += '<div class="font-weight-bold mr-3">';
-                retval += '<div><span class="font-weight-normal"><a data-user = "' + v.sender_pk + '" href = "Javascript:void(0);" class = "notifName"><b>' + v.sender_name + '</b>' + notifCaption + '</div>';
+                retval += '<div><span class="font-weight-normal"><a data-user = "' + v.sender_pk + '" href = "Javascript:void(0);" class = "notifName"><b>' + v.sender_name + '</b>' + v.caption + '</div>';
                 retval += '<div class="mb-2"><span class="font-weight-light">' + v.date_created + '</span></div>';
                 if (read == 0) {
-                  retval += '<button type="button" data-id = "' + v.id + '" class="btn btn-outline-dark btn-sm btnNotifDecline">Decline</button>&nbsp;';
-                  retval += '<button type="button" data-id = "' + v.id + '" class="btn btn-info btn-sm btnNotifApprove">Approve</button>';
+                  retval += '<button type="button" data-id = "' + v.id + '" data-table = "' + v.table_pk + '" data-action = "' + v.action + '" class="btn btn-outline-dark btn-sm btnNotifDecline">Decline</button>&nbsp;';
+                  retval += '<button type="button" data-id = "' + v.id + '" data-table = "' + v.table_pk + '" data-action = "' + v.action + '" class="btn btn-info btn-sm btnNotifApprove">Approve</button>';
                 }
                 retval += '</div>';
                 retval += '</div>';

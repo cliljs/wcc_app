@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 21, 2022 at 04:34 PM
+-- Generation Time: Apr 24, 2022 at 05:33 AM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 7.3.31
 
@@ -60,7 +60,7 @@ INSERT INTO `bro_accounts` (`id`, `username`, `password`, `lastname`, `firstname
 (6, 'ajoe', '$2y$12$Bo/QxWsDI54g3XR2YOGcD.JSQttYT3adJRR1Ge8bG8vGQchOW2Zh2', 'Joe', 'Average', '', 'MALE', 'Jan lang', '1994-02-11', '11111111', 'Bataan', 1, 0, 0, '2022-04-17 12:47:31', NULL, NULL),
 (7, 'jpublic', '$2y$12$HSq/5KPTlGLlN9RhL3Ru8eRW7ZKL2c2.2..qSvIC6uzbRdhzNQZMa', 'Public', 'John', '', 'MALE', 'Jan lang', '2002-01-05', '0924578454', 'Bataan', 0, 0, 0, '2022-04-17 12:47:31', NULL, NULL),
 (8, 'iroe', '$2y$12$3ovKh4GFNzNRk1xvbPNrzOse2ff7ml.26cokmsONLmnEfnFNDWGQm', 'Roe', 'Ivan', '', 'FEMALE', 'Jan lang', '2002-01-06', '096315454', 'Bataan', 0, 0, 0, '2022-04-17 12:47:31', NULL, NULL),
-(9, 'sample123', '$2y$12$LdaQZTPOiI1lwlrv.bASEOXqtZsc7MMJMT8CPWl6RHdxT4fDVPS9W', 'Sample', 'Test', 'User', 'MALE', 'dyan lang', '2000-01-01', '+12345', 'Bataan', 0, 0, 0, '2022-04-20 12:36:09', '9_1650458169.jpg', 7);
+(10, 'sample123', '$2y$12$iispHff5OATpoFriep8BNeewCmTKVAOZ2H3HAqvsFXyp9QfUnCMZK', 'User', 'Sample', '', 'FEMALE', '#123 Dyan lang', '2015-02-01', '+12345', 'Bataan', 0, 0, 1, '2022-04-22 12:44:05', '10_1650631445.jpg', 6);
 
 -- --------------------------------------------------------
 
@@ -114,9 +114,7 @@ CREATE TABLE `bro_enrollment` (
 --
 
 INSERT INTO `bro_enrollment` (`id`, `user_pk`, `lesson_type`, `admin_pk`, `is_enrolled`, `is_graduated`, `date_approved`, `created_at`) VALUES
-(3, 6, 'LIFE_CLASS', 0, 1, 1, '0000-00-00 00:00:00', '2022-04-21 05:18:33'),
-(4, 6, 'SOL1', 0, 1, 1, '0000-00-00 00:00:00', '2022-04-21 05:23:00'),
-(5, 6, 'SOL2', 0, 1, 1, '0000-00-00 00:00:00', '2022-04-21 05:26:11');
+(10, 6, 'LIFE_CLASS', 0, 1, 0, '0000-00-00 00:00:00', '2022-04-24 02:12:03');
 
 -- --------------------------------------------------------
 
@@ -239,6 +237,14 @@ CREATE TABLE `bro_mentoring` (
   `created_by` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `bro_mentoring`
+--
+
+INSERT INTO `bro_mentoring` (`id`, `mentor_date`, `attendance`, `created_at`, `created_by`) VALUES
+(4, '2022-04-23', 1, '2022-04-23 03:40:56', 6),
+(7, '2022-04-29', 1, '2022-04-23 03:41:14', 6);
+
 -- --------------------------------------------------------
 
 --
@@ -257,6 +263,14 @@ CREATE TABLE `bro_notifications` (
   `date_created` timestamp NULL DEFAULT current_timestamp(),
   `date_updated` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `bro_notifications`
+--
+
+INSERT INTO `bro_notifications` (`id`, `sender_pk`, `receiver_pk`, `subject_pk`, `table_pk`, `caption`, `action`, `status`, `date_created`, `date_updated`) VALUES
+(27, 6, 0, 6, 10, ' enrolled to LIFE CLASS', 'ENROLL', 1, '2022-04-24 02:12:03', '2022-04-24 02:12:11'),
+(28, 10, 6, 10, 10, ' approved your enrollment', 'NONE', 0, '2022-04-24 02:12:11', NULL);
 
 -- --------------------------------------------------------
 
@@ -304,57 +318,59 @@ CREATE TABLE `bro_schooling` (
 --
 
 INSERT INTO `bro_schooling` (`id`, `user_pk`, `lesson_pk`, `attendance`, `leader_pk`, `date_confirmed`, `date_approved`, `created_at`) VALUES
-(41, 6, 61, NULL, 0, NULL, NULL, '2022-04-21 05:20:33'),
-(42, 6, 62, NULL, 0, NULL, NULL, '2022-04-21 05:20:33'),
-(43, 6, 63, NULL, 0, NULL, NULL, '2022-04-21 05:20:33'),
-(44, 6, 64, NULL, 0, NULL, NULL, '2022-04-21 05:20:33'),
-(45, 6, 65, NULL, 0, NULL, NULL, '2022-04-21 05:20:33'),
-(46, 6, 66, NULL, 0, NULL, NULL, '2022-04-21 05:20:33'),
-(47, 6, 67, NULL, 0, NULL, NULL, '2022-04-21 05:20:33'),
-(48, 6, 68, NULL, 0, NULL, NULL, '2022-04-21 05:20:33'),
-(49, 6, 69, NULL, 0, NULL, NULL, '2022-04-21 05:20:33'),
-(50, 6, 70, NULL, 0, NULL, NULL, '2022-04-21 05:20:33'),
-(51, 6, 71, NULL, 0, NULL, NULL, '2022-04-21 05:20:33'),
-(52, 6, 1, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(53, 6, 2, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(54, 6, 3, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(55, 6, 4, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(56, 6, 5, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(57, 6, 6, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(58, 6, 7, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(59, 6, 8, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(60, 6, 9, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(61, 6, 10, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(62, 6, 11, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(63, 6, 12, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(64, 6, 13, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(65, 6, 14, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(66, 6, 15, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(67, 6, 16, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(68, 6, 17, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(69, 6, 18, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(70, 6, 19, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(71, 6, 20, NULL, 0, NULL, NULL, '2022-04-21 05:23:09'),
-(72, 6, 21, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(73, 6, 22, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(74, 6, 23, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(75, 6, 24, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(76, 6, 25, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(77, 6, 26, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(78, 6, 27, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(79, 6, 28, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(80, 6, 29, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(81, 6, 30, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(82, 6, 31, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(83, 6, 32, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(84, 6, 33, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(85, 6, 34, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(86, 6, 35, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(87, 6, 36, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(88, 6, 37, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(89, 6, 38, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(90, 6, 39, NULL, 0, NULL, NULL, '2022-04-21 05:26:29'),
-(91, 6, 40, NULL, 0, NULL, NULL, '2022-04-21 05:26:29');
+(1, 6, 41, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(2, 6, 42, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(3, 6, 43, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(4, 6, 44, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(5, 6, 45, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(6, 6, 46, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(7, 6, 47, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(8, 6, 48, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(9, 6, 49, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(10, 6, 50, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(11, 6, 51, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(12, 6, 52, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(13, 6, 53, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(14, 6, 54, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(15, 6, 55, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(16, 6, 56, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(17, 6, 57, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(18, 6, 58, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(19, 6, 59, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(20, 6, 60, NULL, 0, NULL, NULL, '2022-04-24 01:38:10'),
+(21, 6, 61, NULL, 0, NULL, NULL, '2022-04-24 02:06:19'),
+(22, 6, 62, NULL, 0, NULL, NULL, '2022-04-24 02:06:19'),
+(23, 6, 63, NULL, 0, NULL, NULL, '2022-04-24 02:06:19'),
+(24, 6, 64, NULL, 0, NULL, NULL, '2022-04-24 02:06:19'),
+(25, 6, 65, NULL, 0, NULL, NULL, '2022-04-24 02:06:19'),
+(26, 6, 66, NULL, 0, NULL, NULL, '2022-04-24 02:06:19'),
+(27, 6, 67, NULL, 0, NULL, NULL, '2022-04-24 02:06:19'),
+(28, 6, 68, NULL, 0, NULL, NULL, '2022-04-24 02:06:19'),
+(29, 6, 69, NULL, 0, NULL, NULL, '2022-04-24 02:06:19'),
+(30, 6, 70, NULL, 0, NULL, NULL, '2022-04-24 02:06:19'),
+(31, 6, 71, NULL, 0, NULL, NULL, '2022-04-24 02:06:19'),
+(32, 6, 61, NULL, 0, NULL, NULL, '2022-04-24 02:08:01'),
+(33, 6, 62, NULL, 0, NULL, NULL, '2022-04-24 02:08:01'),
+(34, 6, 63, NULL, 0, NULL, NULL, '2022-04-24 02:08:01'),
+(35, 6, 64, NULL, 0, NULL, NULL, '2022-04-24 02:08:01'),
+(36, 6, 65, NULL, 0, NULL, NULL, '2022-04-24 02:08:01'),
+(37, 6, 66, NULL, 0, NULL, NULL, '2022-04-24 02:08:01'),
+(38, 6, 67, NULL, 0, NULL, NULL, '2022-04-24 02:08:01'),
+(39, 6, 68, NULL, 0, NULL, NULL, '2022-04-24 02:08:01'),
+(40, 6, 69, NULL, 0, NULL, NULL, '2022-04-24 02:08:01'),
+(41, 6, 70, NULL, 0, NULL, NULL, '2022-04-24 02:08:01'),
+(42, 6, 71, NULL, 0, NULL, NULL, '2022-04-24 02:08:01'),
+(43, 6, 61, NULL, 0, NULL, NULL, '2022-04-24 02:12:11'),
+(44, 6, 62, NULL, 0, NULL, NULL, '2022-04-24 02:12:11'),
+(45, 6, 63, NULL, 0, NULL, NULL, '2022-04-24 02:12:11'),
+(46, 6, 64, NULL, 0, NULL, NULL, '2022-04-24 02:12:11'),
+(47, 6, 65, NULL, 0, NULL, NULL, '2022-04-24 02:12:11'),
+(48, 6, 66, NULL, 0, NULL, NULL, '2022-04-24 02:12:11'),
+(49, 6, 67, NULL, 0, NULL, NULL, '2022-04-24 02:12:11'),
+(50, 6, 68, NULL, 0, NULL, NULL, '2022-04-24 02:12:11'),
+(51, 6, 69, NULL, 0, NULL, NULL, '2022-04-24 02:12:11'),
+(52, 6, 70, NULL, 0, NULL, NULL, '2022-04-24 02:12:11'),
+(53, 6, 71, NULL, 0, NULL, NULL, '2022-04-24 02:12:11');
 
 -- --------------------------------------------------------
 
@@ -377,13 +393,14 @@ CREATE TABLE `bro_tribe` (
 INSERT INTO `bro_tribe` (`id`, `leader_pk`, `member_pk`, `is_approved`, `created_at`) VALUES
 (1, 1, 1, 1, '2022-04-17 20:47:31'),
 (2, 1, 2, 1, '2022-04-17 20:47:31'),
-(3, 2, 3, 1, '2022-04-17 20:47:31'),
+(3, 2, 3, 0, '2022-04-17 20:47:31'),
 (4, 2, 4, 1, '2022-04-17 20:47:31'),
 (5, 2, 5, 1, '2022-04-17 20:47:31'),
 (6, 1, 6, 1, '2022-04-17 20:47:31'),
-(7, 2, 7, 1, '2022-04-17 20:47:31'),
-(8, 2, 8, 1, '2022-04-17 20:47:31'),
-(9, 6, 9, 0, '2022-04-20 20:36:09');
+(7, 2, 7, 0, '2022-04-17 20:47:31'),
+(8, 6, 8, 1, '2022-04-17 20:47:31'),
+(9, 6, 9, 1, '2022-04-20 20:36:09'),
+(10, 6, 10, 1, '2022-04-22 20:44:05');
 
 --
 -- Indexes for dumped tables
@@ -463,7 +480,7 @@ ALTER TABLE `bro_tribe`
 -- AUTO_INCREMENT for table `bro_accounts`
 --
 ALTER TABLE `bro_accounts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `bro_attendance`
@@ -481,7 +498,7 @@ ALTER TABLE `bro_cellgroup`
 -- AUTO_INCREMENT for table `bro_enrollment`
 --
 ALTER TABLE `bro_enrollment`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `bro_invites`
@@ -499,13 +516,13 @@ ALTER TABLE `bro_lessons`
 -- AUTO_INCREMENT for table `bro_mentoring`
 --
 ALTER TABLE `bro_mentoring`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `bro_notifications`
 --
 ALTER TABLE `bro_notifications`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `bro_qr`
@@ -517,13 +534,13 @@ ALTER TABLE `bro_qr`
 -- AUTO_INCREMENT for table `bro_schooling`
 --
 ALTER TABLE `bro_schooling`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=92;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT for table `bro_tribe`
 --
 ALTER TABLE `bro_tribe`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

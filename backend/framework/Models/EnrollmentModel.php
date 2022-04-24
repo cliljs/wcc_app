@@ -21,7 +21,7 @@ class EnrollmentModel {
             "sender_pk"   => $_SESSION['pk'],
             "receiver_pk" => 0,
             "subject_pk"  => $_SESSION['pk'],
-            "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
+            "caption"     => ' enrolled to ' . str_replace('_',' ',$payload['lesson_type']),
             "action"      => 'ENROLL',
             "table_pk"    => $last_id
         ];
@@ -74,7 +74,7 @@ class EnrollmentModel {
                             WHERE be.is_enrolled = 0 AND bt.leader_pk = ?", [$_SESSION['pk']]);
     }
 
-    public function approve_user($pk = null)
+    public function approve_user($pk = null,$notif_pk = null)
     {
         global $db, $common, $school_model, $notif_model;
         $is_approved = $this->update_enrollment($pk, 
@@ -88,14 +88,15 @@ class EnrollmentModel {
            foreach ($lessons as $key => $lesson) {
              $school_model->create_schooling($lesson);      
            }
-
+           $notif_details = $common->get_notif_details($notif_pk);
+           
             // PABALIK PAPUNTANG DISCIPLE ETO    
            $notif_arr = [
                 "sender_pk"   => $_SESSION['pk'],
-                "receiver_pk" => 0,
-                "subject_pk"  => $is_approved['user_pk'],
-                "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
-                "action"      => 'ENROLL',
+                "receiver_pk" => $notif_details['subject_pk'],
+                "subject_pk"  => $_SESSION['pk'],
+                "caption"     => ' approved your enrollment',
+                "action"      => 'NONE',
                 "table_pk"    => $pk
             ];
             $notif_model = $notif_model->create_notification($notif_arr);

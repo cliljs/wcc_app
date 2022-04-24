@@ -1,7 +1,23 @@
 <?php
-
+require_once '../../autoload.php';
 class Helpers
 {
+
+  public function get_notif_details($table_pk)
+  {
+    global $db;
+    return $db->get_row("Select n.sender_pk,n.receiver_pk,n.subject_pk,
+    (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = n.receiver_pk) as receiver_name,
+    (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = n.sender_pk) as sender_name,
+    (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = n.subject_pk) as subject_name 
+    from bro_notifications n 
+    where n.id = ?;", [$table_pk]);
+  }
+  public function get_fullname_id($user_pk)
+  {
+    global $db;
+    return $db->get_row("Select CONCAT(firstname,' ',middlename,' ',lastname) as fullname from bro_accounts where id = ?", [$user_pk]);
+  }
   public function get_insert_fields($arr)
   {
     $columns = "(" . implode(",", array_keys($arr)) . ")";
