@@ -47,6 +47,16 @@ class AccountModel
         $_SESSION['branch']     = $has_account['branch'];
         $_SESSION['leader_pk']  = $has_account['leader_pk'];
         $_SESSION['login_name'] = $has_account['firstname'] . ' ' . $has_account['middlename'] . ' ' . $has_account['lastname'];
+
+        $_SESSION['username']  = $has_account['username'];
+
+        $_SESSION['firstname']  = $has_account['firstname'];
+        $_SESSION['middlename']  = $has_account['middlename'];
+        $_SESSION['lastname']  = $has_account['lastname'];
+
+        $_SESSION['address']  = $has_account['address'];
+        $_SESSION['contact']  = $has_account['contact'];
+        $_SESSION['birthdate']  = $has_account['birthdate'];
         return $has_account;
     }
 
@@ -90,7 +100,7 @@ class AccountModel
             $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$last_id}", [$profile_pic]);
         }
 
-       $tribe_pk =  $tribe_model->create_leader([
+        $tribe_pk =  $tribe_model->create_leader([
             "leader_pk" => $leader_info['id'],
             "insert_id" => $last_id
         ]);
@@ -110,12 +120,6 @@ class AccountModel
     public function get_account_details()
     {
         global $db;
-        //bay pacheck nlng kung gagana sayo tong session based.
-        //login ka muna sa portal bgo ka magtest sa insomnia. alam ko nabypass mo na ung session dati sa reservation api ntn eh
-        //change ko muna tong query bay hnd ko kasi sure kung possible ba na may user account na walang instance sa bro_tribe
-        // return $db->get_row("SELECT acc.*, tr.is_approved FROM {$this->base_table} acc
-        //                      INNER JOIN bro_tribe tr ON acc.id = tr.member_pk
-        //                      WHERE acc.id = ? AND tr.is_approved = ?", [$id, 1]);
         return $db->get_row("SELECT acc.*,
         (Select CONCAT(firstname,' ',middlename,' ',lastname) from {$this->base_table} where id = (Select leader_pk from bro_tribe where member_pk = ? and is_approved = 1)) as tlname 
         FROM {$this->base_table} acc WHERE acc.id = ?", [$_SESSION['pk'], $_SESSION['pk']]);
@@ -126,14 +130,30 @@ class AccountModel
         global $db;
         return $db->get_row("SELECT COUNT(id) as invite_count,(Select lesson_type from bro_enrollment where user_pk = ? and is_enrolled = 1 order by id desc LIMIT 1) as current_lesson from {$this->base_table} where inviter_pk = ?", [$_SESSION['pk'], $_SESSION['pk']]);
     }
-    public function update_account($payload = [], $id = null)
+    public function update_account($payload = [], $id = null, $files)
     {
         global $db, $common;
+        unset($payload['profile_picture']);
+        $filtered = array_filter($payload);
+        $update_fields = $common->get_update_fields($filtered);
+        $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$id}", array_values($filtered));
+        if ($files['profile_picture']['error'] != 4) {
+            $update_fields = $common->get_update_fields(['profile_pic' => ""]);
+            $profile_pic   = $common->upload($_SESSION['pk'], $files['profile_picture']);
+            $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$_SESSION['pk']}", [$profile_pic]);
+        }
 
-        $update_fields = $common->get_update_fields($payload);
-        $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$id}", array_values($payload));
+        $has_account =  $this->get_account_details($id);
+        $_SESSION['login_name'] = $has_account['firstname'] . ' ' . $has_account['middlename'] . ' ' . $has_account['lastname'];
+        $_SESSION['username']  = $has_account['username'];
+        $_SESSION['firstname']  = $has_account['firstname'];
+        $_SESSION['middlename']  = $has_account['middlename'];
+        $_SESSION['lastname']  = $has_account['lastname'];
+        $_SESSION['address']  = $has_account['address'];
+        $_SESSION['contact']  = $has_account['contact'];
+        $_SESSION['birthdate']  = $has_account['birthdate'];
 
-        return $updated ? $this->get_account_details($id) : false;
+        return $updated ? $has_account : false;
     }
 
     public function delete_account($id = null)

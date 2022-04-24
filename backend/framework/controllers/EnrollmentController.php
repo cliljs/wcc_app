@@ -53,6 +53,15 @@ switch ($act) {
             )
         );
         break;
+    case 'get_badge':
+        echo json_encode(
+            $common->create_response(
+                "EnrollmentController.php/?action=get_badge",
+                $enroll_model->get_badge(),
+                1
+            )
+        );
+        break;
     case 'get_enrollment_list':
         echo json_encode(
             $common->create_response(

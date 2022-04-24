@@ -117,6 +117,14 @@ print_r($_SESSION);
     .widget-user .widget-user-image>img {
       width: 120px !important;
     }
+
+    .with-attendance {
+      color: green !important;
+    }
+
+    .no-attendance {
+      color: red !important;
+    }
   </style>
 </head>
 
@@ -264,14 +272,50 @@ print_r($_SESSION);
 
         if (me == null || me == 'home') {
           $('#btnShowBadge').on('click', function() {
-            $("#mdlBadge").modal({
-              backdrop: 'static'
-            });
+            showBadge();
           });
 
           if (act == 1) {
             showBadge();
           }
+
+          $('#btnPersonalInformation').on('click', function() {
+            $('#mdlPersonal').modal({
+              backdrop: 'static'
+            });
+          });
+
+          $('#frmPersonal').on('submit', function(e) {
+            e.preventDefault();
+            let fd = new FormData(this);
+            fireAjax('AccountController.php?action=update_account', fd, true).then(function(data) {
+              console.log(data);
+              let obj = $.parseJSON(data.trim());
+              if (obj.success == 1) {
+                Swal.fire({
+                  title: 'Personal Information',
+                  text: 'Personal Information updated successfully. Click OK to reload the page',
+                  icon: 'success',
+                  showDenyButton: false,
+                  showCancelButton: false,
+                  confirmButtonText: 'Ok',
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.reload();
+                  }
+                })
+              } else {
+                fireSwal('Personal Information', 'Failed to update personal information. Please try again', 'error');
+              }
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Personal Information', 'Failed to update personal information. Please try again', 'error');
+            });
+          })
+
+          $("#profile_picture").on("change", function() {
+            $(".custom-file-label").html("Image Selected");
+          });
         } else if (me == 'tribe') {
           loadDisciples();
           getLeaders();
@@ -852,7 +896,7 @@ print_r($_SESSION);
               id: var_notif_pk,
               decision: var_decision,
               table_pk: var_table_pk,
-              action:var_notif_action
+              action: var_notif_action
             };
 
 
@@ -887,29 +931,15 @@ print_r($_SESSION);
               let userpic = '';
               $.each(objData, function(k, v) {
 
-                // switch (v.action) {
-                //   case "SIGNUP":
-                //     notifCaption = ' created an account';
-                //     break;
-                //   case "ENROLL":
-                //     break;
-                //   case "TRANSFER":
-                //     notifCaption = ' has been transferred';
-                //     break;
-                //   case "ATTENDANCE":
-                //     break;
-                //   case "SCHOOL":
-                //     break;
-                // }
                 userpic = (v.sender_pic == null) ? 'user.png' : v.sender_pic;
                 retval += '<div class="p-3 d-flex align-items-center border-bottom osahan-post-header">';
                 retval += '<div class="dropdown-list-image mr-3">';
                 retval += '<img class="rounded-circle" src="' + image_url + userpic + '" alt="user_avatar" />';
                 retval += '</div>';
                 retval += '<div class="font-weight-bold mr-3">';
-                retval += '<div><span class="font-weight-normal"><a data-user = "' + v.sender_pk + '" href = "Javascript:void(0);" class = "notifName"><b>' + v.sender_name + '</b>' + v.caption + '</div>';
+                retval += '<div><span class="font-weight-normal"><p class = "notifName"><b>' + v.sender_name + '</b>' + v.caption + '</p></div>';
                 retval += '<div class="mb-2"><span class="font-weight-light">' + v.date_created + '</span></div>';
-                if (read == 0) {
+                if (read == 0 && v.action != 'NONE') {
                   retval += '<button type="button" data-id = "' + v.id + '" data-table = "' + v.table_pk + '" data-action = "' + v.action + '" class="btn btn-outline-dark btn-sm btnNotifDecline">Decline</button>&nbsp;';
                   retval += '<button type="button" data-id = "' + v.id + '" data-table = "' + v.table_pk + '" data-action = "' + v.action + '" class="btn btn-info btn-sm btnNotifApprove">Approve</button>';
                 }
@@ -917,12 +947,12 @@ print_r($_SESSION);
                 retval += '</div>';
               });
               retval = (retval == '') ? 'No notifications available' : retval;
-              if(read == 0){
+              if (read == 0) {
                 $('#notifTodayContainer').html(retval);
-              } else{
+              } else {
                 $('#notifEarlierContainer').html(retval);
               }
-              
+
             }).catch(function(err) {
               console.log(err);
               fireSwal('Notifications', 'Failed to retrieve list of notifications. Please reload the page.', 'error');
@@ -1003,34 +1033,39 @@ print_r($_SESSION);
       };
       //todo - kuha ng attendance ngaun
       function showBadge() {
-        fireAjax('', '', false).then(function(data) {
+        fireAjax('EnrollmentController.php?action=get_badge', '', false).then(function(data) {
           console.log(data);
           var objData = $.parseJSON(data.trim()).data;
-          let badge_src = image_url;
+          let badge_src = image_url + 'no-training.png';
           switch (objData.current_lesson) {
             case "LIFE_CLASS":
-              image_url += 'lc.png';
+              image_url = image_url + 'badge_lc.png';
               break;
             case "SOL1":
-              image_url += 'sol1.png';
+              image_url = image_url + 'badge_sol1.png';
               break;
             case "SOL2":
-              image_url += 'sol2.png';
+              image_url = image_url + 'badge_sol2.png';
               break;
             case "SOL3":
-              image_url += 'sol3.png';
+              image_url = image_url + 'badge_sol3.png';
               break;
             case "RE_ENCOUNTER":
-              image_url += 're.png';
+              image_url = image_url + 'badge_re.png';
               break;
             default:
+              image_url = image_url + 'no-training.png';
               break;
 
           }
+
+          if (objData.length === 0) image_url += 'no-training.png';
           $('#badge_training').attr('src', badge_src);
           if (objData.attendance == null) {
+            $('#badge_attendance').addClass('no-attendance');
             $('#badge_attendance').html('No Attendance Found');
           } else {
+            $('#badge_attendance').addClass('with-attendance');
             $('#badge_attendance').html('Sunday Celebration Attendance Submitted');
           }
           $('#mdlBadge').modal({
@@ -1263,7 +1298,7 @@ print_r($_SESSION);
           let obj = jQuery.parseJSON(retval);
           let user_header = obj.data;
           if (user_header.current_lesson != null) {
-            $("#user_training").html(user_header.current_lesson);
+            $("#user_training").html(user_header.current_lesson.replace('_', ' '));
           }
 
           $("#user_invites").html(user_header.invite_count);
@@ -1283,6 +1318,9 @@ print_r($_SESSION);
           $("#user_branch").html(user_header.branch);
           if (user_header.is_pastor == 1) {
             $("#user_branch").html('Pastor');
+          }
+          if (user_header.is_admin == 1) {
+            $("#user_branch").html('Administrator');
           }
           if (user_header.profile_pic != null) {
             $("#user_dp").attr('src', image_url + user_header.profile_pic);

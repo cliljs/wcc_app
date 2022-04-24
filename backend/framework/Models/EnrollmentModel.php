@@ -35,6 +35,12 @@ class EnrollmentModel {
         return $db->get_row("SELECT * FROM {$this->base_table} WHERE id = ?", [$pk]);
     }
 
+    public function get_badge()
+    {
+        global $db, $common;
+        return $db->get_row("Select lesson_type from {$this->base_table} where user_pk = ? and is_graduated = 1 ORDER by id desc LIMIT 1", [$_SESSION['pk']]);
+    }
+
     // for auth user
     public function get_enrollment_list()
     {

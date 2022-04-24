@@ -93,7 +93,7 @@
           </form>
         </div>
         <div id="reader" class="text-center" width="100%"></div>
-        <div class="form-group text-center mt-3">
+        <div class="form-group text-center mt-3" style = "display:none;">
           <button id="qrmode" class="btn btn-block btn-outline-dark">QR Scanner not working?</button>
         </div>
       </div>

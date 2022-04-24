@@ -30,9 +30,8 @@ switch ($act) {
             $common->create_response("AccountController/action=get_account_profile", $account, 1)
         );
         break;
-
     case 'update_account':
-        $updated_account = $account_model->update_account($_POST, $_GET['id']);
+        $updated_account = $account_model->update_account($_POST, $_SESSION['pk'],$_FILES);
         echo json_encode(
             $common->create_response("AccountController/action=update_account", $updated_account, 1)
         );
