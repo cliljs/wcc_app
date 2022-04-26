@@ -73,7 +73,7 @@ class NotificationModel {
                 break;
             
             case 'ENROLL':
-                $enroll_model->approve_user($payload['table_pk'],$payload['id']);
+                $enroll_model->approve_user($payload);
                 break;
             default:
                 # code...

@@ -694,7 +694,6 @@ $today = date("F j Y, l");
                     window.location.href = home_url + 'index.php?view=trainings';
                   }
                 });
-                fireSwal('Training', 'Training completed successfully', 'success');
               }
 
             }).catch(function(err) {
@@ -1474,6 +1473,7 @@ $today = date("F j Y, l");
       function lifestyleTraining(pk, lesson) {
 
         if (lesson == 'Lifeclass') lesson = 'LIFE_CLASS';
+        if (lesson == 'Reencounter') lesson = 'RE_ENCOUNTER';
         let payload = {
           user_pk: pk,
           lesson_type: lesson

@@ -4,7 +4,8 @@ require_once '../../autoload.php';
 require_once MODEL_PATH . 'SchoolingModel.php';
 require_once MODEL_PATH . 'NotificationModel.php';
 
-class EnrollmentModel {
+class EnrollmentModel
+{
     private $base_table = 'bro_enrollment';
 
     public function create_enrollment($payload = [])
@@ -21,7 +22,7 @@ class EnrollmentModel {
             "sender_pk"   => $_SESSION['pk'],
             "receiver_pk" => 0,
             "subject_pk"  => $_SESSION['pk'],
-            "caption"     => ' enrolled to ' . str_replace('_',' ',$payload['lesson_type']),
+            "caption"     => ' enrolled to ' . str_replace('_', ' ', $payload['lesson_type']),
             "action"      => 'ENROLL',
             "table_pk"    => $last_id
         ];
@@ -60,7 +61,7 @@ class EnrollmentModel {
     {
         global $db, $common;
         $updated  = $db->update("UPDATE {$this->base_table} SET is_graduated = 1 WHERE id = ?", array_values($payload));
-       
+
         return $updated ? true : false;
     }
 
@@ -80,33 +81,46 @@ class EnrollmentModel {
                             WHERE be.is_enrolled = 0 AND bt.leader_pk = ?", [$_SESSION['pk']]);
     }
 
-    public function approve_user($pk = null,$notif_pk = null)
+    public function approve_user($payload = [])
     {
         global $db, $common, $school_model, $notif_model;
-        $is_approved = $this->update_enrollment($pk, 
-                                                [
-                                                    'is_enrolled'   => 1,
-                                                    'date_approved' => strtotime(date('Y-m-d H:i:s'))
-                                                ]
-                                            );
-        if (!empty($is_approved)) {
-           $lessons =  $db->get_list("SELECT id as lesson_pk,(Select user_pk from bro_enrollment where id = ?) as student_pk FROM bro_lessons WHERE lesson_type = ?", [$pk,$is_approved['lesson_type']]);
-           foreach ($lessons as $key => $lesson) {
-             $school_model->create_schooling($lesson);      
-           }
-           $notif_details = $common->get_notif_details($notif_pk);
-           
-            // PABALIK PAPUNTANG DISCIPLE ETO    
-           $notif_arr = [
-                "sender_pk"   => $_SESSION['pk'],
-                "receiver_pk" => $notif_details['subject_pk'],
-                "subject_pk"  => $_SESSION['pk'],
-                "caption"     => ' approved your enrollment',
-                "action"      => 'NONE',
-                "table_pk"    => $pk
-            ];
-            $notif_model = $notif_model->create_notification($notif_arr);
+       
+        $table_pk = $payload['table_pk'];
+        $notif_pk = $payload['id'];
+        $caption = '';
+        if ($payload['decision'] == 0) {
+            $is_disapproved = $this->remove_enrollment($table_pk);
+            $caption = ' disapproved your enrollment';
+        } else {
+            $is_approved = $this->update_enrollment(
+                $table_pk,
+                [
+                    'is_enrolled'   => 1,
+                    'date_approved' => strtotime(date('Y-m-d H:i:s'))
+                ]
+            );
+            
+            if (!empty($is_approved)) {
+                $caption = ' approved your enrollment';
+                $lessons =  $db->get_list("SELECT id as lesson_pk,(Select user_pk from bro_enrollment where id = ?) as student_pk FROM bro_lessons WHERE lesson_type = ?", [$table_pk, $is_approved['lesson_type']]);
+                foreach ($lessons as $key => $lesson) {
+                    $school_model->create_schooling($lesson);
+                }
+            }
         }
+
+        $notif_details = $common->get_notif_details($notif_pk);
+
+        // PABALIK PAPUNTANG DISCIPLE ETO    
+        $notif_arr = [
+            "sender_pk"   => $_SESSION['pk'],
+            "receiver_pk" => $notif_details['subject_pk'],
+            "subject_pk"  => $_SESSION['pk'],
+            "caption"     => $caption,
+            "action"      => 'NONE',
+            "table_pk"    => $table_pk
+        ];
+        $notif_model = $notif_model->create_notification($notif_arr);
         return true;
     }
 }
