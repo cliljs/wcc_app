@@ -6,8 +6,12 @@ $act = !empty($_GET['action']) ? $_GET['action'] : '';
 
 switch ($act) {
     case 'create_attendance':
-        $attendance_model->create_attendance();
-        $new_invite =  $invite_model->create_invite($_POST);
+        $valid = $attendance_model->create_attendance($_POST);
+        if($valid){
+            $new_invite =  $invite_model->create_invite($_POST);
+        } else{
+            $new_invite = false;
+        }
         echo json_encode(
             $common->create_response(
                 'AttendanceController.php/?action=create_attendance',

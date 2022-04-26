@@ -10,13 +10,13 @@ class InviteModel {
     {
         global $db, $common, $qr_model;
        
-        $is_qr_valid = $qr_model->validate_qr($payload['qr']);
+        //$is_qr_valid = $qr_model->validate_qr($payload['qr']);
 
-        if (!$is_qr_valid) {
-            return ["error" => true, "msg" => "QR Not Valid"];
-        }
-
-        foreach ($payload['bro'] as $key => $inner) {
+        // if (!$is_qr_valid) {
+        //     return ["error" => true, "msg" => "QR Not Valid"];
+        // }
+        if(isset($payload['bro'])){
+            foreach ($payload['bro'] as $key => $inner) {
             foreach ($inner as $i_key => $name) {
                 $arr = [
                     "date_invited" => date("Y-m-d"),
@@ -27,7 +27,9 @@ class InviteModel {
                 $fields = $common->get_insert_fields($arr);
                 $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
             }
+            }
         }
+
         return true;
     }
 

@@ -56,11 +56,11 @@ class EnrollmentModel {
         return $updated ? $this->get_enrollment_details($pk) : false;
     }
 
-    public function graduate()
+    public function graduate($payload = [])
     {
         global $db, $common;
-
-        $updated  = $db->update("UPDATE {$this->base_table} SET is_graduated = 1 WHERE id = (Select id from {$this->base_table} where user_pk = ? and is_graduated = 0)", [$_SESSION['pk']]);
+        $updated  = $db->update("UPDATE {$this->base_table} SET is_graduated = 1 WHERE id = ?", array_values($payload));
+       
         return $updated ? true : false;
     }
 

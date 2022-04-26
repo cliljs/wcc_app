@@ -1,6 +1,6 @@
 <div class="card card-primary card-outline">
   <div class="card-body box-profile">
-    <h3 class="text-center">Cell Group</h3>
+    <h3 class="text-center">Cellgroup</h3>
     <p class="text-muted text-center"><a class="custom" href="index.php?view=lifestyle">[Back to Lifestyle]</a></p>
 
     <hr>

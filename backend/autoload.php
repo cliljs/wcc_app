@@ -20,3 +20,7 @@ if (file_exists(CONTROLLER_PATH . $request_controller)) {
 } 
 //$_SESSION['pk'] = 1;
 // $common->fn_print_die($_SESSION);
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);

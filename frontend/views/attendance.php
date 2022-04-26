@@ -12,7 +12,7 @@
             <div class="input-group-prepend">
               <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
             </div>
-            <input value="April 10, 2022 Sunday" type="text" class="form-control" disabled>
+            <input value="<?php echo $today; ?>" type="text" class="form-control" disabled>
           </div>
 
         </div>
@@ -54,7 +54,7 @@
   </div>
 
 </div>
-<div class="modal fade" id="mdlScanner" tabindex="-1" role="dialog" aria-labelledby="mdlScannerLabel" aria-hidden="true">
+<div class="modal fade" id="mdlScanner" role="dialog" aria-labelledby="mdlScannerLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -93,7 +93,7 @@
           </form>
         </div>
         <div id="reader" class="text-center" width="100%"></div>
-        <div class="form-group text-center mt-3" style = "display:none;">
+        <div class="form-group text-center mt-3">
           <button id="qrmode" class="btn btn-block btn-outline-dark">QR Scanner not working?</button>
         </div>
       </div>

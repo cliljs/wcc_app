@@ -22,11 +22,11 @@ class CellGroupModel {
         return $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
     }
 
-    public function get_cell_list()
+    public function get_cell_list($payload = [])
     {
         global $db, $common;
-        // ganto muna sa ngayon alaws criteria
-        return $db->get_list("SELECT * FROM {$this->base_table} where user_pk = ?",[$_SESSION['pk']]);
+        $pk = (array_key_exists("pk",$payload)) ? $payload['pk'] : $_SESSION['pk'];
+        return $db->get_list("SELECT * FROM {$this->base_table} where user_pk = ?",[$pk]);
     }
 
     public function get_cell_data($pk = null)

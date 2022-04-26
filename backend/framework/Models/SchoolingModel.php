@@ -42,12 +42,13 @@ class SchoolingModel {
     public function get_user_schooling($payload = [])
     {
         global $db, $common;
+        $user_pk = (array_key_exists('user_pk',$payload)) ? $payload['user_pk'] : $_SESSION['pk']; 
         return $db->get_list("SELECT bs.*, bl.lesson_title, bl.sequence, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = bs.leader_pk) as approve_name
                               FROM {$this->base_table} as bs
                               INNER JOIN bro_lessons as bl ON bs.lesson_pk = bl.id
                               WHERE bs.user_pk = ? AND bl.lesson_type = ? 
                               ORDER BY bl.sequence
-                            ", [$_SESSION['pk'],$payload['lesson_type']]);
+                            ", [$user_pk,$payload['lesson_type']]);
     }
 
     public function get_schooling_details($pk = null)

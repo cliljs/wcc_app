@@ -45,10 +45,11 @@ switch ($act) {
         );
         break;
     case 'graduate':
+    
         echo json_encode(
             $common->create_response(
                 "EnrollmentController.php/?action=graduate",
-                $enroll_model->graduate(),
+                $enroll_model->graduate($_POST),
                 1
             )
         );

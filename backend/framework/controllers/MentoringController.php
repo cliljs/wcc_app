@@ -8,7 +8,7 @@ switch ($act) {
         echo json_encode(
             $common->create_response(
                 "MentoringController.php/?action=get_mentoring",
-                $mentoring_model->get_mentoring(),
+                $mentoring_model->get_mentoring($_GET),
                 1
             )
         );

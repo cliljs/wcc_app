@@ -25,13 +25,14 @@ class MentoringModel
         return $deleted ? true : false;
     }
 
-    public function get_mentoring()
+    public function get_mentoring($payload = [])
     {
         global $db, $common;
+        $pk = (array_key_exists('pk',$payload)) ? $payload['pk'] : $_SESSION['pk'];
         return $db->get_list("SELECT * from {$this->base_table} 
                             WHERE created_by = ? 
                             ORDER BY mentor_date asc
-                            ", [$_SESSION['pk']]);
+                            ", [$pk]);
     }
 }
 

@@ -2,21 +2,37 @@
 
 require_once '../../autoload.php';
 require_once MODEL_PATH . 'NotificationModel.php';
-
+require_once MODEL_PATH . 'QRModel.php';
+require_once MODEL_PATH . 'AccountModel.php';
 class AttendanceModel
 {
    private $base_table = 'bro_attendance';
 
-   public function create_attendance()
+   public function create_attendance($payload = [])
    {
-      global $db, $common;
+      global $db, $common,$qr_model,$account_model;
+      $valid = false;
       $arr = [
          "sunday_date" => date('Y-m-d'),
          "account_pk"  => $_SESSION['pk'],
       ];
-      //add dito ng route ng invites
-      $fields = $common->get_insert_fields($arr);
-      return $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
+    
+      if(isset($payload['qr'])){
+          $valid = $qr_model->validate_qr($payload['qr']);
+      } else{
+          $bypass = [
+              "tlusername"  => $payload["tlusername"],
+              "tlpassword"  => $payload["tlpassword"]
+          ];
+          $valid = $account_model->validate_bypass($bypass);
+      }
+    
+      if($valid){
+        $fields = $common->get_insert_fields($arr);
+        $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
+      }
+
+      return $valid;
    }
 
    //  GET INFORMATION OF SINGLE ATTENDANCE

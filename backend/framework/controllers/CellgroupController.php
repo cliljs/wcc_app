@@ -39,7 +39,7 @@ switch ($act) {
         echo json_encode(
             $common->create_response(
                 'CellgroupController/action=get_cell_list',
-                $cellgroup_model->get_cell_list(),
+                $cellgroup_model->get_cell_list($_GET),
                 1
             )
         );

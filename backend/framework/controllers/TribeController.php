@@ -37,7 +37,7 @@ switch ($act) {
     case 'get_leader_names':
         echo json_encode(
             $common->create_response(
-                "TribeController.php/?action=tribe_approve_disciple",
+                "TribeController.php/?action=get_leader_names",
                 $tribe_model->get_leader_names($_GET),
                 1
             )

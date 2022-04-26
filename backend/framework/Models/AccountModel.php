@@ -125,6 +125,20 @@ class AccountModel
         FROM {$this->base_table} acc WHERE acc.id = ?", [$_SESSION['pk'], $_SESSION['pk']]);
     }
 
+    public function validate_bypass($payload = []){
+        global $db, $common;
+        $valid = true;
+        $has_account = $db->get_row("SELECT * from {$this->base_table} where username = ? and is_leader = 1", [$payload['tlusername']]);
+
+        if (empty($has_account)) {
+            $valid = false;
+        }
+
+        if (!password_verify($payload['tlpassword'], $has_account['password'])) {
+            $valid = false;
+        }
+        return $valid;
+    }
     public function get_headers()
     {
         global $db;
@@ -134,7 +148,12 @@ class AccountModel
     {
         global $db, $common;
         unset($payload['profile_picture']);
+        unset($payload['confirm_password']);
         $filtered = array_filter($payload);
+        if(isset($payload['password'])){
+            $filtered['password']   = $this->create_hash($payload['password']);
+        }
+       
         $update_fields = $common->get_update_fields($filtered);
         $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$id}", array_values($filtered));
         if ($files['profile_picture']['error'] != 4) {
