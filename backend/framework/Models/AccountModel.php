@@ -93,8 +93,8 @@ class AccountModel
 
         $fields        = $common->get_insert_fields($arr);
         $last_id       = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
-
-        if (!empty($files)) {
+       
+        if ($files['profile_picture']['error'] != 4) {
             $update_fields = $common->get_update_fields(['profile_pic' => ""]);
             $profile_pic   = $common->upload($last_id, $files['profile_picture']);
             $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$last_id}", [$profile_pic]);
@@ -108,7 +108,7 @@ class AccountModel
         $notif_arr = [
             "sender_pk"   => $last_id,
             "receiver_pk" => $leader_info['id'],
-            "subject_pk"  => 0,
+            "subject_pk"  => $last_id,
             "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
             "action"      => 'SIGNUP',
             "table_pk"    => $tribe_pk

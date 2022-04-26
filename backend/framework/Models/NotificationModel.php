@@ -69,7 +69,8 @@ class NotificationModel {
         switch ($payload['action']) {
             case 'TRANSFER':
             case 'SIGNUP':
-                $tribe_model->approve_disciple(["is_approved" => $payload['decision']], $payload['table_pk']);
+                //$tribe_model->approve_disciple(["is_approved" => $payload['decision']], $payload['table_pk']);
+                $tribe_model->approve_disciple($payload);
                 break;
             
             case 'ENROLL':

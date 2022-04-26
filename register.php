@@ -204,6 +204,7 @@ if ($is_login) {
         e.preventDefault();
         let fd = new FormData(this);
         let data = fireAjax('AccountController.php?action=create_account', fd, true).then(function(data) {
+          console.log(data);
           let obj = jQuery.parseJSON(data.trim());
           if (obj.success == 1) {
             fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
