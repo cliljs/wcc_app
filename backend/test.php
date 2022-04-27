@@ -1,9 +1,9 @@
 
 <?php
-include_once './autoload.php';
+include_once '../autoload.php';
 
 if (ENVIRONMENT === 'PROD') {
-    echo json_encode('Unauthorize');
+    echo json_encode('Unauthorized');
     exit;
 }
 
@@ -465,7 +465,7 @@ $lessons = [
     ],
     [
         "lesson_type"      => "LIFE_CLASS",
-        "lesson_title"     => "ENCOUTNER DAY 3",
+        "lesson_title"     => "ENCOUNTER DAY 3",
         "sequence"         => 11
     ]
 ];

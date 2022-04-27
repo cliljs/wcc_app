@@ -106,7 +106,7 @@ if ($is_login) {
                       <div class="row">
                         <div class="col-8">
                           <p class="mb-1">
-                            <a href="Javascript:void(0)">I forgot my password</a>
+                            <a href="Javascript:void(0)" id = "btnForgot">I forgot my password</a>
                           </p>
                           <p class="mb-0">
                             <a href="register.php" class="text-center">Register a new account</a>
@@ -142,6 +142,9 @@ if ($is_login) {
   <script>
     $(function() {
      
+      $("#btnForgot").on('click',function(){
+        fireSwal('Forgot Password','Kindly inform your tribe leader to reset your password.','info');
+      });
       $("#frmLogin").on('submit',function(e){
         e.preventDefault();
         $(".alert").hide();

@@ -36,6 +36,7 @@ $today = date("F j Y, l");
   <link rel="stylesheet" href="frontend/plugins/fontawesome-free/css/all.min.css">
 
   <link rel="stylesheet" href="frontend/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="frontend/dist/css/preloader.css">
   <link rel="stylesheet" href="frontend/plugins/sweetalert2/sweetalert2.min.css">
   <link rel="stylesheet" href="frontend/plugins/select2/css/select2.min.css">
   <link rel="stylesheet" href="frontend/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
@@ -218,6 +219,9 @@ $today = date("F j Y, l");
                 case "notifications":
                   include "frontend/views/notifications.php";
                   break;
+                case "tribeattendance":
+                  include "frontend/views/tribeattendance.php";
+                  break;
                 default:
                   include "frontend/views/404.php";
                   break;
@@ -270,7 +274,7 @@ $today = date("F j Y, l");
     <script src="frontend/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
     <script src="frontend/dist/js/html5-qrcode.min.js"></script>
     <script src="frontend/dist/js/jquery-qrcode.min.js"></script>
-
+    <script src="frontend/dist/js/jquery.preloader.min.js"></script>
     <script>
       $(function() {
 
@@ -340,6 +344,38 @@ $today = date("F j Y, l");
             $('#txTransferName').val(thisButton.attr('data-name'));
             $('#mdlTransfer').modal({
               backdrop: 'static'
+            });
+          });
+          $('body').on('click', '.btnTribePassword', function() {
+            let memberID = $(this).attr('data-id');
+            let el = $(this).parent();
+
+            Swal.fire({
+              icon: 'info',
+              title: 'Reset Password',
+              text: 'Are you sure you want to reset this member\s password?',
+              allowOutsideClick: false,
+              showCancelButton: true,
+              confirmButtonText: 'Yes, reset',
+
+            }).then((result) => {
+
+              if (result.isConfirmed) {
+                preload(el, true);
+                fireAjax('AccountController.php?action=reset_password&id=' + memberID, '', false).then(function(data) {
+                  console.log(data);
+                  preload(el, false);
+                  let obj = $.parseJSON(data.trim());
+                  if (obj.success == 1) {
+                    fireSwal('Reset Password', 'Member\'s password reset successfully.', 'success');
+                  } else {
+                    fireSwal('Reset Password', 'Failed to reset password. Please try again', 'error');
+                  }
+                }).catch(function(err) {
+                  console.log(err);
+                  fireSwal('Reset Password', 'Failed to reset password. Please try again', 'error');
+                })
+              }
             });
           });
           $('body').on('click', '.memberLifestyle', function() {
@@ -1204,17 +1240,33 @@ $today = date("F j Y, l");
               fireSwal('Mentoring', 'Failed to load mentoring list. Please reload the page', 'error');
             })
           }
+        } else if (me == 'tribeattendance') {
+          
         }
 
       });
 
       function preload(element, is_show) {
+        if (is_show) {
+          $(element).preloader({
+            text: 'Loading. Please wait...',
+            percent: '',
+            duration: '',
+            zIndex: '',
+            setRelative: true
+
+          });
+        } else {
+          $(element).preloader('remove')
+        }
 
       };
 
       function showBadge() {
+        preload('mdlBadge', true);
         fireAjax('EnrollmentController.php?action=get_badge', '', false).then(function(data) {
           console.log(data);
+          preload('mdlBadge', false);
           var objData = $.parseJSON(data.trim()).data;
           let badge_src = image_url + 'no-training.png';
           switch (objData.lesson_type) {
@@ -1282,6 +1334,7 @@ $today = date("F j Y, l");
       }
 
       function loadDisciples(leader_pk = 0) {
+        preload('body', true);
         let ajaxURL = (leader_pk == 0) ? 'TribeController.php?action=get_disciples' : 'TribeController.php?action=get_disciples&id=' + leader_pk;
         fireAjax(ajaxURL, '', false).then(function(data) {
           let obj = jQuery.parseJSON(data.trim());
@@ -1310,12 +1363,14 @@ $today = date("F j Y, l");
             retval += '<img class="img-circle img-bordered-sm" src="' + image_url + user_url + '" alt="' + v.fullname + '">';
             retval += '<span class="username">';
             retval += '<a class="custom linkProfile" href="Javascript:void(0);" data-id = "' + v.id + '">' + v.fullname + '</a>';
+            retval += '<div class="input-group">';
             if (member_type == '144') {
-              retval += '<div class="input-group"><button type="button" class="btn btn-outline-dark btn-sm dropdown-toggle my-1" data-toggle="dropdown" aria-expanded="true">Lifestyle</button><div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -165px, 0px);"><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Cellgroup</a><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Trainings</a><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Mentoring</a><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Sunday Celebration Attendance</a></div>&nbsp;&nbsp;<button type="button" data-id = "' + v.id + '" data-name = "' + v.fullname + '" class="my-1 btn btn-info btn-sm btnTribeTransfer">Transfer</button></div>';
+              retval += '<button type="button" class="btn btn-outline-dark btn-sm dropdown-toggle my-1" data-toggle="dropdown" aria-expanded="true">Lifestyle</button><div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -165px, 0px);"><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Cellgroup</a><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Trainings</a><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Mentoring</a><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Sunday Celebration Attendance</a></div>&nbsp;&nbsp;<button type="button" data-id = "' + v.id + '" data-name = "' + v.fullname + '" class="my-1 btn btn-info btn-sm btnTribeTransfer">Transfer</button>&nbsp;&nbsp;';
               //retval += '<br><button type="button" data-id = "' + v.id + '" class="my-1 btn btn-outline-dark btn-sm btnTribeLifestyle">Lifestyle</button>';
               //retval += '&nbsp;&nbsp;<button type="button" data-id = "' + v.id + '" data-name = "' + v.fullname + '" class="my-1 btn btn-info btn-sm btnTribeTransfer">Transfer</button>';
             }
-
+            retval += '<button type="button" data-id = "' + v.id + '" data-name = "' + v.fullname + '" class="my-1 btn btn-warning btn-sm btnTribePassword">Reset Password</button>';
+            retval += '</div>';
             retval += '</span>';
             retval += '<span class="description">' + member_type + ' . ' + member_numbers + '</span>';
             retval += '</div>';
@@ -1330,6 +1385,8 @@ $today = date("F j Y, l");
             retval += '</div>';
           });
           $('#tribeContainer').html(retval);
+
+          preload('body', false);
         }).catch(function(err) {
           fireSwal('My Tribe', 'Failed to retrieve tribe members. Please reload the page', 'error')
         });

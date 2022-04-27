@@ -32,7 +32,7 @@
           </tbody>
         </table>
         <div class="form-group">
-          <a href="#" class="btn btn-block btn-secondary"><b>Attendance of your tribe</b></a>
+          <a href="index.php?view=tribeattendance" class="btn btn-block btn-secondary"><b>Attendance of your tribe</b></a>
           <a href="#" class="btn btn-block btn-secondary"><b>Admin Records</b></a>
         </div>
       </div>

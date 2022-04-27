@@ -109,7 +109,7 @@ class AccountModel
             "sender_pk"   => $last_id,
             "receiver_pk" => $leader_info['id'],
             "subject_pk"  => $last_id,
-            "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
+            "caption"     => ' registered a new account under your tribe',
             "action"      => 'SIGNUP',
             "table_pk"    => $tribe_pk
         ];
@@ -183,7 +183,14 @@ class AccountModel
 
         return $deleted ? $result : false;
     }
+    public function reset_password($id = null)
+    {
+        global $db, $common;
+        $new_password = $this->create_hash('12345');
+        $deleted =  $db->update("Update {$this->base_table} set password = ? WHERE id = {$id}",[$new_password]);
 
+        return $deleted ? true : false;
+    }
     public function get_leader_names()
     {
         global $db, $common;

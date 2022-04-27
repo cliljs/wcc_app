@@ -31,7 +31,7 @@ switch ($act) {
         );
         break;
     case 'update_account':
-        $updated_account = $account_model->update_account($_POST, $_SESSION['pk'],$_FILES);
+        $updated_account = $account_model->update_account($_POST, $_SESSION['pk'], $_FILES);
         echo json_encode(
             $common->create_response("AccountController/action=update_account", $updated_account, 1)
         );
@@ -43,7 +43,12 @@ switch ($act) {
             $common->create_response("AccountController/action=delete_account", $deleted_account, 1)
         );
         break;
-
+    case 'reset_password':
+        $reset_password = $account_model->reset_password($_GET['id']);
+        echo json_encode(
+            $common->create_response("AccountController/action=reset_password", $reset_password, 1)
+        );
+        break;
     case 'account_login':
         $auth_user = $account_model->login($_POST);
         $response  = $common->create_response("AccountController/action=account_login");

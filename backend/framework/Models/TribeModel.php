@@ -32,8 +32,7 @@ class TribeModel
     {
         global $db, $common, $notif_model;
         $arr = [
-            "leader_pk"   => $query['new_leader_pk'],
-            "is_approved" => 0
+            "new_leader"   => $query['new_leader_pk']
         ];
         $tribe_disciple = $db->get_row("SELECT member_pk FROM {$this->base_table} WHERE id = {$pk}");
         $updated = $db->update("UPDATE {$this->base_table} {$common->get_update_fields($arr)} WHERE id = {$pk}", array_values($arr));
@@ -42,7 +41,7 @@ class TribeModel
             "sender_pk"   => $_SESSION['pk'],
             "receiver_pk" => 1,
             "subject_pk"  => $tribe_disciple['member_pk'],
-            "caption"     => ' transfer to ' . $leader_details['fullname'],
+            "caption"     => ' transferred to ' . $leader_details['fullname'],
             "action"      => 'TRANSFER',
             "table_pk"    => $pk
         ];
@@ -93,15 +92,16 @@ class TribeModel
 
         try {
             if ($arr['is_approved'] == 0) {
+                $notif_pk = $payload['id'];
                 if ($payload['action'] == 'TRANSFER') {
                     //transfer
-                    $notif_pk = $payload['id'];
                     $db->update("Update {$this->base_table} set new_leader = 0, is_approved = 1 where id = ?", [$table_pk]);
-                    $db->update("Delete from bro_notifications where id = ?", [$notif_pk]);
                 } else {
                     //signup
+                    $db->update("Delete from {$this->base_table} where member_pk = ?", [$table_pk]);
                     $db->update("Delete from bro_accounts where id = ?", [$table_pk]);
                 }
+                $db->update("Delete from bro_notifications where id = ?", [$notif_pk]);
             } else {
                 if ($payload['action'] == 'TRANSFER') {
                     //transfer
@@ -111,7 +111,7 @@ class TribeModel
                     $db->update("Update bro_notifications set status = 1 where id = ?", [$notif_pk]);
                 } else {
                     //signup
-                    $db->update("UPDATE {$this->base_table} is_approved = 1 WHERE id = ?", [$payload['table_pk']]);
+                    $db->update("UPDATE {$this->base_table} set is_approved = 1 WHERE id = ?", [$payload['table_pk']]);
                 }
             }
         } catch (Exception $th) {
@@ -139,6 +139,45 @@ class TribeModel
         WHERE tr.leader_pk = ? and is_approved = 1 and NOT tr.member_pk = ?",
             array_values($arr)
         );
+    }
+    public function tribe_attendance($payload = [])
+    {
+        global $db;
+        print_r($payload);
+        $pk = $_SESSION['pk'];
+
+        return $db->get_list(
+            "Select tr.member_pk,(Select CONC) as member_name,() as member_invite from {$this->base_table} tr where tr.leader_pk = {$pk} and tr.is_approved = 1",
+            []
+        );
+    }
+    public function tribe_attendance_render($payload = [])
+    {
+        global $common;
+        $retval = '';
+        $month = $payload['select_month'];
+        $year = $payload['select_year'];
+
+        $monthName   = date('F', mktime(0, 0, 0, $month, 10));
+        $days = $common->getSundays($year, $month);
+
+        $retval .= "<tr>";
+        $retval .= "<td class = 'text-center' colspan = '" . count($days) . "' style = 'font-weight: 900;'>$monthName, $year</td>";
+        $retval .= "</tr>";
+        $retval .= "<tr>";
+        foreach ($days as $day) {
+            $retval .= "<td class = 'text-center'>$day</td>";
+        }
+        $retval .= "</tr>";
+        $retval .= "<tr>";
+        foreach ($days as $day) {
+            $className = $year . "-" . sprintf("%02d", $i) . "-" . sprintf("%02d", $day);
+            $retval .= "<td class = 'text-center $className'><i class = 'fa fa-circle' style = 'color:#2c3e50'></i></td>";
+        }
+
+        $retval .= "</tr>";
+
+        return $retval;
     }
 }
 

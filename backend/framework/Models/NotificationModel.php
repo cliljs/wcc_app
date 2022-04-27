@@ -33,7 +33,7 @@ class NotificationModel {
         $criteria = ($_SESSION['is_admin'] == 1) ? 
         "(receiver_pk = ? or receiver_pk = 0)" : 
         "receiver_pk = ?";
-
+       // $criteria .= ($read == 1) ? " or action = 'NONE'" : '';
         $kwiri = "SELECT id,date_created,sender_pk,action,caption,table_pk,(Select profile_pic from bro_accounts where id = n.subject_pk) as sender_pic, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = n.subject_pk) as sender_name FROM {$this->base_table} n WHERE {$criteria} AND status = {$read} order by date_created asc";
         return $db->get_list($kwiri, [$_SESSION['pk']]);
     }

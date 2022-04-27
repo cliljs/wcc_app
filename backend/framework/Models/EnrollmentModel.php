@@ -118,7 +118,8 @@ class EnrollmentModel
             "subject_pk"  => $_SESSION['pk'],
             "caption"     => $caption,
             "action"      => 'NONE',
-            "table_pk"    => $table_pk
+            "table_pk"    => $table_pk,
+            "status"      => 1
         ];
         $notif_model = $notif_model->create_notification($notif_arr);
         return true;

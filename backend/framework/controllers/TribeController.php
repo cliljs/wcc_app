@@ -72,7 +72,24 @@ switch ($act) {
             )
         );
         break;
-
+    case 'tribe_attendance':
+        echo json_encode(
+            $common->create_response(
+                "TribeController.php/?action=tribe_attendance",
+                $tribe_model->tribe_attendance($_POST),
+                1
+            )
+        );
+        break;
+    case 'tribe_attendance_render':
+        echo json_encode(
+            $common->create_response(
+                "TribeController.php/?action=tribe_attendance_render",
+                $tribe_model->tribe_attendance_render($_POST),
+                1
+            )
+        );
+        break;
     default:
         # code...
         break;
