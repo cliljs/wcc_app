@@ -1,6 +1,6 @@
 
 <?php
-include_once '../autoload.php';
+include_once './autoload.php';
 
 if (ENVIRONMENT === 'PROD') {
     echo json_encode('Unauthorized');
@@ -10,7 +10,7 @@ if (ENVIRONMENT === 'PROD') {
 $act = !empty($_GET['action']) ? $_GET['action'] : '';
 $seeds = [
     [
-        "username"        => 'j.loyloy',
+        "username"        => 'pastor',
         "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
         "lastname"        => 'Loyloy',
         "firstname"       => 'Jonathan',
@@ -66,7 +66,7 @@ $seeds = [
         "is_pastor"       => 0,
     ],
     [
-        "username"        => 'ajoe',
+        "username"        => 'leader',
         "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
         "lastname"        => 'Joe',
         "firstname"       => 'Average',
@@ -106,6 +106,21 @@ $seeds = [
         "contact"         => '096315454',
         "is_leader"       => 0,
         "is_pastor"       => 0,
+    ],
+    [
+        "username"        => 'admin',
+        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
+        "lastname"        => 'Admin',
+        "firstname"       => 'Sample',
+        "middlename"      => '',
+        "branch"          => "Bataan",
+        "gender"          => 'Female',
+        "address"         => 'Jan lang',
+        "birthdate"       => '2002-01-06',
+        "contact"         => '096315454',
+        "is_leader"       => 0,
+        "is_pastor"       => 0,
+        "is_admin"        => 1
     ]
 ];
 $lessons = [
