@@ -16,6 +16,9 @@ class NotificationModel {
             "action"      => $payload['action'],
             "table_pk"    => $payload['table_pk'],
         ];
+        if(isset($payload['status'])){
+            $arr["status"]  = $payload["status"];
+        }
         $fields  = $common->get_insert_fields($arr);
         $last_id = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
         return $last_id > 0 ? $this->get_notif_details($last_id) : false;

@@ -7,9 +7,9 @@ $act = !empty($_GET['action']) ? $_GET['action'] : '';
 switch ($act) {
     case 'create_attendance':
         $valid = $attendance_model->create_attendance($_POST);
-        if($valid){
+        if ($valid) {
             $new_invite =  $invite_model->create_invite($_POST);
-        } else{
+        } else {
             $new_invite = false;
         }
         echo json_encode(
@@ -30,7 +30,7 @@ switch ($act) {
             )
         );
         break;
- 
+
     case 'approve_attendance':
         echo json_encode(
             $common->create_response(
@@ -40,7 +40,7 @@ switch ($act) {
             )
         );
         break;
- 
+
     case 'remove_attendance':
         echo json_encode(
             $common->create_response(
@@ -66,6 +66,16 @@ switch ($act) {
             $common->create_response(
                 'AttendanceController.php/?action=get_attendance_list',
                 $attendance_model->get_attendance_list($_GET['year']),
+                1
+            )
+        );
+        break;
+
+    case 'badge_attendance':
+        echo json_encode(
+            $common->create_response(
+                'AttendanceController.php/?action=badge_attendance',
+                $attendance_model->badge_attendance(),
                 1
             )
         );

@@ -334,6 +334,7 @@ $today = date("F j Y, l");
           loadDisciples();
           getLeaders();
           $('body').on('click', '.viewTribeMembers', function() {
+
             if ($(this).hasClass('fa-minus')) return;
             let tribeID = $(this).attr('data-id');
             loadSubDisciples(tribeID);
@@ -1181,7 +1182,7 @@ $today = date("F j Y, l");
               console.log(data);
               let objData = $.parseJSON(data.trim());
               if (objData.success == 1) {
-                $('#frmMentoring').trigger('reset');
+                //$('#frmMentoring').trigger('reset');
                 loadMentoring();
                 fireSwal('Mentoring', 'Entry added successfully', 'success');
               } else {
@@ -1241,7 +1242,7 @@ $today = date("F j Y, l");
             })
           }
         } else if (me == 'tribeattendance') {
-          
+
         }
 
       });
@@ -1279,30 +1280,39 @@ $today = date("F j Y, l");
             case "SOL2":
               badge_src = image_url + 'badge_sol2.png';
               break;
+            case "RE_ENCOUNTER":
             case "SOL3":
               badge_src = image_url + 'badge_sol3.png';
-              break;
-            case "RE_ENCOUNTER":
-              badge_src = image_url + 'badge_re.png';
               break;
             default:
               badge_src = image_url + 'no-training.png';
               break;
 
           }
-
-          if (objData.length === 0) image_url += 'no-training.png';
           $('#badge_training').attr('src', badge_src);
-          if (objData.attendance == null) {
+          fireAjax('AttendanceController.php?action=badge_attendance', '', false).then(function(data) {
+            console.log(data);
+            let attData = $.parseJSON(data.trim()).data;
+            if (attData.id == null) {
+              $('#badge_attendance').addClass('no-attendance');
+              $('#badge_attendance').html('No Attendance Found');
+            } else {
+              $('#badge_attendance').addClass('with-attendance');
+              $('#badge_attendance').html('Sunday Celebration Attendance Submitted');
+            }
+            
+          }).catch(function(err) {
+            console.log(err);
             $('#badge_attendance').addClass('no-attendance');
-            $('#badge_attendance').html('No Attendance Found');
-          } else {
-            $('#badge_attendance').addClass('with-attendance');
-            $('#badge_attendance').html('Sunday Celebration Attendance Submitted');
-          }
-          $('#mdlBadge').modal({
-            backdrop: 'static'
+            $('#badge_attendance').html('Failed to retrieve attendance. Please reload the page');
+          }).finally(function(){
+            $('#mdlBadge').modal({
+              backdrop: 'static'
+            });
           });
+
+
+
         }).catch(function(err) {
           console.log(err);
           fireSwal('Badge', 'Failed to retrieve badge information. Please reload the page', 'error');
@@ -1364,19 +1374,17 @@ $today = date("F j Y, l");
             retval += '<span class="username">';
             retval += '<a class="custom linkProfile" href="Javascript:void(0);" data-id = "' + v.id + '">' + v.fullname + '</a>';
             retval += '<div class="input-group">';
-            if (member_type == '144') {
-              retval += '<button type="button" class="btn btn-outline-dark btn-sm dropdown-toggle my-1" data-toggle="dropdown" aria-expanded="true">Lifestyle</button><div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -165px, 0px);"><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Cellgroup</a><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Trainings</a><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Mentoring</a><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Sunday Celebration Attendance</a></div>&nbsp;&nbsp;<button type="button" data-id = "' + v.id + '" data-name = "' + v.fullname + '" class="my-1 btn btn-info btn-sm btnTribeTransfer">Transfer</button>&nbsp;&nbsp;';
-              //retval += '<br><button type="button" data-id = "' + v.id + '" class="my-1 btn btn-outline-dark btn-sm btnTribeLifestyle">Lifestyle</button>';
-              //retval += '&nbsp;&nbsp;<button type="button" data-id = "' + v.id + '" data-name = "' + v.fullname + '" class="my-1 btn btn-info btn-sm btnTribeTransfer">Transfer</button>';
-            }
+
+            retval += '<button type="button" class="btn btn-outline-dark btn-sm dropdown-toggle my-1" data-toggle="dropdown" aria-expanded="true">Lifestyle</button><div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, -165px, 0px);"><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Cellgroup</a><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Trainings</a><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Mentoring</a><a class="dropdown-item memberLifestyle" href="Javascript:void(0);" data-name = "' + v.fullname + '" data-id = "' + v.id + '">Sunday Celebration Attendance</a></div>&nbsp;&nbsp;<button type="button" data-id = "' + v.id + '" data-name = "' + v.fullname + '" class="my-1 btn btn-info btn-sm btnTribeTransfer">Transfer</button>&nbsp;&nbsp;';
+
             retval += '<button type="button" data-id = "' + v.id + '" data-name = "' + v.fullname + '" class="my-1 btn btn-warning btn-sm btnTribePassword">Reset Password</button>';
             retval += '</div>';
             retval += '</span>';
             retval += '<span class="description">' + member_type + ' . ' + member_numbers + '</span>';
             retval += '</div>';
             retval += '<div class="card-tools mt-3">';
-            retval += '<button type="button" class="btn btn-tool" data-card-widget="collapse">';
-            retval += '<i class="fas fa-plus viewTribeMembers" data-id = "' + v.id + '"></i>';
+            retval += '<button type="button" class="btn btn-tool viewTribeMembers" data-card-widget="collapse" data-id = "' + v.id + '">';
+            retval += '<i class="fas fa-plus"></i>';
             retval += '</button>';
             retval += '</div>';
             retval += '</div>';

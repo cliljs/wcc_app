@@ -12,13 +12,14 @@
     <a href="Javascript:void(0);" id="btnShowBadge" class="btn btn-block btn-lg btn-secondary"><b>My Badge</b></a>
     <a href="index.php?view=lifestyle" class="btn btn-block btn-lg btn-secondary"><b>Lifestyle</b></a>
     <?php
-    if ($is_leader || $is_admin) {
-      echo "<a href='index.php?view=notifications' class='btn btn-block btn-lg btn-secondary'><b>Notifications</b></a>";
-    }
+    
     if ($is_admin) {
       echo '<a href="index.php?view=qrmaintenance" class="btn btn-block btn-lg btn-secondary"><b>QR Maintenance</b></a>';
     }
     ?>
+    
+    <a href='index.php?view=notifications' class='btn btn-block btn-lg btn-secondary'><b>Notifications</b></a>
+    
     <a id="btnPersonalInformation" href="Javascript:void(0);" class="btn btn-block btn-lg btn-secondary"><b>Personal Information</b></a>
     <!-- <a href="Javascript:void(0);" class="btn btn-block btn-lg btn-secondary"><b>Tribe Approval&nbsp;<span class="badge bg-danger">1</span></b></a> -->
     <a href="logout.php" class="btn btn-block btn-lg btn-secondary"><b>Logout</b></a>

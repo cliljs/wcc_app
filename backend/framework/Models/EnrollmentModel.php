@@ -38,7 +38,7 @@ class EnrollmentModel
 
     public function get_badge()
     {
-        global $db, $common;
+        global $db;
         return $db->get_row("Select lesson_type from {$this->base_table} where user_pk = ? and is_graduated = 1 ORDER by id desc LIMIT 1", [$_SESSION['pk']]);
     }
 

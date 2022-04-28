@@ -10,26 +10,26 @@ class AttendanceModel
 
    public function create_attendance($payload = [])
    {
-      global $db, $common,$qr_model,$account_model;
+      global $db, $common, $qr_model, $account_model;
       $valid = false;
       $arr = [
          "sunday_date" => date('Y-m-d'),
          "account_pk"  => $_SESSION['pk'],
       ];
-    
-      if(isset($payload['qr'])){
-          $valid = $qr_model->validate_qr($payload['qr']);
-      } else{
-          $bypass = [
-              "tlusername"  => $payload["tlusername"],
-              "tlpassword"  => $payload["tlpassword"]
-          ];
-          $valid = $account_model->validate_bypass($bypass);
+
+      if (isset($payload['qr'])) {
+         $valid = $qr_model->validate_qr($payload['qr']);
+      } else {
+         $bypass = [
+            "tlusername"  => $payload["tlusername"],
+            "tlpassword"  => $payload["tlpassword"]
+         ];
+         $valid = $account_model->validate_bypass($bypass);
       }
-    
-      if($valid){
-        $fields = $common->get_insert_fields($arr);
-        $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
+
+      if ($valid) {
+         $fields = $common->get_insert_fields($arr);
+         $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
       }
 
       return $valid;
@@ -40,6 +40,13 @@ class AttendanceModel
    {
       global $db, $common;
       return $db->get_row("SELECT * FROM {$this->base_table} WHERE id = ?", [$id]);
+   }
+   public function badge_attendance()
+   {
+      global $db;
+      //echo 'Account PK: ' . $_SESSION['pk'];
+      //echo 'Date: ' . date('Y-m-d');
+      return $db->get_row("SELECT id FROM {$this->base_table} WHERE account_pk = ? and sunday_date = ?", [$_SESSION['pk'], date('Y-m-d')]);
    }
 
    //  ATTENDANCE LIST
@@ -94,7 +101,7 @@ class AttendanceModel
       global $db, $common, $notif_model;
       $update_fields = $common->get_update_fields($payload);
       $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$id}", array_values($payload));
-    
+
       return $updated ? $this->get_attendance($id) : false;
    }
 
@@ -113,9 +120,9 @@ class AttendanceModel
          "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
          "action"      => 'NONE',
          "table_pk"    => $pk
-     ];
-     $notif_model->create_notification($notif_arr);
-     return $confirmed;
+      ];
+      $notif_model->create_notification($notif_arr);
+      return $confirmed;
    }
 
    public function remove_attendance($id = null)
