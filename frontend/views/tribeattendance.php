@@ -60,22 +60,8 @@
 
 
 
-        <table class="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th rowspan="2">Member's Name</th>
-              <th colspan="4" class = "text-center">April 2022</th>
-            </tr>
-            <tr>
-              <th>April 1</th>
-              <th>April 1</th>
-              <th>April 1</th>
-              <th>April 1</th>
-            </tr>
-          </thead>
-          <tbody id="tblTribeAttendanceBody">
-
-          </tbody>
+        <table class="table table-striped table-hover" id = "tblTribeAttendance">
+          
         </table>
 
       </div>

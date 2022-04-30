@@ -142,14 +142,61 @@ class TribeModel
     }
     public function tribe_attendance($payload = [])
     {
-        global $db;
-        print_r($payload);
+        global $db, $common;
+        $retval = '<thead>';
         $pk = $_SESSION['pk'];
+        $month = $payload['select_month'];
+        $year = $payload['select_year'];
 
-        return $db->get_list(
-            "Select tr.member_pk,(Select CONC) as member_name,() as member_invite from {$this->base_table} tr where tr.leader_pk = {$pk} and tr.is_approved = 1",
+        $monthName   = date('F', mktime(0, 0, 0, $month, 10));
+        $days = $common->getSundays($year, $month);
+
+        $result = $db->get_list(
+            "Select tr.member_pk,(Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = tr.member_pk) as member_name from {$this->base_table} tr where tr.leader_pk = {$pk} and tr.is_approved = 1",
             []
         );
+
+        $retval .= "<tr>";
+        $retval .= '<th rowspan="2" style = "vertical-align:middle;">Member\'s Name</th>';
+        $retval .= "<th class = 'text-center' colspan = '" . count($days) . "' style = 'font-weight: 900;'>$monthName $year</th>";
+        $retval .= "</tr>";
+        $retval .= "<tr>";
+        foreach ($days as $day) {
+            $retval .= "<td class = 'text-center'>$day</td>";
+        }
+        $retval .= "</tr>";
+        $retval .= "</thead>";
+        $retval .= "<tbody>";
+
+        foreach ($result as $key => $value) {
+            $member_pk = $value['member_pk'];
+            
+            $retval .= "<tr>";
+            $retval .= "<td>" . $value['member_name'] . "</td>";
+            foreach ($days as $day) {
+                $arr = [
+                    "sunday_date"   => $year . '-' . sprintf("%02d", $month) . "-" . sprintf("%02d", $day),
+                    "account_pk"    => $member_pk
+                ];
+
+                $colorpower = '';
+                $className = $year . "-" . sprintf("%02d", $month) . "-" . sprintf("%02d", $day);
+                $row = $db->get_row("Select * from bro_attendance where sunday_date = ? and account_pk = ?",array_values($arr));
+                if(empty($row)){
+                    $colorpower = '#2c3e50';
+                } else{
+                    $colorpower = ($row["confirmed_by"] == 0) ? '#f39c12' : '#1abc9c';
+                }
+                $retval .= "<td class = 'text-center $className'><i class = 'fa fa-circle' style = 'color:{$colorpower}'></i></td>";
+            }
+            $retval .= "</tr>";
+        }
+
+        //$retval .= "</tr>";
+        $retval .= "</tbody>";
+
+
+        return $retval;
     }
     public function tribe_attendance_render($payload = [])
     {

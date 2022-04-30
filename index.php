@@ -1250,7 +1250,18 @@ $today = date("F j Y, l");
             })
           }
         } else if (me == 'tribeattendance') {
-
+            $('#frmTribeAttendance').on('submit',function(e){
+              e.preventDefault();
+              let fd = new FormData(this);
+              fireAjax('TribeController.php?action=tribe_attendance',fd,true).then(function(data){
+                console.log(data);
+                let objData = $.parseJSON(data.trim()).data;
+                $('#tblTribeAttendance').html(objData);
+              }).catch(function(err){
+                console.log(err);
+                fireSwal('Tribe Attendance','Failed to retrieve tribe attendance. Please try again','error');
+              })
+            });
         }
 
       });

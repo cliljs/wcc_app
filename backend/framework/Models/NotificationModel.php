@@ -71,7 +71,7 @@ class NotificationModel
     */
     public function notification_decision($payload = [])
     {
-        global $db, $common, $tribe_model, $enroll_model,$school_model;
+        global $db, $common,$attendance_model, $tribe_model, $enroll_model,$school_model;
         $retval = false;
         switch ($payload['action']) {
             case 'TRANSFER':
@@ -85,6 +85,7 @@ class NotificationModel
                 break;
 
             case 'ATTENDANCE':
+                $retval = $attendance_model->approve_attendance($payload);
                 break;
             case 'TRAINING':
                 $retval = $school_model->approve_schooling($payload);

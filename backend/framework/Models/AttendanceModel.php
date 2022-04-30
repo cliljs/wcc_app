@@ -31,10 +31,12 @@ class AttendanceModel
          $fields = $common->get_insert_fields($arr);
          $last_id = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
          $leader_pk = $common->get_user_leader($_SESSION['pk']);
+
          $localdate = date('Y-m-d');
+
          $notif_arr = [
             "sender_pk"   => $_SESSION['pk'],
-            "receiver_pk" => $leader_pk,
+            "receiver_pk" => $leader_pk['leader_pk'],
             "subject_pk"  => $_SESSION['pk'],
             "caption"     => ' attended Sunday Celebration ' . $localdate,
             "action"      => 'ATTENDANCE',
@@ -116,24 +118,38 @@ class AttendanceModel
       return $updated ? $this->get_attendance($id) : false;
    }
 
-   public function approve_attendance($pk)
+   public function approve_attendance($payload = [])
    {
       global $db, $common, $notif_model;
-      $arr = [
-         "confirmed_by" => $_SESSION['pk'],
-         "date_confirmed" => date('Y-m-d'),
-      ];
-      $confirmed = $this->update_attendance($arr, $pk);
-      $notif_arr = [
-         "sender_pk"   => $_SESSION['pk'],
-         "receiver_pk" => $confirmed['account_pk'],
-         "subject_pk"  => $confirmed['account_pk'],
-         "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
-         "action"      => 'NONE',
-         "table_pk"    => $pk
-      ];
-      $notif_model->create_notification($notif_arr);
-      return $confirmed;
+      $caption = '';
+      $completed = true;
+      try {
+         if ($payload['decision'] == 1) {
+            $arr = [
+               "confirmed_by" => $_SESSION['pk'],
+               "date_confirmed" => date('Y-m-d'),
+            ];
+            $confirmed = $this->update_attendance($arr, $payload['table_pk']);
+            $notif_arr = [
+               "sender_pk"   => $_SESSION['pk'],
+               "receiver_pk" => $confirmed['account_pk'],
+               "subject_pk"  => $_SESSION['pk'],
+               "caption"     => $caption . ' your Sunday Celebration Attendance',
+               "action"      => 'NONE',
+               "table_pk"    => $payload['table_pk']
+            ];
+            $notif_model->create_notification($notif_arr);
+         } else {
+            $confirmed = $db->update("Delete from {$this->base_table} where id = ?", [$payload['table_pk']]);
+            $deleted = $db->update("Delete from bro_notifications where id = ?", [$payload['id']]);
+         }
+      } catch (\Throwable $th) {
+         $completed = false;
+      }
+
+
+
+      return $completed;
    }
 
    public function remove_attendance($id = null)
