@@ -26,7 +26,7 @@ class EnrollmentModel
             "action"      => 'ENROLL',
             "table_pk"    => $last_id
         ];
-        $notif_model = $notif_model->create_notification($notif_arr);
+        $notif_model->create_notification($notif_arr);
         return $this->get_enrollment_details($last_id);
     }
 
@@ -59,10 +59,13 @@ class EnrollmentModel
 
     public function graduate($payload = [])
     {
-        global $db, $common;
+        global $db;
+        $is_completed = $db->get_list("Select * from bro_schooling where enrollment_pk = ? and ((attendance <> 1) OR date_approved is null)", [$payload["enroll_pk"]]);
+        if (!empty($is_completed)) {
+            return -1;
+        }
         $updated  = $db->update("UPDATE {$this->base_table} SET is_graduated = 1 WHERE id = ?", array_values($payload));
-
-        return $updated ? true : false;
+        return $updated ? 1 : 0;
     }
 
     public function remove_enrollment($pk = null)
@@ -84,45 +87,52 @@ class EnrollmentModel
     public function approve_user($payload = [])
     {
         global $db, $common, $school_model, $notif_model;
-       
-        $table_pk = $payload['table_pk'];
-        $notif_pk = $payload['id'];
-        $caption = '';
-        if ($payload['decision'] == 0) {
-            $is_disapproved = $this->remove_enrollment($table_pk);
-            $caption = ' disapproved your enrollment';
-        } else {
-            $is_approved = $this->update_enrollment(
-                $table_pk,
-                [
-                    'is_enrolled'   => 1,
-                    'date_approved' => strtotime(date('Y-m-d H:i:s'))
-                ]
-            );
-            
-            if (!empty($is_approved)) {
-                $caption = ' approved your enrollment';
-                $lessons =  $db->get_list("SELECT id as lesson_pk,(Select user_pk from bro_enrollment where id = ?) as student_pk FROM bro_lessons WHERE lesson_type = ?", [$table_pk, $is_approved['lesson_type']]);
-                foreach ($lessons as $key => $lesson) {
-                    $school_model->create_schooling($lesson);
+        $completed = true;
+        try {
+
+            $table_pk = $payload['table_pk'];
+            $notif_pk = $payload['id'];
+            $caption = '';
+            if ($payload['decision'] == 0) {
+                $is_disapproved = $this->remove_enrollment($table_pk);
+                $caption = ' disapproved your enrollment';
+            } else {
+                $is_approved = $this->update_enrollment(
+                    $table_pk,
+                    [
+                        'is_enrolled'   => 1,
+                        'date_approved' => strtotime(date('Y-m-d H:i:s'))
+                    ]
+                );
+
+                if (!empty($is_approved)) {
+                    $caption = ' approved your enrollment';
+                    $lessons =  $db->get_list("SELECT id as lesson_pk,(Select user_pk from bro_enrollment where id = ?) as student_pk FROM bro_lessons WHERE lesson_type = ?", [$table_pk, $is_approved['lesson_type']]);
+                    foreach ($lessons as $key => $lesson) {
+                        $lesson["enrollment_pk"] = $table_pk;
+                        $school_model->create_schooling($lesson);
+                    }
                 }
             }
+
+            $notif_details = $common->get_notif_details($notif_pk);
+
+            // PABALIK PAPUNTANG DISCIPLE ETO    
+            $notif_arr = [
+                "sender_pk"   => $_SESSION['pk'],
+                "receiver_pk" => $notif_details['subject_pk'],
+                "subject_pk"  => $_SESSION['pk'],
+                "caption"     => $caption,
+                "action"      => 'NONE',
+                "table_pk"    => $table_pk,
+                "status"      => 1
+            ];
+            $notif_model = $notif_model->create_notification($notif_arr);
+        } catch (\Throwable $th) {
+            $completed = false;
         }
 
-        $notif_details = $common->get_notif_details($notif_pk);
-
-        // PABALIK PAPUNTANG DISCIPLE ETO    
-        $notif_arr = [
-            "sender_pk"   => $_SESSION['pk'],
-            "receiver_pk" => $notif_details['subject_pk'],
-            "subject_pk"  => $_SESSION['pk'],
-            "caption"     => $caption,
-            "action"      => 'NONE',
-            "table_pk"    => $table_pk,
-            "status"      => 1
-        ];
-        $notif_model = $notif_model->create_notification($notif_arr);
-        return true;
+        return $completed;
     }
 }
 

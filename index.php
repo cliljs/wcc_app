@@ -681,6 +681,7 @@ $today = date("F j Y, l");
           $('body').on('click', '.switchInput', function() {
             let my_attendance = 0;
             let dataID = $(this).attr('data-id');
+            let lesson_id = $(this).attr('data-lesson');
             if ($(this).is(':checked')) {
               $(this).next().html('Attended');
               my_attendance = 1;
@@ -688,13 +689,14 @@ $today = date("F j Y, l");
               $(this).next().html('Absent');
             }
             let payload = {
-              attendance: my_attendance
+              attendance: my_attendance,
+              lesson_pk: lesson_id
             }
             fireAjax('SchoolingController.php?action=schooling_attendance&id=' + dataID, payload, false).then(function(data) {
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
               console.log(objData);
-              if (objData.length === 0) {
+              if (objData == false) {
                 fireSwal('Training', 'Failed to update attendance. Please reload the page', 'error');
 
               } else {
@@ -714,8 +716,10 @@ $today = date("F j Y, l");
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
 
-              if (objData == false) {
+              if (objData == 0) {
                 fireSwal('Training', 'Failed to complete training. Please try again', 'error');
+              } else if (objData == -1) {
+                fireSwal('Training', 'Please complete all lessons before submitting this training. Be sure that all training attendance are confirmed by your leader', 'info');
               } else {
                 Swal.fire({
                   icon: 'success',
@@ -750,7 +754,7 @@ $today = date("F j Y, l");
               retval += '<td>' + v.lesson_title + '</td>';
               retval += '<td>';
               retval += '<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">';
-              retval += '<input data-id="' + v.id + '" type="checkbox" class="custom-control-input switchInput" id="swW' + v.id + '" name="swW' + v.id + '" ';
+              retval += '<input data-lesson = "' + v.lesson_pk + '" data-id="' + v.id + '" type="checkbox" class="custom-control-input switchInput" id="swW' + v.id + '" name="swW' + v.id + '" ';
               retval += (v.attendance == null || v.attendance == 0) ? '' : 'checked ';
               retval += (v.leader_pk == 0) ? '>' : 'disabled>';
               retval += '<label class="custom-control-label switchLabel" for="swW' + v.id + '">';
@@ -772,6 +776,7 @@ $today = date("F j Y, l");
           $('body').on('click', '.switchRC', function() {
             let my_attendance = 0;
             let dataID = $(this).attr('data-id');
+            let lesson_id = $(this).attr('data-lesson');
             if ($(this).is(':checked')) {
               $(this).next().html('Attended');
               my_attendance = 1;
@@ -779,7 +784,8 @@ $today = date("F j Y, l");
               $(this).next().html('Absent');
             }
             let payload = {
-              attendance: my_attendance
+              attendance: my_attendance,
+              lesson_pk:lesson_id
             }
             fireAjax('SchoolingController.php?action=schooling_attendance&id=' + dataID, payload, false).then(function(data) {
               console.log(data);
@@ -842,7 +848,7 @@ $today = date("F j Y, l");
               retval += '<td>' + v.lesson_title + '</td>';
               retval += '<td>';
               retval += '<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">';
-              retval += '<input data-id="' + v.id + '" type="checkbox" class="custom-control-input switchRC" id="swRC' + v.id + '" name="swRC' + v.id + '" ';
+              retval += '<input data-lesson = "' + v.lesson_pk + '" data-id="' + v.id + '" type="checkbox" class="custom-control-input switchRC" id="swRC' + v.id + '" name="swRC' + v.id + '" ';
               retval += (v.attendance == null || v.attendance == 0) ? '' : 'checked ';
               retval += (v.leader_pk == 0) ? '>' : 'disabled>';
               retval += '<label class="custom-control-label switchRC" for="swRC' + v.id + '">';
@@ -865,6 +871,7 @@ $today = date("F j Y, l");
           $('body').on('change', '.switchSOLInput', function() {
             let my_attendance = 0;
             let dataID = $(this).attr('data-id');
+            let lesson_id = $(this).attr('data-lesson');
             if ($(this).is(':checked')) {
               $(this).next().html('Attended');
               my_attendance = 1;
@@ -872,14 +879,15 @@ $today = date("F j Y, l");
               $(this).next().html('Absent');
             }
             let payload = {
-              attendance: my_attendance
+              attendance: my_attendance,
+              lesson_pk: lesson_id
             }
 
             fireAjax('SchoolingController.php?action=schooling_attendance&id=' + dataID, payload, false).then(function(data) {
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
 
-              if (objData.length === 0) {
+              if (objData == false) {
                 fireSwal('Training', 'Failed to update attendance. Please reload the page', 'error');
 
               } else {
@@ -936,7 +944,7 @@ $today = date("F j Y, l");
               retval += '<td>' + v.lesson_title + '</td>';
               retval += '<td>';
               retval += '<div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">';
-              retval += '<input data-id="' + v.id + '" type="checkbox" class="custom-control-input switchSOLInput" id="swSOLLesson' + v.id + '" name="swSOLLesson' + v.id + '" ';
+              retval += '<input data-lesson = "' + v.lesson_pk + '" data-id="' + v.id + '" type="checkbox" class="custom-control-input switchSOLInput" id="swSOLLesson' + v.id + '" name="swSOLLesson' + v.id + '" ';
               retval += (v.attendance == null || v.attendance == 0) ? '' : 'checked ';
               retval += (v.leader_pk == 0) ? '>' : 'disabled>';
               retval += '<label class="custom-control-label switchSOLLabel" for="swSOLLesson' + v.id + '">';
@@ -1111,8 +1119,8 @@ $today = date("F j Y, l");
 
             fireAjax('NotificationController.php?action=notif_decision', payload, false).then(function(data) {
               console.log(data);
-              let objData = $.parseJSON(data.trim());
-              if (objData.success == 1) {
+              let objData = $.parseJSON(data.trim()).data;
+              if (objData == true) {
                 trigger_button.closest('.osahan-post-header').fadeOut('fast', function() {
                   $(this).remove();
                 });
@@ -1300,12 +1308,12 @@ $today = date("F j Y, l");
               $('#badge_attendance').addClass('with-attendance');
               $('#badge_attendance').html('Sunday Celebration Attendance Submitted');
             }
-            
+
           }).catch(function(err) {
             console.log(err);
             $('#badge_attendance').addClass('no-attendance');
             $('#badge_attendance').html('Failed to retrieve attendance. Please reload the page');
-          }).finally(function(){
+          }).finally(function() {
             $('#mdlBadge').modal({
               backdrop: 'static'
             });
@@ -1695,6 +1703,11 @@ $today = date("F j Y, l");
             $("#user_address").html(user_header.address);
             $("#user_contact").html(user_header.contact);
             $("#user_birthdate").html(user_header.birthdate);
+            if (user_header.unreadCount == 0) {
+              $(".unreadCount").html('');
+            } else {
+              $(".unreadCount").html(user_header.unreadCount);
+            }
           }
 
           document.title = 'WCC | ' + $("#user_name").html();

@@ -9,8 +9,9 @@ switch ($act) {
         $response    = $common->create_response("AccountController/action=create_account");
 
         if (@$new_account['error']) {
-            $response['msg'] = $new_account['msg'];
+            $response['data'] = false;
         } else {
+            
             $response['data']    = $new_account;
             $response['success'] = 1;
         }

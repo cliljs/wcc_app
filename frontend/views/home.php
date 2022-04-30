@@ -18,7 +18,7 @@
     }
     ?>
     
-    <a href='index.php?view=notifications' class='btn btn-block btn-lg btn-secondary'><b>Notifications</b></a>
+    <a href='index.php?view=notifications' class='btn btn-block btn-lg btn-secondary'><b>Notifications</b>&nbsp;&nbsp;<span class="badge badge-danger right unreadCount"></span></a>
     
     <a id="btnPersonalInformation" href="Javascript:void(0);" class="btn btn-block btn-lg btn-secondary"><b>Personal Information</b></a>
     <!-- <a href="Javascript:void(0);" class="btn btn-block btn-lg btn-secondary"><b>Tribe Approval&nbsp;<span class="badge bg-danger">1</span></b></a> -->

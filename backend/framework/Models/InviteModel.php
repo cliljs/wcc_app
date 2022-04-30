@@ -3,34 +3,43 @@
 require_once '../../autoload.php';
 require_once MODEL_PATH . 'QRModel.php';
 
-class InviteModel {
+class InviteModel
+{
     private $base_table = 'bro_invites';
-    
+
     public function create_invite($payload = [])
     {
         global $db, $common, $qr_model;
-       
+        $completed = true;
         //$is_qr_valid = $qr_model->validate_qr($payload['qr']);
 
         // if (!$is_qr_valid) {
         //     return ["error" => true, "msg" => "QR Not Valid"];
         // }
-        if(isset($payload['bro'])){
-            foreach ($payload['bro'] as $key => $inner) {
-            foreach ($inner as $i_key => $name) {
-                $arr = [
-                    "date_invited" => date("Y-m-d"),
-                    "inviter_pk"   => $_SESSION['pk'],
-                    "invitee_name" => $name,
-                    "invite_type"  => $i_key,
-                ];
-                $fields = $common->get_insert_fields($arr);
-                $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
+        try {
+            if (isset($payload['bro'])) {
+                foreach ($payload['bro'] as $key => $inner) {
+                    foreach ($inner as $i_key => $name) {
+                        $arr = [
+                            "date_invited" => date("Y-m-d"),
+                            "inviter_pk"   => $_SESSION['pk'],
+                            "invitee_name" => $name,
+                            "invite_type"  => $i_key,
+                        ];
+                        $fields = $common->get_insert_fields($arr);
+                        $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
+                    }
+                }
             }
-            }
+            
+        } catch (\Throwable $th) {
+            $completed = false;
         }
 
-        return true;
+
+
+
+        return $completed;
     }
 
     public function get_invite_list()

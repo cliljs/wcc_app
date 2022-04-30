@@ -3,7 +3,19 @@ require_once '../../autoload.php';
 //require_once './autoload.php';
 class Helpers
 {
-
+  public function get_user_leader($pk)
+  {
+    global $db;
+    return $db->get_row("Select leader_pk,
+  (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = tr.leader_pk) as leader_name 
+  from bro_tribe tr
+  where member_pk = ?;", [$pk]);
+  }
+  public function get_lesson_details($pk)
+  {
+    global $db;
+    return $db->get_row("Select * from bro_lessons where id = ?;", [$pk]);
+  }
   public function get_notif_details($table_pk)
   {
     global $db;

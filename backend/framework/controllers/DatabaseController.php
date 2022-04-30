@@ -3,7 +3,7 @@
 class DatabaseController
 {
 
-    public $conn = null;
+    public $conn = null;    
     public function __construct(
         $host    = "127.0.0.1",
         $db_name = "papa_quibs",
@@ -25,7 +25,7 @@ class DatabaseController
     private function execute($query = "", $params)
     {
         try {
-       
+
             $stmt = $this->conn->prepare($query);
 
             if ($stmt === false) {
@@ -67,7 +67,7 @@ class DatabaseController
 
             $stmt = $this->execute($query, $params);
             $stmt->close();
-            
+
             return true;
         } catch (Exception $e) {
             return false;
@@ -97,7 +97,7 @@ class DatabaseController
     public function get_row($query = "", $params = [])
     {
         try {
-           
+
             $stmt = $this->execute($query, $params);
 
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -115,7 +115,7 @@ class DatabaseController
     public function get_list($query = "", $params = [])
     {
         try {
-           
+
             $stmt = $this->execute($query, $params);
 
             $result = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -132,7 +132,7 @@ class DatabaseController
     public function truncate($tbl_name = "")
     {
         try {
-           
+
             $stmt = $this->execute("TRUNCATE TABLE {$tbl_name}", []);
             $stmt->close();
 
@@ -144,4 +144,16 @@ class DatabaseController
         return false;
     }
 
+    public function setCommit($flag)
+    {
+        $this->conn->autocommit($flag);
+    }
+    public function commitTransaction()
+    {
+        $this->conn->commit();
+    }
+    public function rollbackTransaction()
+    {
+        $this->conn->rollback();
+    }
 }

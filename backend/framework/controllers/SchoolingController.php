@@ -48,7 +48,17 @@ switch ($act) {
         echo json_encode(
             $common->create_response(
                 "SchoolingController.php/?action=schooling_attendance",
-                $school_model->update_schooling($_GET['id'],$_POST),
+                $school_model->update_schooling($_GET['id'], $_POST),
+                1
+            )
+        );
+        break;
+
+    case 'approve_schooling':
+        echo json_encode(
+            $common->create_response(
+                "SchoolingController.php/?action=approve_schooling",
+                $school_model->approve_schooling($_POST),
                 1
             )
         );

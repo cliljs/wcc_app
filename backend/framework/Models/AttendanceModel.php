@@ -10,7 +10,7 @@ class AttendanceModel
 
    public function create_attendance($payload = [])
    {
-      global $db, $common, $qr_model, $account_model;
+      global $db, $common, $qr_model, $account_model, $notif_model;
       $valid = false;
       $arr = [
          "sunday_date" => date('Y-m-d'),
@@ -29,7 +29,18 @@ class AttendanceModel
 
       if ($valid) {
          $fields = $common->get_insert_fields($arr);
-         $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
+         $last_id = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
+         $leader_pk = $common->get_user_leader($_SESSION['pk']);
+         $localdate = date('Y-m-d');
+         $notif_arr = [
+            "sender_pk"   => $_SESSION['pk'],
+            "receiver_pk" => $leader_pk,
+            "subject_pk"  => $_SESSION['pk'],
+            "caption"     => ' attended Sunday Celebration ' . $localdate,
+            "action"      => 'ATTENDANCE',
+            "table_pk"    => $last_id
+         ];
+         $notif_model->create_notification($notif_arr);
       }
 
       return $valid;
