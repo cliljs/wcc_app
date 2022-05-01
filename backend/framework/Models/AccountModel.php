@@ -120,7 +120,8 @@ class AccountModel
     public function get_account_details()
     {
         global $db;
-        return $db->get_row("SELECT acc.*, (Select COUNT(*) from bro_notifications where status = 0 and receiver_pk = ?) as unreadCount, 
+        $criteria = ($_SESSION['is_admin'] == 1) ? "(receiver_pk = ? or receiver_pk = 0)" : "receiver_pk = ?";
+        return $db->get_row("SELECT acc.*, (Select COUNT(*) from bro_notifications where status = 0 and $criteria) as unreadCount, 
         (Select CONCAT(firstname,' ',middlename,' ',lastname) from {$this->base_table} where id = (Select leader_pk from bro_tribe where member_pk = ? and is_approved = 1)) as tlname 
         FROM {$this->base_table} acc WHERE acc.id = ?", [$_SESSION['pk'], $_SESSION['pk'], $_SESSION['pk']]);
     }

@@ -302,8 +302,10 @@ $today = date("F j Y, l");
           $('#frmPersonal').on('submit', function(e) {
             e.preventDefault();
             let fd = new FormData(this);
+            preload('#frmPersonal',true);
             fireAjax('AccountController.php?action=update_account', fd, true).then(function(data) {
               console.log(data);
+              preload('#frmPersonal',false);
               let obj = $.parseJSON(data.trim());
               if (obj.success == 1) {
                 Swal.fire({
@@ -362,10 +364,11 @@ $today = date("F j Y, l");
             }).then((result) => {
 
               if (result.isConfirmed) {
-                preload(el, true);
+                
+                preload('body',true);
                 fireAjax('AccountController.php?action=reset_password&id=' + memberID, '', false).then(function(data) {
                   console.log(data);
-                  preload(el, false);
+                  preload('body',false);
                   let obj = $.parseJSON(data.trim());
                   if (obj.success == 1) {
                     fireSwal('Reset Password', 'Member\'s password reset successfully.', 'success');
@@ -421,8 +424,10 @@ $today = date("F j Y, l");
               new_leader_pk: $('#new_leader_name').val()
             };
             let member_id = $('#txTransferName').attr('data-id');
+            preload('body',true);
             fireAjax('TribeController.php?action=transfer_disciple&pk=' + member_id, payload, false).then(function(data) {
               console.log(data);
+              preload('body',false);
               let obj = $.parseJSON(data.trim()).success;
               if (obj == 1) {
                 loadDisciples();
@@ -586,10 +591,10 @@ $today = date("F j Y, l");
               event_date: $("#event_date").val(),
               event_time: $("#event_time").val()
             };
-
+            preload('body',true);
             fireAjax('CellgroupController.php?action=add_cell', payload, false).then(function(data) {
               let obj = jQuery.parseJSON(data.trim());
-
+              preload('body',false);
               if (obj.success == 1) {
                 loadCellgroup();
                 $('#inp_name').val('');
@@ -606,7 +611,9 @@ $today = date("F j Y, l");
           $('body').on('click', '.btnRemoveCellgroup', function() {
             let dataID = $(this).attr('data-id');
             let btn = $(this);
+            preload('body',true);
             fireAjax('CellgroupController.php?action=remove_cell&id=' + dataID, '', false).then(function(data) {
+              preload('body',false);
               let obj = jQuery.parseJSON(data.trim());
 
               if (obj.success == 1) {
@@ -620,8 +627,10 @@ $today = date("F j Y, l");
           });
 
           function loadCellMembers() {
+            preload('body',true);
             let data = fireAjax('CellgroupController.php?action=get_other_names', '', false).then(function(data) {
               console.log(data)
+              preload('body',false);
               let obj = jQuery.parseJSON(data.trim());
               let tls = obj.data;
               let renderVal = '<option selected="selected" disabled="disabled">Please select a member from the list</option>';
@@ -642,7 +651,9 @@ $today = date("F j Y, l");
           }
 
           function loadCellgroup() {
+            preload('body',true);
             fireAjax('CellgroupController.php?action=get_cell_list', '', false).then(function(data) {
+              preload('body',false);
               console.log(data);
               let obj = jQuery.parseJSON(data.trim());
               let objData = obj.data;
@@ -692,7 +703,9 @@ $today = date("F j Y, l");
               attendance: my_attendance,
               lesson_pk: lesson_id
             }
+            preload('body',true);
             fireAjax('SchoolingController.php?action=schooling_attendance&id=' + dataID, payload, false).then(function(data) {
+              preload('body',false);
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
               console.log(objData);
@@ -712,7 +725,9 @@ $today = date("F j Y, l");
             let payload = {
               enroll_pk: session
             };
+            preload('body',true);
             fireAjax('EnrollmentController.php?action=graduate', payload, false).then(function(data) {
+              preload('body',false);
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
 
@@ -745,7 +760,9 @@ $today = date("F j Y, l");
           let payload = {
             lesson_type: 'LIFE_CLASS'
           };
+          preload('body',true);
           fireAjax('SchoolingController.php?action=get_user_schooling', payload, false).then(function(data) {
+            preload('body',false);
             console.log(data);
             let objData = $.parseJSON(data.trim()).data;
             let retval = '';
@@ -785,9 +802,11 @@ $today = date("F j Y, l");
             }
             let payload = {
               attendance: my_attendance,
-              lesson_pk:lesson_id
+              lesson_pk: lesson_id
             }
+            preload('body',true);
             fireAjax('SchoolingController.php?action=schooling_attendance&id=' + dataID, payload, false).then(function(data) {
+              preload('body',false);
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
               console.log(objData);
@@ -807,12 +826,15 @@ $today = date("F j Y, l");
             let payload = {
               enroll_pk: session
             };
+            preload('body',true);
             fireAjax('EnrollmentController.php?action=graduate', payload, false).then(function(data) {
+              preload('body',false);
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
-
-              if (objData == false) {
+              if (objData == 0) {
                 fireSwal('Training', 'Failed to complete training. Please try again', 'error');
+              } else if (objData == -1) {
+                fireSwal('Training', 'Please complete all lessons before submitting this training. Be sure that all training attendance are confirmed by your leader', 'info');
               } else {
                 Swal.fire({
                   icon: 'success',
@@ -825,11 +847,11 @@ $today = date("F j Y, l");
                 }).then((result) => {
 
                   if (result.isConfirmed) {
-                    window.location.href = home_url + 'index.php?view=trainings';
+                    window.location.href = home_url + 'index.php?view=home&action=1';
                   }
                 });
-                fireSwal('Training', 'Training completed successfully', 'success');
               }
+              
 
             }).catch(function(err) {
               console.log(err);
@@ -839,7 +861,9 @@ $today = date("F j Y, l");
           let payload = {
             lesson_type: 'RE_ENCOUNTER'
           };
+          preload('body',true);
           fireAjax('SchoolingController.php?action=get_user_schooling', payload, false).then(function(data) {
+            preload('body',false);
             console.log(data);
             let objData = $.parseJSON(data.trim()).data;
             let retval = '';
@@ -882,17 +906,33 @@ $today = date("F j Y, l");
               attendance: my_attendance,
               lesson_pk: lesson_id
             }
-
+            preload('body',true);
             fireAjax('SchoolingController.php?action=schooling_attendance&id=' + dataID, payload, false).then(function(data) {
+              preload('body',false);
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
-
-              if (objData == false) {
-                fireSwal('Training', 'Failed to update attendance. Please reload the page', 'error');
-
+              if (objData == 0) {
+                fireSwal('Training', 'Failed to complete training. Please try again', 'error');
+              } else if (objData == -1) {
+                fireSwal('Training', 'Please complete all lessons before submitting this training. Be sure that all training attendance are confirmed by your leader', 'info');
               } else {
-                fireSwal('Training', 'Attendance updated successfully. Please wait for your leader\'s confirmation', 'success');
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Training',
+                  text: 'Training completed. Click OK to continue',
+                  showDenyButton: false,
+                  showCancelButton: false,
+                  confirmButtonText: 'Ok',
+
+                }).then((result) => {
+
+                  if (result.isConfirmed) {
+                    window.location.href = home_url + 'index.php?view=trainings';
+                  }
+                });
               }
+
+
 
             }).catch(function(err) {
               console.log(err);
@@ -903,7 +943,9 @@ $today = date("F j Y, l");
             let payload = {
               enroll_pk: session
             };
+            preload('body',true);
             fireAjax('EnrollmentController.php?action=graduate', payload, false).then(function(data) {
+              preload('body',false);
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
               //index.php?view=trainings
@@ -935,7 +977,9 @@ $today = date("F j Y, l");
           let loadpay = {
             lesson_type: me
           };
+          preload('body',true);
           fireAjax('SchoolingController.php?action=get_user_schooling', loadpay, false).then(function(data) {
+            preload('body',false);
             console.log(data);
             let objData = $.parseJSON(data.trim()).data;
             let retval = '';
@@ -979,7 +1023,9 @@ $today = date("F j Y, l");
           });
           $('#newQRCodeMaintenance').on('click', function() {
             console.log('QRController.php?action=update_qr&id=' + qrID);
+            preload('body',true);
             fireAjax('QRController.php?action=update_qr&id=' + qrID, '', false).then(function(data) {
+              preload('body',false);
               let obj = jQuery.parseJSON(data.trim());
 
               if (obj.success == 1) {
@@ -1022,7 +1068,9 @@ $today = date("F j Y, l");
               cancelButtonText: 'No',
             }).then((result) => {
               if (result.isConfirmed) {
+                preload('body',true);
                 fireAjax('EnrollmentController.php?action=create_enrollment', lesson_type, false).then(function(data) {
+                  preload('body',false);
                   console.log(data);
                   let obj = jQuery.parseJSON(data.trim());
                   if (obj.success == 1) {
@@ -1039,7 +1087,9 @@ $today = date("F j Y, l");
               }
             })
           });
+          preload('body',true);
           fireAjax('EnrollmentController.php?action=get_enrollment_list', '', false).then(function(data) {
+            preload('body',false);
             console.log(data);
             let obj = jQuery.parseJSON(data.trim());
             let btnHrefs = ['lifeclass', 'sol1', 'sol2', 'sol3', 'reencounter'];
@@ -1116,8 +1166,9 @@ $today = date("F j Y, l");
               action: var_notif_action
             };
 
-
+            preload('body',true);
             fireAjax('NotificationController.php?action=notif_decision', payload, false).then(function(data) {
+              preload('body',false);
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
               if (objData == true) {
@@ -1141,7 +1192,9 @@ $today = date("F j Y, l");
           getNotifications(1);
 
           function getNotifications(read) {
+            preload('body',true);
             fireAjax('NotificationController.php?action=get_user_notifications&read=' + read, '', false).then(function(data) {
+              preload('body',false);
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
               let notifCaption = '';
@@ -1212,7 +1265,9 @@ $today = date("F j Y, l");
           $('body').on('click', '.btnRemoveMentoring', function() {
             let thisButton = $(this);
             let dataID = thisButton.attr('data-id');
+            preload('body',true);
             fireAjax('MentoringController.php?action=remove_mentoring&pk=' + dataID, '', false).then(function(data) {
+              preload('body',false);
               console.log(data);
               let obj = $.parseJSON(data.trim());
               if (obj.success == 1) {
@@ -1229,7 +1284,9 @@ $today = date("F j Y, l");
           });
 
           function loadMentoring() {
+            preload('body',true);
             fireAjax('MentoringController.php?action=get_mentoring', '', false).then(function(data) {
+              preload('body',false);
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
               let retval = '';
@@ -1250,18 +1307,20 @@ $today = date("F j Y, l");
             })
           }
         } else if (me == 'tribeattendance') {
-            $('#frmTribeAttendance').on('submit',function(e){
-              e.preventDefault();
-              let fd = new FormData(this);
-              fireAjax('TribeController.php?action=tribe_attendance',fd,true).then(function(data){
-                console.log(data);
-                let objData = $.parseJSON(data.trim()).data;
-                $('#tblTribeAttendance').html(objData);
-              }).catch(function(err){
-                console.log(err);
-                fireSwal('Tribe Attendance','Failed to retrieve tribe attendance. Please try again','error');
-              })
-            });
+          $('#frmTribeAttendance').on('submit', function(e) {
+            e.preventDefault();
+            let fd = new FormData(this);
+            preload('body',true);
+            fireAjax('TribeController.php?action=tribe_attendance', fd, true).then(function(data) {
+              preload('body',false);
+              console.log(data);
+              let objData = $.parseJSON(data.trim()).data;
+              $('#tblTribeAttendance').html(objData);
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Tribe Attendance', 'Failed to retrieve tribe attendance. Please try again', 'error');
+            })
+          });
         }
 
       });
@@ -1283,10 +1342,10 @@ $today = date("F j Y, l");
       };
 
       function showBadge() {
-        preload('mdlBadge', true);
+        preload('body', true);
         fireAjax('EnrollmentController.php?action=get_badge', '', false).then(function(data) {
           console.log(data);
-          preload('mdlBadge', false);
+          preload('false', true);
           var objData = $.parseJSON(data.trim()).data;
           let badge_src = image_url + 'no-training.png';
           switch (objData.lesson_type) {
@@ -1309,7 +1368,9 @@ $today = date("F j Y, l");
 
           }
           $('#badge_training').attr('src', badge_src);
+          preload('body',true);
           fireAjax('AttendanceController.php?action=badge_attendance', '', false).then(function(data) {
+            preload('body',false);
             console.log(data);
             let attData = $.parseJSON(data.trim()).data;
             if (attData.id == null) {
@@ -1366,6 +1427,7 @@ $today = date("F j Y, l");
         preload('body', true);
         let ajaxURL = (leader_pk == 0) ? 'TribeController.php?action=get_disciples' : 'TribeController.php?action=get_disciples&id=' + leader_pk;
         fireAjax(ajaxURL, '', false).then(function(data) {
+          preload('body',false);
           let obj = jQuery.parseJSON(data.trim());
           let retval = '';
           let member_type = '';
@@ -1413,7 +1475,7 @@ $today = date("F j Y, l");
           });
           $('#tribeContainer').html(retval);
 
-          preload('body', false);
+          //preload('body', false);
         }).catch(function(err) {
           fireSwal('My Tribe', 'Failed to retrieve tribe members. Please reload the page', 'error')
         });
@@ -1423,7 +1485,9 @@ $today = date("F j Y, l");
 
         let ajaxURL = (leader_pk == 0) ? 'TribeController.php?action=get_disciples' : 'TribeController.php?action=get_disciples&id=' + leader_pk;
         console.log(ajaxURL);
+        preload('body',true);
         fireAjax(ajaxURL, '', false).then(function(data) {
+          preload('body',false);
           console.log(data);
           let obj = jQuery.parseJSON(data.trim());
           let retval = '';
@@ -1459,8 +1523,9 @@ $today = date("F j Y, l");
       }
 
       function render_calendar(selectedYear) {
+        preload('body',true);
         fireAjax('AttendanceController.php?action=render_table&year=' + selectedYear, '', false).then(function(data) {
-
+          preload('body',false);
           let obj = jQuery.parseJSON(data.trim());
           let objData = obj.data;
           $('#tblAttendanceBody').html(objData);
@@ -1507,7 +1572,9 @@ $today = date("F j Y, l");
       }
 
       function loadAllQR() {
+        preload('body',true);
         fireAjax('QRController.php?action=get_qr_list', '', false).then(function(data) {
+          preload('body',false);
           let obj = jQuery.parseJSON(data.trim());
           let objData = obj.data;
           let retval = '';
@@ -1535,7 +1602,9 @@ $today = date("F j Y, l");
       }
 
       function lifestyleCellgroup(pk) {
+        preload('body',true);
         fireAjax('CellgroupController.php?action=get_cell_list&pk=' + pk, '', false).then(function(data) {
+          preload('body',false);
           console.log(data);
           let objData = $.parseJSON(data.trim()).data;
           let table_body = '';
@@ -1562,7 +1631,9 @@ $today = date("F j Y, l");
           user_pk: pk,
           lesson_type: lesson
         };
+        preload('body',true);
         fireAjax('SchoolingController.php?action=get_user_schooling', payload, false).then(function(data) {
+          preload('body',false);
           console.log(data);
           let objData = $.parseJSON(data.trim()).data;
           let retval = '';
@@ -1605,7 +1676,9 @@ $today = date("F j Y, l");
       }
 
       function lifestyleMentoring(pk) {
+        preload('body',true);
         fireAjax('MentoringController.php?action=get_mentoring&pk=' + pk, '', false).then(function(data) {
+          preload('body',false);
           console.log(data);
           let objData = $.parseJSON(data.trim()).data;
           let retval = '';
@@ -1630,9 +1703,9 @@ $today = date("F j Y, l");
       }
 
       function submitSundayAttendance(payload, submit_method) {
-
+        preload('body',true);
         fireAjax('AttendanceController.php?action=create_attendance', payload, false).then(function(data) {
-
+          preload('body',false);
           console.log(data);
 
           let obj = jQuery.parseJSON(data.trim());
@@ -1645,6 +1718,7 @@ $today = date("F j Y, l");
           } else {
             Swal.fire({
               title: 'Attendance',
+              allowOutsideClick: false,
               text: 'Attendance submitted successfully. Click OK to view your badge',
               showDenyButton: false,
               showCancelButton: false,

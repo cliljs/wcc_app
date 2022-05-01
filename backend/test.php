@@ -38,7 +38,7 @@ $seeds = [
         "is_pastor"       => 0,
     ],
     [
-        "username"        => 'janedoe',
+        "username"        => 'jdoes',
         "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
         "lastname"        => 'Does',
         "firstname"       => 'Jane',
