@@ -1072,13 +1072,17 @@ $today = date("F j Y, l");
                 fireAjax('EnrollmentController.php?action=create_enrollment', lesson_type, false).then(function(data) {
                   preload('body',false);
                   console.log(data);
-                  let obj = jQuery.parseJSON(data.trim());
-                  if (obj.success == 1) {
+                  let obj = jQuery.parseJSON(data.trim()).data;
+                  if (obj == 1) {
                     this_button.removeClass('btn-secondary');
                     this_button.addClass('btn-warning');
                     this_span.removeClass('fa-plus');
                     this_span.addClass('fa-clock');
                     fireSwal('Training Enrollment', 'Training has been successfully enrolled. Please wait for admin\'s approval.', 'success');
+                  } else if(obj == -1){
+                    fireSwal('Training Enrollment', 'Failed to enroll training. Incomplete requirements', 'error');
+                  } else{
+                    fireSwal('Training Enrollment', 'Failed to enroll training. Please reload the page', 'error');
                   }
                 }).catch(function(err) {
                   console.log(err);

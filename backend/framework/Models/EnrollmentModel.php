@@ -11,23 +11,70 @@ class EnrollmentModel
     public function create_enrollment($payload = [])
     {
         global $db, $common, $notif_model;
-
+        $completed = 1;
         $arr = [
             "lesson_type" => $payload['lesson_type'],
             "user_pk"     => $_SESSION['pk']
         ];
-        $fields  = $common->get_insert_fields($arr);
-        $last_id = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
-        $notif_arr = [
-            "sender_pk"   => $_SESSION['pk'],
-            "receiver_pk" => 0,
-            "subject_pk"  => $_SESSION['pk'],
-            "caption"     => ' enrolled to ' . str_replace('_', ' ', $payload['lesson_type']),
-            "action"      => 'ENROLL',
-            "table_pk"    => $last_id
-        ];
-        $notif_model->create_notification($notif_arr);
-        return $this->get_enrollment_details($last_id);
+
+        try {
+
+            switch ($arr['lesson_type']) {
+                case "SOL1":
+                    $check_requirements = $db->get_row("Select * from {$this->base_table} where user_pk = ? and lesson_type = ?", [$_SESSION['pk'], $arr['lesson_type']]);
+                    break;
+                case "RE_ENCOUNTER":
+                case "SOL2":
+                    $check_requirements = $db->get_row("Select en.*,(Select COUNT(*) from bro_accounts where inviter_pk = ?) as invite_count from {$this->base_table} en where user_pk = ? and lesson_type = ? and is_graduated = 1", [$_SESSION['pk'], $_SESSION['pk'], $arr['lesson_type']]);
+                    break;
+                case "SOL3":
+                    $check_requirements = $db->get_row("Select en.*,(Select COUNT(*) from bro_cellgroup where user_pk = ?) as invite_count from {$this->base_table} en where user_pk = ? and lesson_type = ? and is_graduated = 1", [$_SESSION['pk'], $_SESSION['pk'], $arr['lesson_type']]);
+                    break;
+            }
+            if (empty($check_requirements) && ($arr['lesson_type'] != 'LIFE_CLASS')) {
+                return -1;
+            }
+            switch ($arr['lesson_type']) {
+                case "SOL1":
+                    if ($check_requirements["is_graduated"] == 0) {
+                        $completed = -1;
+                    }
+                    break;
+
+                case "SOL2":
+                    if($check_requirements['invite_count '] < 3){
+                        $completed = -1;
+                    }
+                    break;
+                case "SOL3":
+                    if($check_requirements['invite_count '] < 3){
+                        $completed = -1;
+                    }
+                    break;
+                case "RE_ENCOUNTER":
+                    if($check_requirements['invite_count '] < 12){
+                        $completed = -1;
+                    }
+                    break;
+            }
+            if($completed == -1) return $completed;
+            $fields  = $common->get_insert_fields($arr);
+            $last_id = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
+            $notif_arr = [
+                "sender_pk"   => $_SESSION['pk'],
+                "receiver_pk" => 0,
+                "subject_pk"  => $_SESSION['pk'],
+                "caption"     => ' enrolled to ' . str_replace('_', ' ', $payload['lesson_type']),
+                "action"      => 'ENROLL',
+                "table_pk"    => $last_id
+            ];
+            $notif_model->create_notification($notif_arr);
+        } catch (\Throwable $th) {
+            $completed = 0;
+        }
+
+
+        return $completed;
     }
 
     public function get_enrollment_details($pk = null)
@@ -92,6 +139,7 @@ class EnrollmentModel
 
             $table_pk = $payload['table_pk'];
             $notif_pk = $payload['id'];
+            $notif_details = $common->get_notif_details($notif_pk);
             $caption = '';
             if ($payload['decision'] == 0) {
                 $is_disapproved = $this->remove_enrollment($table_pk);
@@ -108,14 +156,16 @@ class EnrollmentModel
                 if (!empty($is_approved)) {
                     $caption = ' approved your enrollment';
                     $lessons =  $db->get_list("SELECT id as lesson_pk,(Select user_pk from bro_enrollment where id = ?) as student_pk FROM bro_lessons WHERE lesson_type = ?", [$table_pk, $is_approved['lesson_type']]);
+                    print_r($lessons);
                     foreach ($lessons as $key => $lesson) {
                         $lesson["enrollment_pk"] = $table_pk;
+                        $lesson["student_pk"] = $notif_details["subject_pk"];
                         $school_model->create_schooling($lesson);
                     }
                 }
             }
 
-            $notif_details = $common->get_notif_details($notif_pk);
+            
 
             // PABALIK PAPUNTANG DISCIPLE ETO    
             $notif_arr = [
