@@ -153,6 +153,7 @@ class EnrollmentModel
                 $is_approved = $this->update_enrollment(
                     $table_pk,
                     [
+                        
                         'is_enrolled'   => 1,
                         'date_approved' => strtotime(date('Y-m-d H:i:s'))
                     ]

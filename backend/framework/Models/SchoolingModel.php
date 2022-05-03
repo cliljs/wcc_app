@@ -115,7 +115,7 @@ class SchoolingModel
                 $deleted = $db->update("Delete from bro_notifications where id = ?", [$payload['id']]);
                 $caption = ' disapproved ';
             } else {
-                $updated = $db->update("UPDATE {$this->base_table} SET date_approved = ? WHERE id = ?", [$localdate, $payload['table_pk']]);
+                $updated = $db->update("UPDATE {$this->base_table} SET leader_pk = ?, date_approved = ? WHERE id = ?", [$_SESSION['pk'],$localdate, $payload['table_pk']]);
                 $deleted = $db->update("Update bro_notifications set status = 1, date_updated = ? where id = ?", [$localdate, $payload['id']]);
                 $caption = ' approved ';
             }
