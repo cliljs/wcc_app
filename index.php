@@ -810,11 +810,10 @@ $today = date("F j Y, l");
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
               console.log(objData);
-              if (objData.length === 0) {
-                fireSwal('Training', 'Failed to update attendance. Please reload the page', 'error');
-
-              } else {
-                fireSwal('Training', 'Attendance updated successfully. Please wait for your leader\'s confirmation', 'success');
+              if (objData == false) {
+                fireSwal('Training', 'Failed to update attendance. Please reload the page.', 'error');
+              }  else {
+                fireSwal('Training','Attendance updated successfully.','success');
               }
 
             }).catch(function(err) {
@@ -911,25 +910,10 @@ $today = date("F j Y, l");
               preload('body',false);
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
-              if (objData == 0) {
-                fireSwal('Training', 'Failed to complete training. Please try again', 'error');
-              } else if (objData == -1) {
-                fireSwal('Training', 'Please complete all lessons before submitting this training. Be sure that all training attendance are confirmed by your leader', 'info');
-              } else {
-                Swal.fire({
-                  icon: 'success',
-                  title: 'Training',
-                  text: 'Training completed. Click OK to continue',
-                  showDenyButton: false,
-                  showCancelButton: false,
-                  confirmButtonText: 'Ok',
-
-                }).then((result) => {
-
-                  if (result.isConfirmed) {
-                    window.location.href = home_url + 'index.php?view=trainings';
-                  }
-                });
+              if (objData == false) {
+                fireSwal('Training', 'Failed to update attendance. Please reload the page.', 'error');
+              }  else {
+                fireSwal('Training','Attendance updated successfully.','success');
               }
 
 
@@ -949,8 +933,10 @@ $today = date("F j Y, l");
               console.log(data);
               let objData = $.parseJSON(data.trim()).data;
               //index.php?view=trainings
-              if (objData == false) {
+              if (objData == 0) {
                 fireSwal('Training', 'Failed to complete training. Please try again', 'error');
+              } else if(objData == -1){
+                fireSwal('Training', 'Please complete all lessons before submitting this training. Be sure that all training attendance are confirmed by your leader', 'info');
               } else {
 
                 Swal.fire({

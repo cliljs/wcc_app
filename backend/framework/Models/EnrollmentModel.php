@@ -21,19 +21,24 @@ class EnrollmentModel
 
             switch ($arr['lesson_type']) {
                 case "SOL1":
-                    $check_requirements = $db->get_row("Select * from {$this->base_table} where user_pk = ? and lesson_type = ?", [$_SESSION['pk'], $arr['lesson_type']]);
+                    $check_requirements = $db->get_row("Select * from {$this->base_table} where user_pk = ? and lesson_type = 'LIFE_CLASS'", [$_SESSION['pk']]);
                     break;
-                case "RE_ENCOUNTER":
+
                 case "SOL2":
-                    $check_requirements = $db->get_row("Select en.*,(Select COUNT(*) from bro_accounts where inviter_pk = ?) as invite_count from {$this->base_table} en where user_pk = ? and lesson_type = ? and is_graduated = 1", [$_SESSION['pk'], $_SESSION['pk'], $arr['lesson_type']]);
+                    $check_requirements = $db->get_row("Select en.*,(Select COUNT(*) from bro_accounts where inviter_pk = ?) as invite_count from {$this->base_table} en where user_pk = ? and lesson_type = 'SOL1' and is_graduated = 1", [$_SESSION['pk'], $_SESSION['pk']]);
                     break;
                 case "SOL3":
-                    $check_requirements = $db->get_row("Select en.*,(Select COUNT(*) from bro_cellgroup where user_pk = ?) as invite_count from {$this->base_table} en where user_pk = ? and lesson_type = ? and is_graduated = 1", [$_SESSION['pk'], $_SESSION['pk'], $arr['lesson_type']]);
+                    $check_requirements = $db->get_row("Select en.*,(Select COUNT(*) from bro_cellgroup where user_pk = ?) as invite_count from {$this->base_table} en where user_pk = ? and lesson_type = 'SOL2' and is_graduated = 1", [$_SESSION['pk'], $_SESSION['pk']]);
+                    break;
+                case "RE_ENCOUNTER":
+                    $check_requirements = $db->get_row("Select en.*,(Select COUNT(*) from bro_accounts where inviter_pk = ?) as invite_count from {$this->base_table} en where user_pk = ? and lesson_type = 'SOL3' and is_graduated = 1", [$_SESSION['pk'], $_SESSION['pk']]);
                     break;
             }
+          
             if (empty($check_requirements) && ($arr['lesson_type'] != 'LIFE_CLASS')) {
                 return -1;
             }
+
             switch ($arr['lesson_type']) {
                 case "SOL1":
                     if ($check_requirements["is_graduated"] == 0) {
@@ -42,22 +47,22 @@ class EnrollmentModel
                     break;
 
                 case "SOL2":
-                    if($check_requirements['invite_count '] < 3){
+                    if ($check_requirements['invite_count'] < 3) {
                         $completed = -1;
                     }
                     break;
                 case "SOL3":
-                    if($check_requirements['invite_count '] < 3){
+                    if ($check_requirements['invite_count'] < 3) {
                         $completed = -1;
                     }
                     break;
                 case "RE_ENCOUNTER":
-                    if($check_requirements['invite_count '] < 12){
+                    if ($check_requirements['invite_count'] < 12) {
                         $completed = -1;
                     }
                     break;
             }
-            if($completed == -1) return $completed;
+            if ($completed == -1) return $completed;
             $fields  = $common->get_insert_fields($arr);
             $last_id = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
             $notif_arr = [
@@ -156,7 +161,7 @@ class EnrollmentModel
                 if (!empty($is_approved)) {
                     $caption = ' approved your enrollment';
                     $lessons =  $db->get_list("SELECT id as lesson_pk,(Select user_pk from bro_enrollment where id = ?) as student_pk FROM bro_lessons WHERE lesson_type = ?", [$table_pk, $is_approved['lesson_type']]);
-                    print_r($lessons);
+
                     foreach ($lessons as $key => $lesson) {
                         $lesson["enrollment_pk"] = $table_pk;
                         $lesson["student_pk"] = $notif_details["subject_pk"];
@@ -165,7 +170,7 @@ class EnrollmentModel
                 }
             }
 
-            
+
 
             // PABALIK PAPUNTANG DISCIPLE ETO    
             $notif_arr = [

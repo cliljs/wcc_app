@@ -13,7 +13,7 @@
           <div class="row">
 
             <div class="col-md-12">
-              <div class="box shadow-sm rounded bg-white mb-3" <?php if($_SESSION['is_admin'] == 0 && $_SESSION['is_leader'] == 0) echo 'style = "display:none"'; ?>>
+              <div class="box shadow-sm rounded bg-white mb-3">
                 <div class="box-title border-bottom p-3">
                   <h6 class="m-0">Unread</h6>
                 </div>
