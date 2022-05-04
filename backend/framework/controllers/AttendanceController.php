@@ -65,7 +65,7 @@ switch ($act) {
         echo json_encode(
             $common->create_response(
                 'AttendanceController.php/?action=get_attendance_list',
-                $attendance_model->get_attendance_list($_GET['year']),
+                $attendance_model->get_attendance_list($_GET),
                 1
             )
         );

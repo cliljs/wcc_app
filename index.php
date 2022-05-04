@@ -385,6 +385,7 @@ $today = date("F j Y, l");
           $('body').on('click', '.memberLifestyle', function() {
             let selectedLS = $(this);
             let pk = selectedLS.attr('data-id');
+            $('#member_select_year').attr('data-id',pk);
             let ajaxRoute = '';
             let currentFrame = '';
             let frames = ['mdlCellgroup', 'mdlTrainings', 'mdlMentoring', 'mdlSundayCelebration'];
@@ -410,7 +411,7 @@ $today = date("F j Y, l");
                 break;
               case 'Sunday Celebration Attendance':
                 currentFrame = 'mdlSundayCelebration';
-
+                lifestyleSundayAttendance(pk,new Date().getFullYear());
                 break;
             }
             $('#mdlLifeStyleMemberName').html(selectedLS.attr('data-name'));
@@ -452,6 +453,11 @@ $today = date("F j Y, l");
               lifestyleTraining(userID, thisID);
             }
 
+          });
+          $('#member_select_year').on('change', function() {
+            let dataID = $(this).attr('data-id');
+            let dataYear = $(this).val();
+            render_member_calendar(dataID,dataYear);
           });
         } else if (me == 'attendance') {
           let vip_list = [];
@@ -1555,7 +1561,34 @@ $today = date("F j Y, l");
           fireSwal('Sunday Celebration', 'Failed to retrieve attendance list. Please try again', 'error');
         });
       }
+      function render_member_calendar(pk,selectedYear) {
+        preload('body', true);
+        fireAjax('AttendanceController.php?action=render_table&year=' + selectedYear, '', false).then(function(data) {
+          preload('body', false);
+          let obj = jQuery.parseJSON(data.trim());
+          let objData = obj.data;
+          $('#tblMemberAttendance').html(objData);
+          fireAjax('AttendanceController.php?action=get_attendance_list&year=' + selectedYear + '&pk=' + pk, '', false).then(function(data) {
+            let obj = jQuery.parseJSON(data.trim());
+            let objData = obj.data;
+            console.log(objData);
+            $.each(objData, function(k, v) {
+              if (v.confirmed_by == 0) {
+                $('.' + v.sunday_date).html("<i class = 'fa fa-circle' style = 'color:orange'></i>");
+              } else {
+                $('.' + v.sunday_date).html("<i class = 'fa fa-circle' style = 'color:green'></i>");
+              }
 
+            });
+          }).catch(function(err) {
+            console.log(err);
+            fireSwal('Sunday Celebration', 'Failed to retrieve attendance list. Please try again', 'error');
+          })
+        }).catch(function(err) {
+          console.log(err);
+          fireSwal('Sunday Celebration', 'Failed to retrieve attendance list. Please try again', 'error');
+        });
+      }
       function getMyInvites() {
         fireAjax('InviteController.php?action=get_invite_list', '', false).then(function(data) {
           console.log(data);
@@ -1679,7 +1712,7 @@ $today = date("F j Y, l");
           fireSwal('Training', 'Failed to load member\'s training. Please reload the page', 'error');
         })
       }
-
+      
       function lifestyleMentoring(pk) {
         preload('body', true);
         fireAjax('MentoringController.php?action=get_mentoring&pk=' + pk, '', false).then(function(data) {
@@ -1704,7 +1737,12 @@ $today = date("F j Y, l");
       }
 
       function lifestyleSundayAttendance(pk, attendance_year) {
-
+        preload('body',true);
+        let payload = {
+          user_pk: pk,
+          user_year: attendance_year
+        };
+        render_member_calendar(pk,attendance_year);
       }
 
       function submitSundayAttendance(payload, submit_method) {

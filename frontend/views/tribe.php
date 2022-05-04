@@ -60,131 +60,131 @@
           </table>
         </div>
         <div id="mdlTrainings" style="display:none;">
-            <h5 class="text-muted">Trainings</h5>
-            <div class="card card-outline card-primary collapsed-card">
-                <div class="card-header">
-                    <h3 class="card-title">Life Class</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" id = "collapseLifeclass">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body" style="display: none;">
-                    <table class = "table table-striped table-hover">
-                        <thead>
-                            <tr>
-                            <th>Lesson</th>
-                            <th>Attendance</th>
-                            <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id = "tblLifeclassContainer">
-
-                        </tbody>
-                    </table>
-                </div>
+          <h5 class="text-muted">Trainings</h5>
+          <div class="card card-outline card-primary collapsed-card">
+            <div class="card-header">
+              <h3 class="card-title">Life Class</h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" id="collapseLifeclass">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
             </div>
+            <div class="card-body" style="display: none;">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Lesson</th>
+                    <th>Attendance</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="tblLifeclassContainer">
 
-            <div class="card card-outline card-primary collapsed-card">
-                <div class="card-header">
-                    <h3 class="card-title">SOL1</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" id = "collapseSOL1">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body" style="display: none;">
-                    <table class = "table table-striped table-hover">
-                        <thead>
-                            <tr>
-                            <th>Lesson</th>
-                            <th>Attendance</th>
-                            <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id = "tblSOL1Container">
-
-                        </tbody>
-                    </table>
-                </div>
+                </tbody>
+              </table>
             </div>
+          </div>
 
-            <div class="card card-outline card-primary collapsed-card">
-                <div class="card-header">
-                    <h3 class="card-title">SOL2</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" id = "collapseSOL2">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body" style="display: none;">
-                    <table class = "table table-striped table-hover">
-                        <thead>
-                            <tr>
-                            <th>Lesson</th>
-                            <th>Attendance</th>
-                            <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id = "tblSOL2Container">
-
-                        </tbody>
-                    </table>
-                </div>
+          <div class="card card-outline card-primary collapsed-card">
+            <div class="card-header">
+              <h3 class="card-title">SOL1</h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" id="collapseSOL1">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
             </div>
+            <div class="card-body" style="display: none;">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Lesson</th>
+                    <th>Attendance</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="tblSOL1Container">
 
-            <div class="card card-outline card-primary collapsed-card">
-                <div class="card-header">
-                    <h3 class="card-title">SOL3</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" id = "collapseSOL3">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body" style="display: none;">
-                    <table class = "table table-striped table-hover">
-                        <thead>
-                            <tr>
-                            <th>Lesson</th>
-                            <th>Attendance</th>
-                            <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id = "tblSOL3Container">
-
-                        </tbody>
-                    </table>
-                </div>
+                </tbody>
+              </table>
             </div>
+          </div>
 
-            <div class="card card-outline card-primary collapsed-card">
-                <div class="card-header">
-                    <h3 class="card-title">Re-encounter</h3>
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse" id = "collapseReencounter">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="card-body" style="display: none;">
-                    <table class = "table table-striped table-hover">
-                        <thead>
-                            <tr>
-                            <th>Lesson</th>
-                            <th>Attendance</th>
-                            <th></th>
-                            </tr>
-                        </thead>
-                        <tbody id = "tblReencounterContainer">
-
-                        </tbody>
-                    </table>
-                </div>
+          <div class="card card-outline card-primary collapsed-card">
+            <div class="card-header">
+              <h3 class="card-title">SOL2</h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" id="collapseSOL2">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
             </div>
+            <div class="card-body" style="display: none;">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Lesson</th>
+                    <th>Attendance</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="tblSOL2Container">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card card-outline card-primary collapsed-card">
+            <div class="card-header">
+              <h3 class="card-title">SOL3</h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" id="collapseSOL3">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body" style="display: none;">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Lesson</th>
+                    <th>Attendance</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="tblSOL3Container">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card card-outline card-primary collapsed-card">
+            <div class="card-header">
+              <h3 class="card-title">Re-encounter</h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse" id="collapseReencounter">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body" style="display: none;">
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>Lesson</th>
+                    <th>Attendance</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="tblReencounterContainer">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
 
         </div>
         <div id="mdlMentoring" style="display:none;">
@@ -203,17 +203,29 @@
         </div>
         <div id="mdlSundayCelebration" style="display:none;">
           <h5 class="text-muted">Sunday Celebration Attendance</h5>
-          <table class="table table-hover table-striped" id="tblAttendance">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Attendance</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="tblAttendanceBody">
 
-            </tbody>
+          <div class="form-group">
+            <label>Year:</label>
+            <select id="member_select_year" name="member_select_year" class="form-control">
+              <?php
+              for ($i = 2022; $i < 2099; $i++) {
+                if ($i == date("Y")) {
+                  echo "<option value = '$i' selected>$i</option>";
+                } else {
+                  echo "<option value = '$i'>$i</option>";
+                }
+              }
+              ?>
+            </select>
+          </div>
+
+          <i class='fa fa-circle' style='color:#2c3e50'></i> &nbsp; Absent &nbsp;
+          <i class='fa fa-circle' style='color:orange'></i> &nbsp; Waiting Confirmation &nbsp;
+          <i class='fa fa-circle' style='color:green'></i> &nbsp; Attended &nbsp;
+
+
+          <table class="table table-hover table-striped" id="tblMemberAttendance">
+           
           </table>
         </div>
         <div class="modal-footer">

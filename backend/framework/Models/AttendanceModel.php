@@ -63,13 +63,15 @@ class AttendanceModel
    }
 
    //  ATTENDANCE LIST
-   public function get_attendance_list($year)
+   public function get_attendance_list($payload = [])
    {
       global $db, $common;
+      $year = $payload['year'];
+      $user_pk = (isset($payload['pk'])) ? $payload['pk'] : $_SESSION['pk'];
       return $db->get_list(
          "SELECT * FROM {$this->base_table} 
           WHERE YEAR(sunday_date) = ? AND account_pk = ?",
-         [$year, $_SESSION['pk']]
+         [$year, $user_pk]
       );
    }
    public function render_table($year)
