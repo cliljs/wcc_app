@@ -64,9 +64,9 @@ class TribeModel
         return $db->get_list(
             "SELECT REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, acc.id
                             FROM bro_accounts acc 
-                            WHERE acc.is_leader = ? 
+                            WHERE acc.is_leader IN (0,1) 
                             {$kwiri}",
-            [1]
+            []
         );
     }
 

@@ -25,13 +25,13 @@ class EnrollmentModel
                     break;
 
                 case "SOL2":
-                    $check_requirements = $db->get_row("Select en.*,(Select COUNT(*) from bro_accounts where inviter_pk = ?) as invite_count from {$this->base_table} en where user_pk = ? and lesson_type = 'SOL1' and is_graduated = 1", [$_SESSION['pk'], $_SESSION['pk']]);
+                    $check_requirements = $db->get_row("Select en.*,(Select COUNT(*) from bro_tribe where leader_pk = ? and is_approved = 1) as invite_count from {$this->base_table} en where user_pk = ? and lesson_type = 'SOL1' and is_graduated = 1", [$_SESSION['pk'], $_SESSION['pk']]);
                     break;
                 case "SOL3":
                     $check_requirements = $db->get_row("Select en.*,(Select COUNT(*) from bro_cellgroup where user_pk = ?) as invite_count from {$this->base_table} en where user_pk = ? and lesson_type = 'SOL2' and is_graduated = 1", [$_SESSION['pk'], $_SESSION['pk']]);
                     break;
                 case "RE_ENCOUNTER":
-                    $check_requirements = $db->get_row("Select en.*,(Select COUNT(*) from bro_accounts where inviter_pk = ?) as invite_count from {$this->base_table} en where user_pk = ? and lesson_type = 'SOL3' and is_graduated = 1", [$_SESSION['pk'], $_SESSION['pk']]);
+                    $check_requirements = $db->get_row("Select en.*,(Select COUNT(*) from bro_tribe where leader_pk = ? and is_approved = 1) as invite_count from {$this->base_table} en where user_pk = ? and lesson_type = 'SOL3' and is_graduated = 1", [$_SESSION['pk'], $_SESSION['pk']]);
                     break;
             }
           

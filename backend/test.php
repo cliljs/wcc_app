@@ -470,18 +470,23 @@ $lessons = [
     ],
     [
         "lesson_type"      => "LIFE_CLASS",
-        "lesson_title"     => "ENCOUNTER DAY 1",
+        "lesson_title"     => "WEEK 9",
         "sequence"         => 9
     ],
     [
         "lesson_type"      => "LIFE_CLASS",
-        "lesson_title"     => "ENCOUNTER DAY 2",
+        "lesson_title"     => "ENCOUNTER DAY 1",
         "sequence"         => 10
     ],
     [
         "lesson_type"      => "LIFE_CLASS",
-        "lesson_title"     => "ENCOUNTER DAY 3",
+        "lesson_title"     => "ENCOUNTER DAY 2",
         "sequence"         => 11
+    ],
+    [
+        "lesson_type"      => "LIFE_CLASS",
+        "lesson_title"     => "ENCOUNTER DAY 3",
+        "sequence"         => 12
     ]
 ];
 $qrs = [
