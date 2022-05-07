@@ -94,10 +94,12 @@ class AccountModel
         $fields        = $common->get_insert_fields($arr);
         $last_id       = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
        
-        if ($files['profile_picture']['error'] != 4) {
-            $update_fields = $common->get_update_fields(['profile_pic' => ""]);
-            $profile_pic   = $common->upload($last_id, $files['profile_picture']);
-            $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$last_id}", [$profile_pic]);
+        if (!empty($files)) {
+            if ($files['profile_picture']['error'] != 4) {
+                $update_fields = $common->get_update_fields(['profile_pic' => ""]);
+                $profile_pic   = $common->upload($last_id, $files['profile_picture']);
+                $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$last_id}", [$profile_pic]);
+            }
         }
 
         $tribe_pk =  $tribe_model->create_leader([
@@ -176,11 +178,11 @@ class AccountModel
         return $updated ? $has_account : false;
     }
 
-    public function delete_account($id = null)
+    public function delete_account($notif_hash = null)
     {
         global $db, $common;
-        $result  = $this->get_account_details($id);
-        $deleted =  $db->delete("DELETE FROM {$this->base_table} WHERE id = {$id}");
+        $result  = $this->get_account_details();
+        $deleted =  $db->delete("DELETE FROM {$this->base_table} WHERE notif_hash = {$notif_hash}");
 
         return $deleted ? $result : false;
     }

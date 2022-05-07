@@ -17,6 +17,7 @@ class NotificationModel
             "caption"     => !empty($payload['caption']) ? $payload['caption'] : null,
             "action"      => $payload['action'],
             "table_pk"    => $payload['table_pk'],
+            "notif_hash"  => $common->generate_random() . strtotime(date('Y-m-d H:i:s'))
         ];
         if (isset($payload['status'])) {
             $arr["status"]  = $payload["status"];
@@ -32,6 +33,12 @@ class NotificationModel
         return $db->get_row("SELECT * FROM {$this->base_table} WHERE id = ?", [$pk]);
     }
 
+    public function get_notif_by_hash($hash = null) 
+    {
+        global $db, $common;
+        return $db->get_row("SELECT * FROM {$this->base_table} WHERE notif_hash = ?", [$hash]);
+    }
+
     public function get_notification_list($read)
     {
         global $db, $common;
@@ -43,13 +50,13 @@ class NotificationModel
         return $db->get_list($kwiri, [$_SESSION['pk']]);
     }
 
-    public function update_notif($pk = null, $payload = [])
+    public function update_notif($hash = null, $payload = [])
     {
         global $db, $common;
         $payload['date_updated'] = date('Y-m-d H:i:s');
         $update_fields = $common->get_update_fields($payload);
-        $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$pk}", array_values($payload));
-        return $updated ? $this->get_notif_details($pk) : false;
+        $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE notif_hash = {$hash}", array_values($payload));
+        return $updated ? $this->get_notif_by_hash($hash) : false;
     }
 
     public function read_notif($pk = null)
