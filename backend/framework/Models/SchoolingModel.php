@@ -84,6 +84,15 @@ class SchoolingModel
     {
         global $db, $common;
         $user_pk = (array_key_exists('user_pk', $payload)) ? $payload['user_pk'] : $_SESSION['pk'];
+     
+        $has_enrollment = $db->get_row("SELECT * FROM bro_enrollment 
+                                        WHERE lesson_type = ? AND user_pk = ? AND is_enrolled = ?",
+                                         [$user_pk, $payload['lesson_type'], 1]);
+        
+        if (empty($has_enrollment)) {
+            return 0;
+        }
+
         return $db->get_list("SELECT bs.*, bl.lesson_title, bl.sequence, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = bs.leader_pk) as approve_name
                               FROM {$this->base_table} as bs
                               INNER JOIN bro_lessons as bl ON bs.lesson_pk = bl.id

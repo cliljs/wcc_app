@@ -18,6 +18,13 @@ class EnrollmentModel
         ];
 
         try {
+            $has_enrollment = $db->get_row("SELECT * FROM {$this->base_table} 
+                                            WHERE lesson_type = ? AND user_pk = ?"
+                                          , array_values($arr));
+
+            if (!empty($has_enrollment)) {
+                return 0;
+            }
 
             switch ($arr['lesson_type']) {
                 case "SOL1":
@@ -77,8 +84,6 @@ class EnrollmentModel
         } catch (\Throwable $th) {
             $completed = 0;
         }
-
-
         return $completed;
     }
 
