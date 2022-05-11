@@ -12,7 +12,7 @@ class AccountModel
     {
         global $db, $common;
         return $db->get_row("SELECT CONCAT(firstname, ' ', middlename, ' ', lastname) AS fullname, id
-                            FROM {$this->base_table} WHERE id = ? AND is_leader = ?", [$pk, 1]);
+                            FROM {$this->base_table} WHERE id = ?", [$pk]);
     }
 
     private function create_hash($password)
@@ -70,7 +70,7 @@ class AccountModel
         if (!empty($username_exists)) {
             return ["error" => true, "msg" => "Username Already Exists"];
         }
-
+     
         $leader_info = $this->get_leader_by_pk($payload['leader_name']);
 
         if (empty($leader_info)) {
@@ -131,7 +131,7 @@ class AccountModel
     public function validate_bypass($payload = []){
         global $db, $common;
         $valid = true;
-        $has_account = $db->get_row("SELECT * from {$this->base_table} where username = ? and is_leader = 1", [$payload['tlusername']]);
+        $has_account = $db->get_row("SELECT acc.* from bro_accounts acc INNER JOIN bro_tribe tr ON acc.id = tr.leader_pk where acc.username = ?", [$payload['tlusername']]);
 
         if (empty($has_account)) {
             $valid = false;

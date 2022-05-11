@@ -1754,9 +1754,9 @@ $today = date("F j Y, l");
           let obj = jQuery.parseJSON(data.trim());
           if (obj.data == false) {
             if (submit_method == 'qr') {
-              fireSwal('Attendane', 'Invalid QR scanned', 'error');
+              fireSwal('Attendance', 'Invalid QR scanned', 'error');
             } else {
-              fireSwal('Attendane', 'Invalid Leader\'s credentials', 'error');
+              fireSwal('Attendance', 'Invalid Leader\'s credentials', 'error');
             }
           } else {
             Swal.fire({
@@ -1778,7 +1778,7 @@ $today = date("F j Y, l");
 
         }).catch(function(err) {
           console.log(err);
-          fireSwal('Sunday Celebration Attendance2', err, 'error');
+          fireSwal('Sunday Celebration Attendance', 'Failed to submit attenance. Please check the provided QR/Credentials', 'error');
         });
       }
 
