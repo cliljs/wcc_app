@@ -16,7 +16,10 @@ class SuperAdmin {
             $id
         );
     }
-
+    public function get_admins(){
+        global $db;
+        return $db->get_list("Select id,lastname,firstname,middlename,branch,profile_pic from bro_accounts where is_admin = 1 order by lastname",[]);
+    }
     public function create_leader($payload = [], $files)
     {
         global $db, $common, $account_model;
@@ -41,10 +44,19 @@ class SuperAdmin {
                               [0, 0, 0, 1]);
     }
 
+    public function remove_admin($payload = [])
+    {
+        global $db;
+        return $db->update("Update bro_accounts set is_admin = ? where id = ?",[$payload['status'],$payload['id']]);
+    }
     public function verify_member($id = null)
     {
         global $db, $common, $account_model;
         return $account_model->update_account(['is_verified' => 1], $id);
+    }
+    public function get_assignee($payload = []){
+        global $db;
+        return $db->get_list("Select id,CONCAT(lastname,', ', firstname,' ',middlename) as fullname from bro_accounts where branch = ? and not is_pastor = 1 and id not in (Select id from bro_accounts where is_admin = 1) order by lastname",[$payload['branch']]);
     }
 }
 

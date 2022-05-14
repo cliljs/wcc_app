@@ -20,7 +20,7 @@ if ($is_login) {
   <title>WCC | Account Registration</title>
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
+  <link rel="stylesheet" href="frontend/dist/css/preloader.css">
   <link rel="stylesheet" href="frontend/plugins/fontawesome-free/css/all.min.css">
 
   <link rel="stylesheet" href="frontend/dist/css/adminlte.min.css">
@@ -195,6 +195,7 @@ if ($is_login) {
   <script src="frontend/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="frontend/plugins/select2/js/select2.full.min.js"></script>
   <script src="frontend/dist/js/adminlte.min.js"></script>
+  <script src="frontend/dist/js/jquery.preloader.min.js"></script>
   <script src="frontend/dist/js/common.js"></script>
   <script>
     $(function() {
@@ -204,7 +205,7 @@ if ($is_login) {
         e.preventDefault();
         let fd = new FormData(this);
         let data = fireAjax('AccountController.php?action=create_account', fd, true).then(function(data) {
-          console.log(data);
+        
           let obj = jQuery.parseJSON(data.trim());
           if (obj.success == 1) {
             fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
@@ -222,7 +223,7 @@ if ($is_login) {
             })
           }
         }).catch(function(err) {
-          console.log(err)
+         
           fireSwal("Account Registration", varErrMessage, "error");
         });
       });
@@ -238,7 +239,7 @@ if ($is_login) {
 
       function getInviters(branch) {
         let data = fireAjax('TribeController.php?action=get_inviter_names', branch, false).then(function(data) {
-          console.log(data)
+        
           let obj = jQuery.parseJSON(data.trim());
           let tls = obj.data;
           let renderVal = '<option selected="selected" disabled="disabled">Please select your inviter</option>';
@@ -248,7 +249,7 @@ if ($is_login) {
           });
           $("#inviter").html(renderVal);
         }).catch(function(err) {
-          console.log(err)
+          
           fireSwal('Account Registration', 'Failed to retrieve list of inviters. Please reload the page', 'error');
         })
 
@@ -263,7 +264,7 @@ if ($is_login) {
 
 
         let data = fireAjax('TribeController.php?action=get_leader_names', '', false).then(function(data) {
-          console.log(data)
+        
           let obj = jQuery.parseJSON(data.trim());
           let tls = obj.data;
           let renderVal = '<option selected="selected" disabled="disabled">Please select your tribe leader</option>';
@@ -272,7 +273,7 @@ if ($is_login) {
           });
           $("#leader_name").html(renderVal);
         }).catch(function(err) {
-          console.log(err)
+         
           fireSwal('Account Registration', 'Failed to retrieve list of tribe leaders. Please reload the page', 'error');
         })
 

@@ -10,7 +10,7 @@ if (ENVIRONMENT === 'PROD') {
 $act = !empty($_GET['action']) ? $_GET['action'] : '';
 $seeds = [
     [
-        "username"        => 'pastor',
+        "username"        => 'j.loyloy',
         "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
         "lastname"        => 'Loyloy',
         "firstname"       => 'Jonathan',
@@ -19,7 +19,21 @@ $seeds = [
         "gender"          => 'Male',
         "address"         => 'Wcc Church',
         "birthdate"       => '2022-05-05',
-        "contact"         => '09955591932',
+        "contact"         => '',
+        "is_pastor"       => 1,
+        "is_leader"       => 1,
+    ],  
+    [
+        "username"        => 'm.loyloy',
+        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
+        "lastname"        => 'Loyloy',
+        "firstname"       => 'Myrna',
+        "middlename"      => '',
+        "branch"          => "All",
+        "gender"          => 'Female',
+        "address"         => 'Wcc Church',
+        "birthdate"       => '2022-05-05',
+        "contact"         => '',
         "is_pastor"       => 1,
         "is_leader"       => 1,
     ],  
@@ -531,8 +545,11 @@ switch ($act) {
                     'member_pk' => $last_insert,
                     'is_approved' => 1
                 ];
-                $tribe_fields = $common->get_insert_fields($tribe_payload);
-                $db->insert("INSERT INTO bro_tribe {$tribe_fields}", array_values($tribe_payload));
+                if($seed['is_pastor'] == 0){
+                    $tribe_fields = $common->get_insert_fields($tribe_payload);
+                    $db->insert("INSERT INTO bro_tribe {$tribe_fields}", array_values($tribe_payload));
+                }
+                
             } else {
                 echo "{$has_account['username']} Already Exists <br/>";
             }

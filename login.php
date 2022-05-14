@@ -20,7 +20,7 @@ if ($is_login) {
   <title>WCC | Member's Portal</title>
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
+  <link rel="stylesheet" href="frontend/dist/css/preloader.css">
   <link rel="stylesheet" href="frontend/plugins/fontawesome-free/css/all.min.css">
 
   <link rel="stylesheet" href="frontend/dist/css/adminlte.min.css">
@@ -136,7 +136,7 @@ if ($is_login) {
   <script src="frontend/plugins/jquery/jquery.min.js"></script>
   <script src="frontend/plugins/sweetalert2/sweetalert2.min.js"></script>
   <script src="frontend/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-
+  <script src="frontend/dist/js/jquery.preloader.min.js"></script>
   <script src="frontend/dist/js/adminlte.min.js"></script>
   <script src="frontend/dist/js/common.js"></script>
   <script>
@@ -159,7 +159,7 @@ if ($is_login) {
             window.location.href = home_url;
           }
         }).catch(function(err){
-          console.log(err);
+        
           fireSwal("Member's Portal",varErrMessage,"error");
         });
       });
