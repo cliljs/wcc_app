@@ -36,7 +36,7 @@ class AttendanceModel
 
          $notif_arr = [
             "sender_pk"   => $_SESSION['pk'],
-            "receiver_pk" => $leader_pk['leader_pk'],
+            "receiver_pk" => 0,
             "subject_pk"  => $_SESSION['pk'],
             "caption"     => ' attended Sunday Celebration ' . $localdate,
             "action"      => 'ATTENDANCE',
@@ -126,6 +126,13 @@ class AttendanceModel
       $caption = '';
       $completed = true;
       try {
+         $notif_row = $notif_model->get_notif_details($payload['id']);
+         $account_branch = $db->get_row("SELECT branch, is_admin FROM bro_accounts WHERE id = ?", [$notif_row['sender_pk']]);
+
+         if ($_SESSION['branch'] !== $account_branch['branch'] && $_SESSION['is_admin'] == 1) {
+            return ["error" => 1, "msg" => "nugawa mo dito bay"];
+         }
+
          if ($payload['decision'] == 1) {
             $arr = [
                "confirmed_by" => $_SESSION['pk'],

@@ -176,8 +176,6 @@ class EnrollmentModel
                 }
             }
 
-
-
             // PABALIK PAPUNTANG DISCIPLE ETO    
             $notif_arr = [
                 "sender_pk"   => $_SESSION['pk'],

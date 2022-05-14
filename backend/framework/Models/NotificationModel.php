@@ -3,6 +3,8 @@ require_once '../../autoload.php';
 require_once MODEL_PATH . 'TribeModel.php';
 require_once MODEL_PATH . 'EnrollmentModel.php';
 require_once MODEL_PATH . 'SchoolingModel.php';
+require_once MODEL_PATH . 'AttendanceModel.php';
+
 class NotificationModel
 {
     private $base_table = 'bro_notifications';
@@ -46,8 +48,12 @@ class NotificationModel
             "(receiver_pk = ? or receiver_pk = 0)" :
             "receiver_pk = ?";
         // $criteria .= ($read == 1) ? " or action = 'NONE'" : '';
-        $kwiri = "SELECT id,date_created,sender_pk,action,caption,table_pk,(Select profile_pic from bro_accounts where id = n.subject_pk) as sender_pic, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = n.subject_pk) as sender_name FROM {$this->base_table} n WHERE {$criteria} AND status = {$read} order by date_created desc";
-        return $db->get_list($kwiri, [$_SESSION['pk']]);
+        $kwiri = "SELECT notif.id,notif.date_created,notif.sender_pk,notif.action,notif.caption,notif.table_pk,(SELECT profile_pic from bro_accounts where id = notif.subject_pk) as sender_pic, 
+                  (SELECT CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = notif.subject_pk) as sender_name
+                  FROM {$this->base_table} notif
+                  INNER JOIN bro_accounts ba ON notif.sender_pk = ba.id
+                  WHERE {$criteria} AND status = {$read} AND ba.branch = ? ORDER BY notif.date_created DESC";
+        return $db->get_list($kwiri, [$_SESSION['pk'], $_SESSION['branch']]);
     }
 
     public function update_notif($hash = null, $payload = [])
@@ -59,10 +65,10 @@ class NotificationModel
         return $updated ? $this->get_notif_by_hash($hash) : false;
     }
 
-    public function read_notif($pk = null)
+    public function read_notif($hash = null)
     {
         global $db, $common;
-        return $this->update_notif($pk, ["status" => 1]);
+        return $this->update_notif($hash, ["status" => 1]);
     }
 
     /* 
@@ -101,8 +107,7 @@ class NotificationModel
                 # code...
                 break;
         }
-        $this->read_notif($payload['id']);
-        // @payload[id] = notif pk
+        $this->read_notif($payload['hash']);
         return $retval;
     }
 }

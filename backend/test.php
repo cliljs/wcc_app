@@ -36,6 +36,7 @@ $seeds = [
         "contact"         => '091234567',
         "is_leader"       => 0,
         "is_pastor"       => 0,
+        "is_admin"        => 1
     ],
     [
         "username"        => 'jdoes',
@@ -43,13 +44,14 @@ $seeds = [
         "lastname"        => 'Does',
         "firstname"       => 'Jane',
         "middlename"      => '',
-        "branch"          => "Bataan",
+        "branch"          => "Gensan",
         "gender"          => 'Female',
         "address"         => 'Jan lang',
         "birthdate"       => '2001-01-02',
         "contact"         => '0912354785',
         "is_leader"       => 0,
         "is_pastor"       => 0,
+        "is_admin"        => 1
     ],
     [
         "username"        => 'fbar',
@@ -57,13 +59,14 @@ $seeds = [
         "lastname"        => 'Bar',
         "firstname"       => 'Foo',
         "middlename"      => '',
-        "branch"          => "Bataan",
+        "branch"          => "Kalibo",
         "gender"          => 'Male',
         "address"         => 'Jan lang',
         "birthdate"       => '2002-01-03',
         "contact"         => '098751454',
         "is_leader"       => 0,
         "is_pastor"       => 0,
+        "is_admin"        => 1
     ],
     [
         "username"        => 'leader',
@@ -71,13 +74,14 @@ $seeds = [
         "lastname"        => 'Joe',
         "firstname"       => 'Average',
         "middlename"      => '',
-        "branch"          => "Bataan",
+        "branch"          => "Valenzuela",
         "gender"          => 'Male',
         "address"         => 'Jan lang',
         "birthdate"       => '2002-01-04',
         "contact"         => '11111111',
         "is_leader"       => 1,
         "is_pastor"       => 0,
+        "is_admin"        => 1
     ],
     [
         "username"        => 'jpublic',
@@ -113,14 +117,14 @@ $seeds = [
         "lastname"        => 'Admin',
         "firstname"       => 'Sample',
         "middlename"      => '',
-        "branch"          => "Bataan",
+        "branch"          => "Kalibo",
         "gender"          => 'Female',
         "address"         => 'Jan lang',
         "birthdate"       => '2002-01-06',
         "contact"         => '096315454',
         "is_leader"       => 0,
         "is_pastor"       => 0,
-        "is_admin"        => 1
+        "is_admin"        => 0
     ]
 ];
 $lessons = [
