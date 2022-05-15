@@ -115,7 +115,9 @@ class AccountModel
             "action"      => 'SIGNUP',
             "table_pk"    => $tribe_pk
         ];
-        $notif_model = $notif_model->create_notification($notif_arr);
+       
+        $notif = $notif_model->create_notification($notif_arr);
+       
         return $last_id;
     }
 

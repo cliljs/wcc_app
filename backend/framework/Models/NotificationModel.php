@@ -24,8 +24,10 @@ class NotificationModel
         if (isset($payload['status'])) {
             $arr["status"]  = $payload["status"];
         }
+       
         $fields  = $common->get_insert_fields($arr);
         $last_id = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
+   
         return $last_id > 0 ? $this->get_notif_details($last_id) : false;
     }
 
@@ -48,7 +50,7 @@ class NotificationModel
             "(receiver_pk = ? or receiver_pk = 0)" :
             "receiver_pk = ?";
         // $criteria .= ($read == 1) ? " or action = 'NONE'" : '';
-        $kwiri = "SELECT notif.id,notif.date_created,notif.sender_pk,notif.action,notif.caption,notif.table_pk,(SELECT profile_pic from bro_accounts where id = notif.subject_pk) as sender_pic, 
+        $kwiri = "SELECT notif.notif_hash,notif.id,notif.date_created,notif.sender_pk,notif.action,notif.caption,notif.table_pk,(SELECT profile_pic from bro_accounts where id = notif.subject_pk) as sender_pic, 
                   (SELECT CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = notif.subject_pk) as sender_name
                   FROM {$this->base_table} notif
                   INNER JOIN bro_accounts ba ON notif.sender_pk = ba.id

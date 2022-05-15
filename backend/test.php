@@ -22,7 +22,7 @@ $seeds = [
         "contact"         => '',
         "is_pastor"       => 1,
         "is_leader"       => 1,
-    ],  
+    ],
     [
         "username"        => 'm.loyloy',
         "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
@@ -36,7 +36,7 @@ $seeds = [
         "contact"         => '',
         "is_pastor"       => 1,
         "is_leader"       => 1,
-    ],  
+    ],
     [
         "username"        => 'jdoe',
         "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
@@ -540,16 +540,22 @@ switch ($act) {
                 $last_insert = $db->insert("INSERT INTO bro_accounts {$fields}", array_values($seed));
                 echo "{$seed['username']} Created <br/>";
 
-                $tribe_payload = [
-                    'leader_pk' => $seed['is_leader'] > 0 ? 1 : 2,
-                    'member_pk' => $last_insert,
-                    'is_approved' => 1
-                ];
-                if($seed['is_pastor'] == 0){
-                    $tribe_fields = $common->get_insert_fields($tribe_payload);
-                    $db->insert("INSERT INTO bro_tribe {$tribe_fields}", array_values($tribe_payload));
+
+                if ($seed['is_pastor'] == 0) {
+                    $tribe_payload = [
+                        'leader_pk' => $seed['is_leader'] > 0 ? 1 : 2,
+                        'member_pk' => $last_insert,
+                        'is_approved' => 1
+                    ];
+                } else {
+                    $tribe_payload = [
+                        'leader_pk' => 0,
+                        'member_pk' => $last_insert,
+                        'is_approved' => 1
+                    ];
                 }
-                
+                $tribe_fields = $common->get_insert_fields($tribe_payload);
+                $db->insert("INSERT INTO bro_tribe {$tribe_fields}", array_values($tribe_payload));
             } else {
                 echo "{$has_account['username']} Already Exists <br/>";
             }

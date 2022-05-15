@@ -1256,15 +1256,26 @@ print_r($_SESSION);
           })
 
         } else if (me == 'notifications') {
+          $('#notifSelectAll').change(function(){
+            if($(this).is(':checked')){
+              $('.chkNotif').attr('checked','checked');
+              $('.divChkNotif').show();
+            }else{
+            
+              $('.divChkNotif').hide();
+            }
+          });
           $('body').on('click', '.btnNotifDecline, .btnNotifApprove', function() {
             let trigger_button = $(this);
             let var_decision = $(this).hasClass('btnNotifDecline') ? 0 : 1;
             let str_decision = $(this).hasClass('btnNotifDecline') ? 'disapproved' : 'approved';
             let var_notif_pk = $(this).attr('data-id');
+            let var_notif_hash = $(this).attr('data-hash');
             let var_table_pk = $(this).attr('data-table');
             let var_notif_action = $(this).attr('data-action');
             let payload = {
               id: var_notif_pk,
+              hash: var_notif_hash,
               decision: var_decision,
               table_pk: var_table_pk,
               action: var_notif_action
@@ -1308,6 +1319,8 @@ print_r($_SESSION);
 
                 userpic = (v.sender_pic == null) ? 'user.png' : v.sender_pic;
                 retval += '<div class="p-3 d-flex align-items-center border-bottom osahan-post-header">';
+                retval += '<div class="custom-control custom-checkbox divChkNotif"><input data-hash = "' + v.notif_hash + '" data-id = "' + v.id + '" class="custom-control-input custom-control-input-info custom-control-input-outline chkNotif" type="checkbox" id = "notifCheck' + v.id + '" ><label for="notifCheck' + v.id + '" class="custom-control-label"></label></div>';
+
                 retval += '<div class="dropdown-list-image mr-3">';
                 retval += '<img class="rounded-circle" src="' + image_url + userpic + '" alt="user_avatar" />';
                 retval += '</div>';
@@ -1315,12 +1328,13 @@ print_r($_SESSION);
                 retval += '<div><span class="font-weight-normal"><p class = "notifName"><b>' + v.sender_name + '</b>' + v.caption + '</p></div>';
                 retval += '<div class="mb-2"><span class="font-weight-light">' + v.date_created + '</span></div>';
                 if (read == 0 && v.action != 'NONE') {
-                  retval += '<button type="button" data-id = "' + v.id + '" data-table = "' + v.table_pk + '" data-action = "' + v.action + '" class="btn btn-outline-dark btn-sm btnNotifDecline">Decline</button>&nbsp;';
-                  retval += '<button type="button" data-id = "' + v.id + '" data-table = "' + v.table_pk + '" data-action = "' + v.action + '" class="btn btn-info btn-sm btnNotifApprove">Approve</button>';
+                  retval += '<button type="button" data-hash = "' + v.notif_hash + '" data-id = "' + v.id + '" data-table = "' + v.table_pk + '" data-action = "' + v.action + '" class="btn btn-outline-dark btn-sm btnNotifDecline">Decline</button>&nbsp;';
+                  retval += '<button type="button" data-hash = "' + v.notif_hash + '" data-id = "' + v.id + '" data-table = "' + v.table_pk + '" data-action = "' + v.action + '" class="btn btn-info btn-sm btnNotifApprove">Approve</button>';
                 }
                 retval += '</div>';
                 retval += '</div>';
               });
+              $('.divChkNotif').hide();
               retval = (retval == '') ? 'No notifications available' : retval;
               if (read == 0) {
                 $('#notifTodayContainer').html(retval);
@@ -1448,15 +1462,19 @@ print_r($_SESSION);
             case "SOL2":
               badge_src = image_url + 'badge_sol2.png';
               break;
-            case "RE_ENCOUNTER":
+
             case "SOL3":
               badge_src = image_url + 'badge_sol3.png';
+              break;
+            case "RE_ENCOUNTER":
+              badge_src = image_url + 'graduate.png';
               break;
             default:
               badge_src = image_url + 'no-training.png';
               break;
 
           }
+
           $('#badge_training').attr('src', badge_src);
 
           fireAjax('AttendanceController.php?action=badge_attendance', '', false).then(function(data) {
