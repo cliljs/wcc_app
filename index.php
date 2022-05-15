@@ -19,7 +19,7 @@ $is_pastor = ($_SESSION["is_pastor"] == "1") ? true : false;
 
 $day_now = date("l");
 $today = date("F j Y, l");
-
+print_r($_SESSION);
 ?>
 
 <!DOCTYPE html>
@@ -330,8 +330,46 @@ $today = date("F j Y, l");
               console.log(err);
               fireSwal('Personal Information', 'Failed to update personal information. Please try again', 'error');
             });
-          })
+          });
 
+          $('#newQRCodeMaintenance').on('click', function() {
+
+            fireAjax('QRController.php?action=update_qr', '', false).then(function(data) {
+
+              let obj = jQuery.parseJSON(data.trim()).data;
+              if (obj) {
+                let qrcontent = obj.qr_code;
+                $('#qr-view-content').html(qrcontent);
+                $('#viewQRCodeMaintenance').empty();
+                $('#viewQRCodeMaintenance').qrcode({
+                  text: qrcontent
+                });
+                fireSwal('QR Maintenance', 'QR updated successfully', 'success');
+              }
+
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('QR Maintenance', 'Failed to generate new QR. Please try again.', 'error');
+            });
+          });
+          $('#btnQR').on('click', function() {
+            fireAjax('QRController.php?action=get_qr_details', '', false).then(function(data) {
+              let objData = $.parseJSON(data.trim()).data;
+              let qrcontent = objData.qr_code;
+
+              $('#mdlQRMaintenance').modal({
+                backdrop: 'static'
+              });
+              $('#qr-view-content').html(qrcontent);
+              $('#viewQRCodeMaintenance').empty();
+              $('#viewQRCodeMaintenance').qrcode({
+                text: qrcontent
+              });
+            }).catch(function(err) {
+              fireSwal('QR Maintenance', 'Failed to retrieve QR details. Please try again', 'error');
+            })
+
+          });
           $("#profile_picture").on("change", function() {
             $(".custom-file-label").html("Image Selected");
           });
@@ -1019,35 +1057,8 @@ $today = date("F j Y, l");
         } else if (me == 'qrmaintenance') {
           let qrID = 0;
           loadAllQR();
-          $('body').on('click', '.qr-card', function() {
-            let qrcontent = $(this).attr('data-qr');
-            qrID = $(this).attr('data-id');
-            $('#mdlQRMaintenance').modal({
-              backdrop: 'static'
-            });
-            $('#qr-view-content').html(qrcontent);
-            $('#viewQRCodeMaintenance').empty();
-            $('#viewQRCodeMaintenance').qrcode({
-              text: qrcontent
-            });
-          });
-          $('#newQRCodeMaintenance').on('click', function() {
-            console.log('QRController.php?action=update_qr&id=' + qrID);
 
-            fireAjax('QRController.php?action=update_qr&id=' + qrID, '', false).then(function(data) {
 
-              let obj = jQuery.parseJSON(data.trim());
-
-              if (obj.success == 1) {
-                loadAllQR();
-                $('#mdlQRMaintenance').modal('hide');
-                fireSwal('QR Maintenance', 'QR updated successfully', 'success');
-              }
-            }).catch(function(err) {
-              console.log(err);
-              fireSwal('QR Maintenance', 'Failed to generate new QR. Please try again.', 'error');
-            });
-          });
         } else if (me == 'celebration') {
           let selectedYear = $('#select_year').val();
           render_calendar(selectedYear);
@@ -1085,7 +1096,7 @@ $today = date("F j Y, l");
             let thisButton = $(this);
             let payload = {
               id: dataID,
-              status:0
+              status: 0
             };
 
 
@@ -1113,20 +1124,23 @@ $today = date("F j Y, l");
             });
           })
 
-          $('#frmAdmins').on('submit',function(e){
+          $('#frmAdmins').on('submit', function(e) {
             e.preventDefault();
-            let payload = {id:$("#members").val(),status:1};
-            fireAjax('SuperAdminController.php?action=remove_admin',payload,false).then(function(data){
+            let payload = {
+              id: $("#members").val(),
+              status: 1
+            };
+            fireAjax('SuperAdminController.php?action=remove_admin', payload, false).then(function(data) {
               let objData = $.parseJSON(data.trim()).data;
-              if(objData){
-               
+              if (objData) {
+
                 $('#mdlAdmin').modal('hide');
                 $('#frmAdmins').trigger('reset');
                 loadAdmins();
-                fireSwal('New Administrator','Member assigned successfully','success');
+                fireSwal('New Administrator', 'Member assigned successfully', 'success');
               }
-            }).catch(function(err){
-              fireSwal('New Administrator','Failed to assign member. Please try again','error');
+            }).catch(function(err) {
+              fireSwal('New Administrator', 'Failed to assign member. Please try again', 'error');
             })
           });
 

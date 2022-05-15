@@ -13,7 +13,7 @@
     <a href="index.php?view=lifestyle" class="btn btn-block btn-lg btn-secondary"><b>Lifestyle</b></a>
     <?php
     if ($is_admin) {
-      echo '<a href="index.php?view=qrmaintenance" class="btn btn-block btn-lg btn-secondary"><b>QR Maintenance</b></a>';
+      echo '<a href="Javascript:void(0)" class="btn btn-block btn-lg btn-secondary" id = "btnQR"><b>QR Maintenance</b></a>';
     }
     if ($is_pastor) {
       echo '<a href="index.php?view=admins" class="btn btn-block btn-lg btn-secondary"><b>System Administrators</b></a>';
@@ -144,4 +144,33 @@
   </div>
 </div>
 
+</div>
+
+<div class="modal fade" id="mdlQRMaintenance" tabindex="-1" role="dialog" aria-labelledby="mdlScannerLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mdlScannerLabel">View Generated QR</h5>
+
+      </div>
+      <div class="modal-body">
+
+        <div class="form-group text-center mt-3">
+          <p class="text-muted" id="qr-branch">Bataan Branch</p>
+
+        </div>
+        <div id="viewQRCodeMaintenance" class="text-center"></div>
+        <div class="form-group text-center mt-3">
+          <p class="text-muted" id="qr-view-content"></p>
+
+        </div>
+        <div class="form-group text-center mt-5">
+          <button id="newQRCodeMaintenance" class="btn btn-block btn-info">Update QR</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
 </div>

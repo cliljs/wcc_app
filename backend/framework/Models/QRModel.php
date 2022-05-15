@@ -12,10 +12,10 @@ class QRModel {
         return !empty($result);
     }
 
-    public function get_qr_details($pk = null)
+    public function get_qr_details()
     {
         global $db, $common;
-        return $db->get_row("SELECT * FROM {$this->base_table} WHERE id = ?", [$pk]);
+        return $db->get_row("SELECT * FROM {$this->base_table} WHERE branch = ?", [$_SESSION['branch']]);
     }
 
     public function get_qr_lists()
@@ -43,16 +43,16 @@ class QRModel {
         return strtotime(date('Y-m-d H:i:s')) . $_SESSION['branch'] . '_' . $common->generate_random();
     }
 
-    public function update_qr($pk)
+    public function update_qr()
     {
         global $db, $common;
         $arr = [
             'qr'            =>  $this->generate_qr(),
             'created_by'    =>  $_SESSION['login_name'],
-            'pk'            =>  $pk
+            'branch'        =>  $_SESSION['branch']
         ];
-        $updated = $db->update("UPDATE {$this->base_table} SET qr_code = ?, created_by = ? WHERE id = ?", array_values($arr));
-        return $updated ? $this->get_qr_details($pk): false;
+        $updated = $db->update("UPDATE {$this->base_table} SET qr_code = ?, created_by = ? WHERE branch = ?", array_values($arr));
+        return $updated ? $this->get_qr_details(): false;
     }
 }
 
