@@ -1256,13 +1256,63 @@ print_r($_SESSION);
           })
 
         } else if (me == 'notifications') {
-          $('#notifSelectAll').change(function(){
-            if($(this).is(':checked')){
-              $('.chkNotif').attr('checked','checked');
+
+          $('#notifSelectAll').change(function() {
+            if ($(this).is(':checked')) {
+              $('.chkNotif').attr('checked', 'checked');
               $('.divChkNotif').show();
-            }else{
-            
+              $('.notifButtons').show();
+            } else {
+              $('.notifButtons').hide();
               $('.divChkNotif').hide();
+            }
+          });
+          $('body').on('click', '.btnMultiDisapprove, .btnMultiApprove', function() {
+            let var_decision = $(this).hasClass('btnMultiDisapprove') ? 0 : 1;
+            let str_decision = (var_decision == 1) ? 'approve' : 'disapprove';
+            let allGoods = true;
+
+            let notif_list = $('#notifTodayContainer').find('.osahan-post-header').each(function() {
+              let mainContainer = $(this);
+              let chk = $(this).find('.divChkNotif');
+              let chkbox = chk.find('.chkNotif');
+              
+              if (chkbox.is(':checked')) {
+                let var_notif_pk = chkbox.attr('data-id');
+                let var_notif_hash = chkbox.attr('data-hash');
+                let var_table_pk = chkbox.attr('data-table');
+                let var_notif_action = chkbox.attr('data-action');
+                let payload = {
+                  id: var_notif_pk,
+                  hash: var_notif_hash,
+                  decision: var_decision,
+                  table_pk: var_table_pk,
+                  action: var_notif_action
+                };
+                fireAjax('NotificationController.php?action=notif_decision', payload, false).then(function(data) {
+
+             
+                  let objData = $.parseJSON(data.trim()).data;
+                  if (objData == true) {
+                    
+                      mainContainer.remove();
+                   
+                
+                    //fireSwal('Notifications', 'Notification ' + str_decision + ' successfully', 'success');
+                  } else {
+                    allGoods = false;
+                    //fireSwal('Notifications', 'Failed to update notifications. Please reload the page', 'error');
+                  }
+                }).catch(function(err) {
+                  allGoods = false;
+                });
+              }
+            });
+            getNotifications(1);
+            if(allGoods){
+              fireSwal('Notifications','Notification(s) ' + str_decision + 'd successfully','success');
+            } else{
+              fireSwal('Notifications','Failed to ' + str_decision + ' notification(s). Please reload the page','error');
             }
           });
           $('body').on('click', '.btnNotifDecline, .btnNotifApprove', function() {
@@ -1280,7 +1330,6 @@ print_r($_SESSION);
               table_pk: var_table_pk,
               action: var_notif_action
             };
-
 
             fireAjax('NotificationController.php?action=notif_decision', payload, false).then(function(data) {
 
@@ -1319,8 +1368,10 @@ print_r($_SESSION);
 
                 userpic = (v.sender_pic == null) ? 'user.png' : v.sender_pic;
                 retval += '<div class="p-3 d-flex align-items-center border-bottom osahan-post-header">';
-                retval += '<div class="custom-control custom-checkbox divChkNotif"><input data-hash = "' + v.notif_hash + '" data-id = "' + v.id + '" class="custom-control-input custom-control-input-info custom-control-input-outline chkNotif" type="checkbox" id = "notifCheck' + v.id + '" ><label for="notifCheck' + v.id + '" class="custom-control-label"></label></div>';
-
+                if(read == 0){
+                  retval += '<div class="custom-control custom-checkbox divChkNotif"><input data-hash = "' + v.notif_hash + '" data-id = "' + v.id + '" data-table = "' + v.table_pk + '" data-action = "' + v.action + '" class="custom-control-input custom-control-input-info custom-control-input-outline chkNotif" type="checkbox" id = "notifCheck' + v.id + '" ><label for="notifCheck' + v.id + '" class="custom-control-label"></label></div>';
+                }
+                
                 retval += '<div class="dropdown-list-image mr-3">';
                 retval += '<img class="rounded-circle" src="' + image_url + userpic + '" alt="user_avatar" />';
                 retval += '</div>';
@@ -1335,6 +1386,7 @@ print_r($_SESSION);
                 retval += '</div>';
               });
               $('.divChkNotif').hide();
+              $('.notifButtons').hide();
               retval = (retval == '') ? 'No notifications available' : retval;
               if (read == 0) {
                 $('#notifTodayContainer').html(retval);
@@ -1361,7 +1413,7 @@ print_r($_SESSION);
               console.log(data);
               let objData = $.parseJSON(data.trim());
               if (objData.success == 1) {
-                //$('#frmMentoring').trigger('reset');
+
                 loadMentoring();
                 fireSwal('Mentoring', 'Entry added successfully', 'success');
               } else {

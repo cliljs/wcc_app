@@ -63,7 +63,9 @@ class NotificationModel
         global $db, $common;
         $payload['date_updated'] = date('Y-m-d H:i:s');
         $update_fields = $common->get_update_fields($payload);
-        $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE notif_hash = {$hash}", array_values($payload));
+        $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE notif_hash = '{$hash}'", array_values($payload));
+        print_r($payload);
+        echo "UPDATE {$this->base_table} {$update_fields} WHERE notif_hash = {$hash}";
         return $updated ? $this->get_notif_by_hash($hash) : false;
     }
 

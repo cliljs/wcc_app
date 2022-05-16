@@ -21,6 +21,10 @@
                       <input id = "notifSelectAll" type="checkbox" class="custom-control-input">
                       <label class="custom-control-label" for="notifSelectAll">Select All</label>
                     </div>
+                    <div class = "notifButtons pull-right mt-4">
+                      <button class = "btn btn-md btn-secondary btnMultiDisapprove">Disapprove</button>
+                      &nbsp;<button class = "btn btn-md btn-danger btnMultiApprove">Approve</button>
+                    </div>
                   </div>
                 </div>
                 <div id="notifTodayContainer" class="box-body p-0">
