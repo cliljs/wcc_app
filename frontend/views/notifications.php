@@ -17,13 +17,13 @@
                 <div class="box-title border-bottom p-3">
                   <h6 class="m-0">Unread</h6>
                   <div class="form-group">
-                    <div class="custom-control custom-switch custom-switch-off-secondary custom-switch-on-info">
-                      <input id = "notifSelectAll" type="checkbox" class="custom-control-input">
-                      <label class="custom-control-label" for="notifSelectAll">Select All</label>
+                    <div>
+                      <input id = "notifSelectAll" type="checkbox" data-on-text = "<i class = 'fa fa-bars'></i>" data-off-text = "<i class = 'fa fa-minus'></i>" class="switch" data-backdrop="static" data-keyboard="false" />
+
                     </div>
-                    <div class = "notifButtons pull-right mt-4">
-                      <button class = "btn btn-md btn-secondary btnMultiDisapprove">Disapprove</button>
-                      &nbsp;<button class = "btn btn-md btn-danger btnMultiApprove">Approve</button>
+                    <div class="notifButtons pull-right mt-4">
+                      <button class="btn btn-md btn-secondary btnMultiDisapprove">Disapprove</button>
+                      &nbsp;<button class="btn btn-md btn-danger btnMultiApprove">Approve</button>
                     </div>
                   </div>
                 </div>

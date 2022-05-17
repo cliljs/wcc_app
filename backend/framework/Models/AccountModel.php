@@ -70,7 +70,7 @@ class AccountModel
         if (!empty($username_exists)) {
             return ["error" => true, "msg" => "Username Already Exists"];
         }
-     
+
         $leader_info = $this->get_leader_by_pk($payload['leader_name']);
 
         if (empty($leader_info)) {
@@ -93,7 +93,7 @@ class AccountModel
 
         $fields        = $common->get_insert_fields($arr);
         $last_id       = $db->insert("INSERT INTO {$this->base_table} {$fields}", array_values($arr));
-       
+
         if (!empty($files)) {
             if ($files['profile_picture']['error'] != 4) {
                 $update_fields = $common->get_update_fields(['profile_pic' => ""]);
@@ -115,9 +115,9 @@ class AccountModel
             "action"      => 'SIGNUP',
             "table_pk"    => $tribe_pk
         ];
-       
+
         $notif = $notif_model->create_notification($notif_arr);
-       
+
         return $last_id;
     }
 
@@ -125,12 +125,19 @@ class AccountModel
     {
         global $db;
         $criteria = ($_SESSION['is_admin'] == 1) ? "(receiver_pk = ? or receiver_pk = 0)" : "receiver_pk = ?";
-        return $db->get_row("SELECT acc.*, (Select COUNT(*) from bro_notifications where status = 0 and $criteria) as unreadCount, 
+        if ($_SESSION['is_pastor'] == 1) {
+            return $db->get_row("SELECT acc.*, (Select COUNT(*) from bro_notifications where status = 0 and receiver_pk = 1) as unreadCount, 
         (Select CONCAT(firstname,' ',middlename,' ',lastname) from {$this->base_table} where id = (Select leader_pk from bro_tribe where member_pk = ? and is_approved = 1)) as tlname 
         FROM {$this->base_table} acc WHERE acc.id = ?", [$_SESSION['pk'], $_SESSION['pk'], $_SESSION['pk']]);
+        } else {
+            return $db->get_row("SELECT acc.*, (Select COUNT(*) from bro_notifications where status = 0 and $criteria) as unreadCount, 
+            (Select CONCAT(firstname,' ',middlename,' ',lastname) from {$this->base_table} where id = (Select leader_pk from bro_tribe where member_pk = ? and is_approved = 1)) as tlname 
+            FROM {$this->base_table} acc WHERE acc.id = ?", [$_SESSION['pk'], $_SESSION['pk'], $_SESSION['pk']]);
+        }
     }
 
-    public function validate_bypass($payload = []){
+    public function validate_bypass($payload = [])
+    {
         global $db, $common;
         $valid = true;
         $has_account = $db->get_row("SELECT acc.* from bro_accounts acc INNER JOIN bro_tribe tr ON acc.id = tr.leader_pk where acc.username = ?", [$payload['tlusername']]);
@@ -155,10 +162,10 @@ class AccountModel
         unset($payload['profile_picture']);
         unset($payload['confirm_password']);
         $filtered = array_filter($payload);
-        if(isset($payload['password'])){
+        if (isset($payload['password'])) {
             $filtered['password']   = $this->create_hash($payload['password']);
         }
-       
+
         $update_fields = $common->get_update_fields($filtered);
         $updated       = $db->update("UPDATE {$this->base_table} {$update_fields} WHERE id = {$id}", array_values($filtered));
         if ($files['profile_picture']['error'] != 4) {
@@ -192,7 +199,7 @@ class AccountModel
     {
         global $db, $common;
         $new_password = $this->create_hash('12345');
-        $deleted =  $db->update("Update {$this->base_table} set password = ? WHERE id = {$id}",[$new_password]);
+        $deleted =  $db->update("Update {$this->base_table} set password = ? WHERE id = {$id}", [$new_password]);
 
         return $deleted ? true : false;
     }

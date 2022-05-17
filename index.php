@@ -19,7 +19,7 @@ $is_pastor = ($_SESSION["is_pastor"] == "1") ? true : false;
 
 $day_now = date("l");
 $today = date("F j Y, l");
-print_r($_SESSION);
+
 ?>
 
 <!DOCTYPE html>
@@ -813,6 +813,7 @@ print_r($_SESSION);
             console.log(data);
             let objData = $.parseJSON(data.trim()).data;
             let retval = '';
+            let blankCount = 0;
             $.each(objData, function(k, v) {
               retval += '<tr>';
               retval += '<td>' + v.lesson_title + '</td>';
@@ -826,6 +827,7 @@ print_r($_SESSION);
                 retval += (v.attendance == null || v.attendance == 0) ? 'Absent' : 'Attended ';
                 retval += '</label>';
                 retval += '</div>';
+                blankCount++;
               } else {
                 retval += '<button class = "btn btn-md btn-success">Attended</button>';
               }
@@ -836,10 +838,13 @@ print_r($_SESSION);
               retval += '</td>';
               retval += '</tr>';
             });
+            if(blankCount == 0) {
+              //$('#btnSubmitLC').remove();
+            }
             $('#tblLifeClassBody').html(retval);
           }).catch(function(err) {
             console.log(err);
-            fireSwal('Training', 'Failed to retrieve list of topics. Please reload the page', 'error');
+            fireSwal('Training', 'Failed to retrieve list of lessons. Please reload the page', 'error');
           });
         } else if (me == 'reencounter') {
           $('body').on('click', '.switchRC', function() {
@@ -918,6 +923,7 @@ print_r($_SESSION);
             console.log(data);
             let objData = $.parseJSON(data.trim()).data;
             let retval = '';
+            let blankCount = 0;
             $.each(objData, function(k, v) {
               retval += '<tr>';
               retval += '<td>' + v.lesson_title + '</td>';
@@ -931,6 +937,7 @@ print_r($_SESSION);
                 retval += (v.attendance == null || v.attendance == 0) ? 'Absent' : 'Attended ';
                 retval += '</label>';
                 retval += '</div>';
+                blankCount++;
               } else {
                 retval += '<button class = "btn btn-md btn-success">Attended</button>';
               }
@@ -941,6 +948,9 @@ print_r($_SESSION);
               retval += '</td>';
               retval += '</tr>';
             });
+            if(blankCount == 0){
+              //$('#btnSubmitRC').remove();
+            }
             $('#tblReencounterBody').html(retval);
           }).catch(function(err) {
             console.log(err);
@@ -1026,6 +1036,7 @@ print_r($_SESSION);
             console.log(data);
             let objData = $.parseJSON(data.trim()).data;
             let retval = '';
+            let blankCount = 0
             $.each(objData, function(k, v) {
               retval += '<tr>';
               retval += '<td>' + v.lesson_title + '</td>';
@@ -1039,6 +1050,7 @@ print_r($_SESSION);
                 retval += (v.attendance == null || v.attendance == 0) ? 'Absent' : 'Attended ';
                 retval += '</label>';
                 retval += '</div>';
+                blankCount++;
               } else {
                 retval += '<button class = "btn btn-md btn-success">Attended</button>';
               }
@@ -1049,7 +1061,9 @@ print_r($_SESSION);
               retval += '</td>';
               retval += '</tr>';
             });
+        
             $('#tblLessonBody').html(retval);
+            //if(blankCount == 0) $('#btnSubmitSOL').remove();
           }).catch(function(err) {
             console.log(err);
             fireAjax('Training', 'Failed to retrieve list of topics. Please reload the page', 'error');
@@ -1256,8 +1270,9 @@ print_r($_SESSION);
           })
 
         } else if (me == 'notifications') {
-
-          $('#notifSelectAll').change(function() {
+          $('#notifSelectAll').bootstrapSwitch();
+          $('#notifSelectAll').on('switchChange.bootstrapSwitch',function(e) {
+         
             if ($(this).is(':checked')) {
               $('.chkNotif').attr('checked', 'checked');
               $('.divChkNotif').show();
@@ -1309,6 +1324,8 @@ print_r($_SESSION);
               }
             });
             getNotifications(1);
+            $('#notifSelectAll').removeAttr('checked');
+            $('#notifSelectAll').bootstrapSwitch('toggleState', true, true);
             if(allGoods){
               fireSwal('Notifications','Notification(s) ' + str_decision + 'd successfully','success');
             } else{
@@ -1861,6 +1878,7 @@ print_r($_SESSION);
 
           console.log(data);
           let objData = $.parseJSON(data.trim()).data;
+          if(objData == 0) return;
           let retval = '';
           let table_container = '';
           switch (lesson) {

@@ -133,29 +133,35 @@ class AttendanceModel
             return ["error" => 1, "msg" => "nugawa mo dito bay"];
          }
 
+
          if ($payload['decision'] == 1) {
+            $caption  = ' approved';
             $arr = [
                "confirmed_by" => $_SESSION['pk'],
                "date_confirmed" => date('Y-m-d'),
             ];
             $confirmed = $this->update_attendance($arr, $payload['table_pk']);
-            $notif_arr = [
-               "sender_pk"   => $_SESSION['pk'],
-               "receiver_pk" => $confirmed['account_pk'],
-               "subject_pk"  => $_SESSION['pk'],
-               "caption"     => $caption . ' your Sunday Celebration Attendance',
-               "action"      => 'NONE',
-               "table_pk"    => $payload['table_pk']
-            ];
-            $notif_model->create_notification($notif_arr);
          } else {
+            $caption  = ' disapproved';
             $confirmed = $db->update("Delete from {$this->base_table} where id = ?", [$payload['table_pk']]);
             $deleted = $db->update("Delete from bro_notifications where id = ?", [$payload['id']]);
          }
       } catch (\Throwable $th) {
          $completed = false;
       }
-
+      if ($completed) {
+         $notif_arr = [
+            "sender_pk"   => $_SESSION['pk'],
+            "receiver_pk" => $confirmed['account_pk'],
+            "subject_pk"  => $_SESSION['pk'],
+            "caption"     => $caption . ' your Sunday Celebration Attendance',
+            "action"      => 'NONE',
+            "table_pk"    => $payload['table_pk'],
+            "status"      => 1
+         ];
+         $result = $notif_model->create_notification($notif_arr);
+      
+      }
 
 
       return $completed;

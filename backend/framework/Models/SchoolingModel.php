@@ -84,11 +84,13 @@ class SchoolingModel
     {
         global $db, $common;
         $user_pk = (array_key_exists('user_pk', $payload)) ? $payload['user_pk'] : $_SESSION['pk'];
-     
-        $has_enrollment = $db->get_row("SELECT * FROM bro_enrollment 
+      
+        $has_enrollment = $db->get_row(
+            "SELECT * FROM bro_enrollment 
                                         WHERE lesson_type = ? AND user_pk = ? AND is_enrolled = ?",
-                                         [$user_pk, $payload['lesson_type'], 1]);
-        
+            [$payload['lesson_type'], $user_pk, 1]
+        );
+
         if (empty($has_enrollment)) {
             return 0;
         }
@@ -124,7 +126,7 @@ class SchoolingModel
                 $deleted = $db->update("Delete from bro_notifications where id = ?", [$payload['id']]);
                 $caption = ' disapproved ';
             } else {
-                $updated = $db->update("UPDATE {$this->base_table} SET leader_pk = ?, date_approved = ? WHERE id = ?", [$_SESSION['pk'],$localdate, $payload['table_pk']]);
+                $updated = $db->update("UPDATE {$this->base_table} SET leader_pk = ?, date_approved = ? WHERE id = ?", [$_SESSION['pk'], $localdate, $payload['table_pk']]);
                 $deleted = $db->update("Update bro_notifications set status = 1, date_updated = ? where id = ?", [$localdate, $payload['id']]);
                 $caption = ' approved ';
             }
