@@ -95,7 +95,7 @@ class SchoolingModel
             return 0;
         }
 
-        return $db->get_list("SELECT bs.*, bl.lesson_title, bl.sequence, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = bs.leader_pk) as approve_name
+        return $db->get_list("SELECT (Select is_graduated from bro_enrollment where id = bs.enrollment_pk) as graduate_status,bs.*, bl.lesson_title, bl.sequence, (Select CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = bs.leader_pk) as approve_name
                               FROM {$this->base_table} as bs
                               INNER JOIN bro_lessons as bl ON bs.lesson_pk = bl.id
                               WHERE bs.user_pk = ? AND bl.lesson_type = ? 

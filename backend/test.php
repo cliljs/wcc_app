@@ -38,107 +38,19 @@ $seeds = [
         "is_leader"       => 1,
     ],
     [
-        "username"        => 'jdoe',
-        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
-        "lastname"        => 'Doe',
-        "firstname"       => 'John',
-        "middlename"      => '',
-        "branch"          => "Bataan",
-        "gender"          => 'Male',
-        "address"         => 'Jan lang',
-        "birthdate"       => '2000-01-01',
-        "contact"         => '091234567',
-        "is_leader"       => 0,
-        "is_pastor"       => 0,
-        "is_admin"        => 1
-    ],
-    [
-        "username"        => 'jdoes',
-        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
-        "lastname"        => 'Does',
-        "firstname"       => 'Jane',
-        "middlename"      => '',
-        "branch"          => "Gensan",
-        "gender"          => 'Female',
-        "address"         => 'Jan lang',
-        "birthdate"       => '2001-01-02',
-        "contact"         => '0912354785',
-        "is_leader"       => 0,
-        "is_pastor"       => 0,
-        "is_admin"        => 1
-    ],
-    [
-        "username"        => 'fbar',
-        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
-        "lastname"        => 'Bar',
-        "firstname"       => 'Foo',
-        "middlename"      => '',
-        "branch"          => "Kalibo",
-        "gender"          => 'Male',
-        "address"         => 'Jan lang',
-        "birthdate"       => '2002-01-03',
-        "contact"         => '098751454',
-        "is_leader"       => 0,
-        "is_pastor"       => 0,
-        "is_admin"        => 1
-    ],
-    [
-        "username"        => 'leader',
-        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
-        "lastname"        => 'Joe',
-        "firstname"       => 'Average',
-        "middlename"      => '',
-        "branch"          => "Valenzuela",
-        "gender"          => 'Male',
-        "address"         => 'Jan lang',
-        "birthdate"       => '2002-01-04',
-        "contact"         => '11111111',
-        "is_leader"       => 1,
-        "is_pastor"       => 0,
-        "is_admin"        => 1
-    ],
-    [
-        "username"        => 'jpublic',
-        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
-        "lastname"        => 'Public',
-        "firstname"       => 'John',
-        "middlename"      => '',
-        "branch"          => "Bataan",
-        "gender"          => 'Male',
-        "address"         => 'Jan lang',
-        "birthdate"       => '2002-01-05',
-        "contact"         => '0924578454',
-        "is_leader"       => 0,
-        "is_pastor"       => 0,
-    ],
-    [
-        "username"        => 'iroe',
-        "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
-        "lastname"        => 'Roe',
-        "firstname"       => 'Ivan',
-        "middlename"      => '',
-        "branch"          => "Bataan",
-        "gender"          => 'Female',
-        "address"         => 'Jan lang',
-        "birthdate"       => '2002-01-06',
-        "contact"         => '096315454',
-        "is_leader"       => 0,
-        "is_pastor"       => 0,
-    ],
-    [
         "username"        => 'admin',
         "password"        => password_hash('12345', PASSWORD_BCRYPT, ['cost' => 12]),
         "lastname"        => 'Admin',
         "firstname"       => 'Sample',
         "middlename"      => '',
-        "branch"          => "Kalibo",
+        "branch"          => "Bataan",
         "gender"          => 'Female',
         "address"         => 'Jan lang',
         "birthdate"       => '2002-01-06',
         "contact"         => '096315454',
         "is_leader"       => 0,
         "is_pastor"       => 0,
-        "is_admin"        => 0
+        "is_admin"        => 1
     ]
 ];
 $lessons = [
@@ -543,7 +455,7 @@ switch ($act) {
 
                 if ($seed['is_pastor'] == 0) {
                     $tribe_payload = [
-                        'leader_pk' => $seed['is_leader'] > 0 ? 1 : 2,
+                        'leader_pk' => 1,
                         'member_pk' => $last_insert,
                         'is_approved' => 1
                     ];

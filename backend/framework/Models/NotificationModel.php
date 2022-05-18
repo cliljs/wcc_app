@@ -63,6 +63,7 @@ class NotificationModel
             FROM {$this->base_table} notif
             INNER JOIN bro_accounts ba ON notif.sender_pk = ba.id
             WHERE {$criteria} AND status = {$read} AND ba.branch = ? ORDER BY notif.date_created DESC";
+        
             return $db->get_list($kwiri, [$_SESSION['pk'], $_SESSION['branch']]);
         }
     }

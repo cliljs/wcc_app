@@ -79,6 +79,12 @@ if ($is_login) {
                     <p class="h1"><b>WCC </b>Member's Portal</p>
                   </div>
                   <div class="card-body">
+                    <div class = "alert alert-info">
+                      <p>Test Accounts:</p>
+                      <p>j.loyloy / 12345</p>
+                      <p>m.loyloy /12345</p>
+                      <p>admin / 12345</p>
+                    </div>
                     <p class="login-box-msg">Sign in to start your session</p>
                     <div class="alert alert-danger" style = "display:none;">
                       <h5><i class="icon fas fa-ban"></i> Login</h5>

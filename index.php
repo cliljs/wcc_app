@@ -814,7 +814,9 @@ $today = date("F j Y, l");
             let objData = $.parseJSON(data.trim()).data;
             let retval = '';
             let blankCount = 0;
+            let is_completed = false;
             $.each(objData, function(k, v) {
+              if (v.graduate_status == 1) is_completed = true;
               retval += '<tr>';
               retval += '<td>' + v.lesson_title + '</td>';
               retval += '<td>';
@@ -838,8 +840,8 @@ $today = date("F j Y, l");
               retval += '</td>';
               retval += '</tr>';
             });
-            if(blankCount == 0) {
-              //$('#btnSubmitLC').remove();
+            if (is_completed) {
+              $('#btnSubmitLC').remove();
             }
             $('#tblLifeClassBody').html(retval);
           }).catch(function(err) {
@@ -924,7 +926,9 @@ $today = date("F j Y, l");
             let objData = $.parseJSON(data.trim()).data;
             let retval = '';
             let blankCount = 0;
+            let is_completed = false;
             $.each(objData, function(k, v) {
+              if (v.graduate_status == 1) is_completed = true;
               retval += '<tr>';
               retval += '<td>' + v.lesson_title + '</td>';
               retval += '<td>';
@@ -948,8 +952,8 @@ $today = date("F j Y, l");
               retval += '</td>';
               retval += '</tr>';
             });
-            if(blankCount == 0){
-              //$('#btnSubmitRC').remove();
+            if (is_completed) {
+              $('#btnSubmitRC').remove();
             }
             $('#tblReencounterBody').html(retval);
           }).catch(function(err) {
@@ -1037,7 +1041,9 @@ $today = date("F j Y, l");
             let objData = $.parseJSON(data.trim()).data;
             let retval = '';
             let blankCount = 0
+            let is_completed = false;
             $.each(objData, function(k, v) {
+              if (v.graduate_status == 1) is_completed = true;
               retval += '<tr>';
               retval += '<td>' + v.lesson_title + '</td>';
               retval += '<td>';
@@ -1061,9 +1067,9 @@ $today = date("F j Y, l");
               retval += '</td>';
               retval += '</tr>';
             });
-        
+
             $('#tblLessonBody').html(retval);
-            //if(blankCount == 0) $('#btnSubmitSOL').remove();
+            if (is_completed) $('#btnSubmitSOL').remove();
           }).catch(function(err) {
             console.log(err);
             fireAjax('Training', 'Failed to retrieve list of topics. Please reload the page', 'error');
@@ -1271,8 +1277,8 @@ $today = date("F j Y, l");
 
         } else if (me == 'notifications') {
           $('#notifSelectAll').bootstrapSwitch();
-          $('#notifSelectAll').on('switchChange.bootstrapSwitch',function(e) {
-         
+          $('#notifSelectAll').on('switchChange.bootstrapSwitch', function(e) {
+
             if ($(this).is(':checked')) {
               $('.chkNotif').attr('checked', 'checked');
               $('.divChkNotif').show();
@@ -1291,7 +1297,7 @@ $today = date("F j Y, l");
               let mainContainer = $(this);
               let chk = $(this).find('.divChkNotif');
               let chkbox = chk.find('.chkNotif');
-              
+
               if (chkbox.is(':checked')) {
                 let var_notif_pk = chkbox.attr('data-id');
                 let var_notif_hash = chkbox.attr('data-hash');
@@ -1306,13 +1312,13 @@ $today = date("F j Y, l");
                 };
                 fireAjax('NotificationController.php?action=notif_decision', payload, false).then(function(data) {
 
-             
+
                   let objData = $.parseJSON(data.trim()).data;
                   if (objData == true) {
-                    
-                      mainContainer.remove();
-                   
-                
+
+                    mainContainer.remove();
+
+
                     //fireSwal('Notifications', 'Notification ' + str_decision + ' successfully', 'success');
                   } else {
                     allGoods = false;
@@ -1326,10 +1332,10 @@ $today = date("F j Y, l");
             getNotifications(1);
             $('#notifSelectAll').removeAttr('checked');
             $('#notifSelectAll').bootstrapSwitch('toggleState', true, true);
-            if(allGoods){
-              fireSwal('Notifications','Notification(s) ' + str_decision + 'd successfully','success');
-            } else{
-              fireSwal('Notifications','Failed to ' + str_decision + ' notification(s). Please reload the page','error');
+            if (allGoods) {
+              fireSwal('Notifications', 'Notification(s) ' + str_decision + 'd successfully', 'success');
+            } else {
+              fireSwal('Notifications', 'Failed to ' + str_decision + ' notification(s). Please reload the page', 'error');
             }
           });
           $('body').on('click', '.btnNotifDecline, .btnNotifApprove', function() {
@@ -1385,10 +1391,10 @@ $today = date("F j Y, l");
 
                 userpic = (v.sender_pic == null) ? 'user.png' : v.sender_pic;
                 retval += '<div class="p-3 d-flex align-items-center border-bottom osahan-post-header">';
-                if(read == 0){
+                if (read == 0) {
                   retval += '<div class="custom-control custom-checkbox divChkNotif"><input data-hash = "' + v.notif_hash + '" data-id = "' + v.id + '" data-table = "' + v.table_pk + '" data-action = "' + v.action + '" class="custom-control-input custom-control-input-info custom-control-input-outline chkNotif" type="checkbox" id = "notifCheck' + v.id + '" ><label for="notifCheck' + v.id + '" class="custom-control-label"></label></div>';
                 }
-                
+
                 retval += '<div class="dropdown-list-image mr-3">';
                 retval += '<img class="rounded-circle" src="' + image_url + userpic + '" alt="user_avatar" />';
                 retval += '</div>';
@@ -1878,7 +1884,7 @@ $today = date("F j Y, l");
 
           console.log(data);
           let objData = $.parseJSON(data.trim()).data;
-          if(objData == 0) return;
+          if (objData == 0) return;
           let retval = '';
           let table_container = '';
           switch (lesson) {
