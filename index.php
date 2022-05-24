@@ -468,16 +468,16 @@ $today = date("F j Y, l");
             let member_id = $('#txTransferName').attr('data-id');
 
             fireAjax('TribeController.php?action=transfer_disciple&pk=' + member_id, payload, false).then(function(data) {
-              console.log(data);
 
-              let obj = $.parseJSON(data.trim()).success;
-              if (obj == 1) {
+              let obj = $.parseJSON(data.trim()).data;
+              if (obj.toString() == 'true') {
                 loadDisciples();
                 $('#mdlTransfer').modal('hide');
                 fireSwal('Transfer Member', 'Member transferred successfully. Please wait for pastor\'s confirmation', 'success');
               } else {
-                fireSwal('Transfer Member', 'Failed to transfer member. Please reload the page', 'error');
+                fireSwal('Transfer Member', obj, 'info');
               }
+            
             }).catch(function(err) {
               console.log(err);
               fireSwal('Transfer Member', 'Failed to transfer member. Please reload the page', 'error');

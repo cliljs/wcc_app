@@ -34,6 +34,13 @@ class TribeModel
         $arr = [
             "new_leader"   => $query['new_leader_pk']
         ];
+        if($pk == $query['new_leader_pk']){
+            return 'Failed to transfer disciple. Please select a different leader.';
+        }
+        $check_pending = $db->get_row("Select * from {$this->base_table} where member_pk = ? and new_leader = 0",[$pk]);
+        if(empty($check_pending)){
+            return 'Member has a pending transfer request. Please wait for pastor\'s confirmation';
+        }
         $tribe_disciple = $db->get_row("SELECT member_pk FROM {$this->base_table} WHERE id = {$pk}");
         $updated = $db->update("UPDATE {$this->base_table} {$common->get_update_fields($arr)} WHERE id = {$pk}", array_values($arr));
         $leader_details = $common->get_fullname_id($query['new_leader_pk']);
@@ -62,7 +69,7 @@ class TribeModel
         global $db, $common;
         $kwiri = (isset($payload["me"])) ? "AND NOT acc.id = " . $_SESSION['pk'] . " ORDER BY acc.firstname asc" : "ORDER BY acc.firstname asc";
         return $db->get_list(
-            "SELECT REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, acc.id
+            "SELECT REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, acc.id, (Select is_approved from bro_tribe where member_pk = acc.id) as accStatus 
                             FROM bro_accounts acc 
                             WHERE acc.is_leader IN (0,1) 
                             {$kwiri}",
@@ -74,7 +81,7 @@ class TribeModel
     {
         global $db, $common;
         return $db->get_list(
-            "SELECT REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, acc.id
+            "SELECT REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, acc.id,(Select is_approved from bro_tribe where member_pk = acc.id) as accStatus 
                             FROM bro_accounts acc 
                             WHERE branch = ? OR is_pastor = 1 
                             ORDER BY acc.firstname asc",

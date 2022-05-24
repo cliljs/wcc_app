@@ -207,12 +207,15 @@ if ($is_login) {
         let data = fireAjax('AccountController.php?action=create_account', fd, true).then(function(data) {
         
           let obj = jQuery.parseJSON(data.trim());
-          if (obj.success == 1) {
+          if (obj.data == false) {
+            fireSwal("Account Registration", "Failed to register account. Username already exists", "error");  
+            
+          } else{
             fireSwal("Account Registration", "Failed to create account. Please try again.", "error");
             Swal.fire({
               icon: 'success',
               title: 'Account Registration',
-              text: 'Account created successfully. Click OK to return to login page.',
+              text: 'Account created successfully, kindly wait for your leader\'s approval. Click OK to return to login page.',
               showDenyButton: false,
               showCancelButton: false,
               allowOutsideClick: false,
@@ -245,7 +248,10 @@ if ($is_login) {
           let renderVal = '<option selected="selected" disabled="disabled">Please select your inviter</option>';
           renderVal = '<option value = "0">None</option>';
           $.each(tls, function(k, v) {
-            renderVal += '<option value="' + v.id + '">' + v.fullname + '</option>';
+            if(v.accStatus == 1){
+              renderVal += '<option value="' + v.id + '">' + v.fullname + '</option>';
+            }
+            
           });
           $("#inviter").html(renderVal);
         }).catch(function(err) {
@@ -269,7 +275,10 @@ if ($is_login) {
           let tls = obj.data;
           let renderVal = '<option selected="selected" disabled="disabled">Please select your tribe leader</option>';
           $.each(tls, function(k, v) {
-            renderVal += '<option value="' + v.id + '">' + v.fullname + '</option>';
+            if(v.accStatus == 1){
+              renderVal += '<option value="' + v.id + '">' + v.fullname + '</option>';
+            }
+            
           });
           $("#leader_name").html(renderVal);
         }).catch(function(err) {
