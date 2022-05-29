@@ -49,7 +49,7 @@ class NotificationModel
         $criteria = ($_SESSION['is_admin'] == 1) ?
             "(receiver_pk = ? or receiver_pk = 0)" :
             "receiver_pk = ?";
-
+        $limit = ($read == 1) ? "LIMIT 30": "";
         if ($_SESSION['is_pastor'] == 1) {
             $kwiri = "SELECT notif.notif_hash,notif.id,notif.date_created,notif.sender_pk,notif.action,notif.caption,notif.table_pk,(SELECT profile_pic from bro_accounts where id = notif.subject_pk) as sender_pic, 
             (SELECT CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = notif.subject_pk) as sender_name
@@ -62,7 +62,7 @@ class NotificationModel
             (SELECT CONCAT(firstname,' ',middlename,' ',lastname) from bro_accounts where id = notif.subject_pk) as sender_name
             FROM {$this->base_table} notif
             INNER JOIN bro_accounts ba ON notif.sender_pk = ba.id
-            WHERE {$criteria} AND status = {$read} AND ba.branch = ? ORDER BY notif.date_created DESC";
+            WHERE {$criteria} AND status = {$read} AND ba.branch = ? ORDER BY notif.date_created DESC {$limit}";
         
             return $db->get_list($kwiri, [$_SESSION['pk'], $_SESSION['branch']]);
         }
