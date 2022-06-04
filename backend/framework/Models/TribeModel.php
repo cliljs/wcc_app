@@ -42,7 +42,7 @@ class TribeModel
             return 'Member has a pending transfer request. Please wait for pastor\'s confirmation';
         }
         $tribe_disciple = $db->get_row("SELECT member_pk FROM {$this->base_table} WHERE id = {$pk}");
-        $updated = $db->update("UPDATE {$this->base_table} {$common->get_update_fields($arr)} WHERE id = {$pk}", array_values($arr));
+        $updated = $db->update("UPDATE {$this->base_table} {$common->get_update_fields($arr)} WHERE member_pk = {$pk}", array_values($arr));
         $leader_details = $common->get_fullname_id($query['new_leader_pk']);
         $notif_arr = [
             "sender_pk"   => $_SESSION['pk'],
