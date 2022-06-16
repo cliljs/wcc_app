@@ -154,7 +154,7 @@ $today = date("F j Y, l");
                   <h5 id="user_branch" class="widget-user-desc text-right"></h5>
                 </div>
                 <div class="widget-user-image">
-                  <img id="user_dp" class="img-circle elevation-1" src="./backend/framework/uploads/images/user.png" alt="User Avatar">
+                  <img id="user_dp" class="img-circle elevation-1" src="./backend/framework/uploads/images/user.png" alt="User Avatar" style="width:150px !important; height:150px !important;">
                 </div>
                 <div class="card-footer">
                   <div class="row">
@@ -477,7 +477,7 @@ $today = date("F j Y, l");
               } else {
                 fireSwal('Transfer Member', obj, 'info');
               }
-            
+
             }).catch(function(err) {
               console.log(err);
               fireSwal('Transfer Member', 'Failed to transfer member. Please reload the page', 'error');

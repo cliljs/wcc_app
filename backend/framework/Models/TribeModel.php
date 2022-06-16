@@ -41,16 +41,20 @@ class TribeModel
         if(empty($check_pending)){
             return 'Member has a pending transfer request. Please wait for pastor\'s confirmation';
         }
-        $tribe_disciple = $db->get_row("SELECT member_pk FROM {$this->base_table} WHERE id = {$pk}");
+
+        //$tribe_disciple = $db->get_row("SELECT member_pk FROM {$this->base_table} WHERE id = {$pk}");
         $updated = $db->update("UPDATE {$this->base_table} {$common->get_update_fields($arr)} WHERE member_pk = {$pk}", array_values($arr));
         $leader_details = $common->get_fullname_id($query['new_leader_pk']);
+
+        $tribe_info = $db->get_row("SELECT id FROM {$this->base_table} WHERE member_pk = {$pk}");
+
         $notif_arr = [
             "sender_pk"   => $_SESSION['pk'],
             "receiver_pk" => 1,
-            "subject_pk"  => $tribe_disciple['member_pk'],
+            "subject_pk"  => $pk,
             "caption"     => ' transferred to ' . $leader_details['fullname'],
             "action"      => 'TRANSFER',
-            "table_pk"    => $pk
+            "table_pk"    => $tribe_info['id']
         ];
         $notif_model = $notif_model->create_notification($notif_arr);
         return $updated;
