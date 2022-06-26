@@ -214,6 +214,16 @@ class AccountModel
             [1, 1]
         );
     }
+    public function validate_user($pk = 0)
+    {
+        global $db;
+        return $db->get_row("Select id,CONCAT(lastname,', ', firstname,' ',middlename) as fullname,(Select CONCAT(lastname,', ', firstname,' ',middlename) from bro_accounts where id = (Select leader_pk from bro_tribe where member_pk = ?)) as tlname from bro_accounts ba where ba.id = ? ", [$pk, $pk]);
+    }
+    public function get_members()
+    {
+        global $db;
+        return $db->get_list("Select id,CONCAT(lastname,', ',firstname,' ',middlename) as full_name from bro_accounts where branch = ?", [$_SESSION['branch']]);
+    }
 }
 
 $account_model = new AccountModel();

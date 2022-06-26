@@ -11,7 +11,7 @@ switch ($act) {
         if (@$new_account['error']) {
             $response['data'] = false;
         } else {
-            
+
             $response['data']    = $new_account;
             $response['success'] = 1;
         }
@@ -73,7 +73,16 @@ switch ($act) {
 
         echo json_encode($response);
         break;
-
+    case 'get_members':
+        echo json_encode(
+            $common->create_response("AccountController/action=get_members", $account_model->get_members(), 1)
+        );
+        break;
+    case 'validate_user':
+        echo json_encode(
+            $common->create_response("AccountController/action=validate_user", $account_model->validate_user($_GET['id']), 1)
+        );
+        break;
     default:
         break;
 }

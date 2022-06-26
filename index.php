@@ -446,7 +446,7 @@ $today = date("F j Y, l");
             $('#memberLS').hide();
             $('#lblMember').html('');
             $('#lblTL').html('');
-            fireAjax('SuperAdminController.php?action=validate_user&id=' + memberID, '', false).then(function(data) {
+            fireAjax('AccountController.php?action=validate_user&id=' + memberID, '', false).then(function(data) {
               let objData = $.parseJSON(data.trim()).data;
               if (objData) {
                 $('#lblMember').html(objData.fullname);
@@ -461,7 +461,7 @@ $today = date("F j Y, l");
           })
 
           function loadAllMembers() {
-            fireAjax('SuperAdminController.php?action=get_members', '', false).then(function(data) {
+            fireAjax('AccountController.php?action=get_members', '', false).then(function(data) {
               let objData = $.parseJSON(data.trim()).data;
               let retval = '<option value = "" selected disabled></option>';
               $.each(objData, function(k, v) {
