@@ -284,7 +284,7 @@ $today = date("F j Y, l");
 
     <script>
       $(function() {
-
+        let divClone = $("#mdlTrainings").html();
         let me = getUrlVars()['view'];
         let act = getUrlVars()['action'];
         let session = getUrlVars()['session'];
@@ -382,6 +382,7 @@ $today = date("F j Y, l");
           loadAllMembers();
           $('#btnMemberCellgroup, #btnMemberTraining, #btnMemberMentoring, #btnMemberSunday').on('click', function() {
             if (memberID == 0 || memberID == null) return;
+            $('#mdlTrainings').html(divClone);
             let pk = memberID;
             let selectedLS = $(this);
             $('#member_select_year').attr('data-id', pk);
@@ -526,6 +527,7 @@ $today = date("F j Y, l");
             });
           });
           $('body').on('click', '.memberLifestyle', function() {
+            $('#mdlTrainings').html(divClone);
             let selectedLS = $(this);
             let pk = selectedLS.attr('data-id');
             $('#member_select_year').attr('data-id', pk);
@@ -1985,7 +1987,7 @@ $today = date("F j Y, l");
 
           console.log(data);
           let objData = $.parseJSON(data.trim()).data;
-          if (objData == 0) return;
+          //if (objData == 0) return;
           let retval = '';
           let table_container = '';
           switch (lesson) {
@@ -2018,6 +2020,7 @@ $today = date("F j Y, l");
             retval += '</tr>';
           });
           retval = (retval == '') ? 'No entry found' : retval;
+          
           $("#" + table_container).html(retval);
         }).catch(function(err) {
           console.log(err);
