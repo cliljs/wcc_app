@@ -174,6 +174,7 @@ $today = date("F j Y, l");
                 </div>
               </div>
               <?php
+              //print_r($_SESSION);
               switch ($source) {
                 case "home":
                   include "frontend/views/home.php";
@@ -224,6 +225,9 @@ $today = date("F j Y, l");
                   break;
                 case "admins":
                   include "frontend/views/admins.php";
+                  break;
+                case "members":
+                  include "frontend/views/members.php";
                   break;
                 default:
                   include "frontend/views/404.php";
@@ -373,6 +377,104 @@ $today = date("F j Y, l");
           $("#profile_picture").on("change", function() {
             $(".custom-file-label").html("Image Selected");
           });
+        } else if (me == 'members') {
+          let memberID = 0;
+          loadAllMembers();
+          $('#btnMemberCellgroup, #btnMemberTraining, #btnMemberMentoring, #btnMemberSunday').on('click', function() {
+            if (memberID == 0 || memberID == null) return;
+            let pk = memberID;
+            let selectedLS = $(this);
+            $('#member_select_year').attr('data-id', pk);
+            let ajaxRoute = '';
+            let currentFrame = '';
+            let frames = ['mdlCellgroup', 'mdlTrainings', 'mdlMentoring', 'mdlSundayCelebration'];
+            $.each(frames, function(index, value) {
+              $('#' + value).hide();
+            });
+
+            switch (selectedLS.html()) {
+              case 'Cellgroup':
+                currentFrame = 'mdlCellgroup';
+                lifestyleCellgroup(pk);
+                break;
+              case 'Trainings':
+                currentFrame = 'mdlTrainings';
+                $('#collapseLifeclass').attr('data-id', pk);
+                $('#collapseSOL1').attr('data-id', pk);
+                $('#collapseSOL2').attr('data-id', pk);
+                $('#collapseSOL3').attr('data-id', pk);
+                $('#collapseReencounter').attr('data-id', pk);
+                break;
+              case 'Mentoring':
+                currentFrame = 'mdlMentoring';
+                lifestyleMentoring(pk);
+                break;
+              case 'Sunday Celebration Attendance':
+                currentFrame = 'mdlSundayCelebration';
+                lifestyleSundayAttendance(pk, new Date().getFullYear());
+                break;
+            }
+
+            $('#mdlLifeStyleMemberName').html(selectedLS.attr('data-name'));
+            $('#' + currentFrame).show();
+            $('#mdlLifeStyle').modal({
+              backdrop: 'static'
+            });
+          });
+          $('#collapseLifeclass, #collapseSOL1, #collapseSOL2, #collapseSOL3, #collapseReencounter').on('click', function() {
+            let thisButton = $(this);
+            let thisID = $(this).attr('id').replace('collapse', '');
+            let userID = $(this).attr('data-id');
+            let iSpan = thisButton.children(':first');
+
+            if (iSpan.hasClass('fa-plus')) {
+
+              lifestyleTraining(userID, thisID);
+            }
+
+          });
+          $('#member_select_year').on('change', function() {
+            let dataID = $(this).attr('data-id');
+            let dataYear = $(this).val();
+            render_member_calendar(dataID, dataYear);
+          });
+          $('#select_name').on('change', function() {
+            memberID = $(this).val();
+          })
+          $('#frmMembers').on('submit', function(e) {
+            e.preventDefault();
+            $('#memberLS').hide();
+            $('#lblMember').html('');
+            $('#lblTL').html('');
+            fireAjax('SuperAdminController.php?action=validate_user&id=' + memberID, '', false).then(function(data) {
+              let objData = $.parseJSON(data.trim()).data;
+              if (objData) {
+                $('#lblMember').html(objData.fullname);
+                $('#lblTL').html('Tribe Leader: ' + objData.tlname);
+                $('#memberLS').show();
+              } else {
+                fireSwal('Member Inquiry', 'Failed to validate user. Please reload the page', 'error');
+              }
+            }).catch(function(err) {
+              fireSwal('Member Inquiry', 'Failed to validate user. Please reload the page', 'error');
+            })
+          })
+
+          function loadAllMembers() {
+            fireAjax('SuperAdminController.php?action=get_members', '', false).then(function(data) {
+              let objData = $.parseJSON(data.trim()).data;
+              let retval = '<option value = "" selected disabled></option>';
+              $.each(objData, function(k, v) {
+                retval += '<option value = "' + v.id + '">' + v.full_name + '</option>';
+              });
+              $('#select_name').html(retval);
+              $('#select_name').select2({
+                theme: 'bootstrap4'
+              });
+            }).catch(function(err) {
+              fireSwal('Member Inquiry', 'Failed to retrieve list of members. Please reload the page', 'error');
+            })
+          }
         } else if (me == 'tribe') {
           loadDisciples();
           getLeaders();
@@ -1853,7 +1955,6 @@ $today = date("F j Y, l");
 
         fireAjax('CellgroupController.php?action=get_cell_list&pk=' + pk, '', false).then(function(data) {
 
-          console.log(data);
           let objData = $.parseJSON(data.trim()).data;
           let table_body = '';
           $.each(objData, function(k, v) {

@@ -14,6 +14,7 @@
     <?php
     if ($is_admin) {
       echo '<a href="Javascript:void(0)" class="btn btn-block btn-lg btn-secondary" id = "btnQR"><b>QR Maintenance</b></a>';
+      echo '<a href="index.php?view=members" class="btn btn-block btn-lg btn-secondary"><b>Member Inquiry</b></a>';
     }
     if ($is_pastor) {
       echo '<a href="index.php?view=admins" class="btn btn-block btn-lg btn-secondary"><b>System Administrators</b></a>';

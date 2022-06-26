@@ -13,12 +13,16 @@ class SuperAdmin {
             [
               'is_leader' => 1, 
             ],
-            $id
+            $id,null
         );
     }
     public function get_admins(){
         global $db;
         return $db->get_list("Select id,lastname,firstname,middlename,branch,profile_pic from bro_accounts where is_admin = 1 order by lastname",[]);
+    }
+    public function get_members(){
+        global $db;
+        return $db->get_list("Select id,CONCAT(lastname,', ',firstname,' ',middlename) as full_name from bro_accounts where branch = ?",[$_SESSION['branch']]);
     }
     public function create_leader($payload = [], $files)
     {
@@ -56,7 +60,11 @@ class SuperAdmin {
     }
     public function get_assignee($payload = []){
         global $db;
-        return $db->get_list("Select id,CONCAT(lastname,', ', firstname,' ',middlename) as fullname from bro_accounts where branch = ? and not is_pastor = 1 and id not in (Select id from bro_accounts where is_admin = 1) order by lastname",[$payload['branch']]);
+        return $db->get_list("Select id,CONCAT(lastname,', ', firstname,' ',middlename) as fullname from bro_accounts where branch = ? and not is_pastor = 1 order by lastname",[$payload['branch']]);
+    }
+    public function validate_user($pk = 0){
+        global $db;
+        return $db->get_row("Select id,CONCAT(lastname,', ', firstname,' ',middlename) as fullname,(Select CONCAT(lastname,', ', firstname,' ',middlename) from bro_accounts where id = (Select leader_pk from bro_tribe where member_pk = ?)) as tlname from bro_accounts ba where ba.id = ? ",[$pk,$pk]);
     }
 }
 

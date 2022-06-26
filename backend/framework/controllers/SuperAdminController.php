@@ -51,9 +51,19 @@ switch ($act) {
             $common->create_response("SuperAdminController/action=get_admins", $admin_model->get_admins(), 1)
         );
         break;
+    case 'get_members':
+        echo json_encode(
+            $common->create_response("SuperAdminController/action=get_members", $admin_model->get_members(), 1)
+        );
+        break;
     case 'get_assignee':
         echo json_encode(
             $common->create_response("SuperAdminController/action=get_assignee", $admin_model->get_assignee($_POST), 1)
+        );
+        break;
+    case 'validate_user':
+        echo json_encode(
+            $common->create_response("SuperAdminController/action=validate_user", $admin_model->validate_user($_GET['id']), 1)
         );
         break;
     default:
