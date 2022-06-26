@@ -422,7 +422,7 @@ $today = date("F j Y, l");
               backdrop: 'static'
             });
           });
-          $('#collapseLifeclass, #collapseSOL1, #collapseSOL2, #collapseSOL3, #collapseReencounter').on('click', function() {
+          $('body').on('click','#collapseLifeclass, #collapseSOL1, #collapseSOL2, #collapseSOL3, #collapseReencounter', function() {
             let thisButton = $(this);
             let thisID = $(this).attr('id').replace('collapse', '');
             let userID = $(this).attr('data-id');
@@ -587,7 +587,7 @@ $today = date("F j Y, l");
               fireSwal('Transfer Member', 'Failed to transfer member. Please reload the page', 'error');
             });
           });
-          $('#collapseLifeclass, #collapseSOL1, #collapseSOL2, #collapseSOL3, #collapseReencounter').on('click', function() {
+          $('body').on('click','#collapseLifeclass, #collapseSOL1, #collapseSOL2, #collapseSOL3, #collapseReencounter', function() {
             let thisButton = $(this);
             let thisID = $(this).attr('id').replace('collapse', '');
             let userID = $(this).attr('data-id');
