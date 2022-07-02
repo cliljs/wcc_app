@@ -44,6 +44,15 @@ switch ($act) {
             )
         );
         break;
+    case 'admin_enrollment':
+        echo json_encode(
+            $common->create_response(
+                "EnrollmentController.php/?action=admin_enrollment",
+                $enroll_model->admin_enrollment(),
+                1
+            )
+        );
+        break;
     case 'graduate':
         $canditate = $enroll_model->graduate($_POST);
 

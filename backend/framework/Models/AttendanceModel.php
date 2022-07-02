@@ -74,6 +74,16 @@ class AttendanceModel
          [$year, $user_pk]
       );
    }
+   public function get_admin_list($year)
+   {
+      global $db, $common;
+     
+      return $db->get_list(
+         "SELECT sunday_date, COUNT(*) as wcc,(Select COUNT(*) from bro_invites where invite_type = 'VIP' and date_invited = ba.sunday_date) as vips, (Select COUNT(*) from bro_invites where not invite_type = 'VIP' and  date_invited = ba.sunday_date) as invs FROM {$this->base_table} ba 
+          WHERE YEAR(sunday_date) = ? group by sunday_date",
+         [$year]
+      );
+   }
    public function render_table($year)
    {
       global $common;
@@ -100,7 +110,31 @@ class AttendanceModel
       }
       return $retval;
    }
+   public function render_admin_table($year)
+   {
+      global $common;
+      $retval = '';
+      for ($i = 1; $i < 13; $i++) {
+         $monthName   = date('F', mktime(0, 0, 0, $i, 10));
+         $days = $common->getSundays($year, $i);
 
+
+
+         foreach ($days as $day) {
+            $classDate = date('Y') . '-' . sprintf("%02d", $i) . '-' . sprintf("%02d", $day);
+
+            $retval .= "<tr>";
+            $retval .= "<td>" . $monthName . " " . sprintf("%02d", $day) . "</td>";
+            $retval .= "<td class = 'text-center wcc_" . $classDate . "'>0</td>";
+            $retval .= "<td class = 'text-center vip_" . $classDate . "'>0</td>";
+            $retval .= "<td class = 'text-center inv_" . $classDate . "'>0</td>";
+            $retval .= "</tr>";
+         }
+
+
+      }
+      return $retval;
+   }
    public function get_disciple_attendance($year)
    {
       global $db, $common;
@@ -160,7 +194,6 @@ class AttendanceModel
             "status"      => 1
          ];
          $result = $notif_model->create_notification($notif_arr);
-      
       }
 
 

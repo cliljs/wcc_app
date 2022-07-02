@@ -105,7 +105,11 @@ class EnrollmentModel
         global $db, $common;
         return $db->get_list("SELECT * FROM {$this->base_table} WHERE user_pk = ?", [$_SESSION['pk']]);
     }
-
+    public function admin_enrollment()
+    {
+        global $db, $common;
+        return $db->get_list("Select be.*,(Select CONCAT(lastname, ', ' , firstname, ' ', middlename) from bro_accounts where id = be.user_pk) as enrollee from bro_enrollment be where (Select branch from bro_accounts where id = be.user_pk) = ?", [$_SESSION['branch']]);
+    }
     public function update_enrollment($pk, $payload = [])
     {
         global $db, $common;

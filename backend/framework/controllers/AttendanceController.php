@@ -70,7 +70,16 @@ switch ($act) {
             )
         );
         break;
-
+        case 'get_admin_list':
+            echo json_encode(
+                $common->create_response(
+                    'AttendanceController.php/?action=get_admin_list',
+                    $attendance_model->get_admin_list($_GET['year']),
+                    1
+                )
+            );
+            break;
+    
     case 'badge_attendance':
         echo json_encode(
             $common->create_response(
@@ -100,6 +109,15 @@ switch ($act) {
             )
         );
         break;
+        case 'render_admin_table':
+            echo json_encode(
+                $common->create_response(
+                    'AttendanceController.php/?action=render_admin_table',
+                    $attendance_model->render_admin_table($_GET['year']),
+                    1
+                )
+            );
+            break;
     default:
         # code...
         break;
