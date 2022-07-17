@@ -13,7 +13,15 @@ switch ($act) {
             )
         );
         break;
-
+    case 'admin_mentoring':
+        echo json_encode(
+            $common->create_response(
+                "MentoringController.php/?action=admin_mentoring",
+                $mentoring_model->admin_mentoring($_GET['year']),
+                1
+            )
+        );
+        break;
     case 'create_mentoring':
         echo json_encode(
             $common->create_response(

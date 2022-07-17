@@ -44,7 +44,15 @@ switch ($act) {
             )
         );
         break;
-
+    case 'admin_cellgroup':
+        echo json_encode(
+            $common->create_response(
+                'CellgroupController/action=admin_cellgroup',
+                $cellgroup_model->admin_cellgroup($_GET['year']),
+                1
+            )
+        );
+        break;
     case 'get_cell_data':
         echo json_encode(
             $common->create_response(

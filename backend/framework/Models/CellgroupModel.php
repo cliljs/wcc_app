@@ -2,7 +2,8 @@
 
 require_once '../../autoload.php';
 
-class CellGroupModel {
+class CellGroupModel
+{
     private $base_table = 'bro_cellgroup';
 
     public function create_cellgroup($payload = [])
@@ -25,10 +26,14 @@ class CellGroupModel {
     public function get_cell_list($payload = [])
     {
         global $db, $common;
-        $pk = (array_key_exists("pk",$payload)) ? $payload['pk'] : $_SESSION['pk'];
-        return $db->get_list("SELECT * FROM {$this->base_table} where user_pk = ?",[$pk]);
+        $pk = (array_key_exists("pk", $payload)) ? $payload['pk'] : $_SESSION['pk'];
+        return $db->get_list("SELECT * FROM {$this->base_table} where user_pk = ?", [$pk]);
     }
-
+    public function admin_cellgroup($year = 0)
+    {
+        global $db, $common;
+        return $db->get_list("SELECT c.*,(Select CONCAT(lastname, ', ', firstname, ' ',middlename) from bro_accounts where id = c.user_pk) as wccmember_name FROM {$this->base_table} c where YEAR(c.event_date) = ? order by event_date,event_time asc", [$year]);
+    }
     public function get_cell_data($pk = null)
     {
         global $db, $common;
@@ -45,20 +50,22 @@ class CellGroupModel {
 
     public function remove_cell_data($pk = null)
     {
-       global $db, $common;
-       $tobe_deleted = $this->get_cell_data($pk);
-       $deleted      = $db->delete("DELETE FROM {$this->base_table} WHERE id = {$pk}");
-       return $deleted ? $tobe_deleted : false;
+        global $db, $common;
+        $tobe_deleted = $this->get_cell_data($pk);
+        $deleted      = $db->delete("DELETE FROM {$this->base_table} WHERE id = {$pk}");
+        return $deleted ? $tobe_deleted : false;
     }
 
     public function get_other_names()
     {
         global $db, $common;
-        return $db->get_list("SELECT REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, acc.id
+        return $db->get_list(
+            "SELECT REPLACE(CONCAT_WS(' ',acc.firstname,acc.middlename,acc.lastname),'  ',' ') AS fullname, acc.id
                             FROM bro_accounts acc 
                             WHERE NOT acc.id = ? and acc.branch = (Select branch from bro_accounts where id = ?) and NOT acc.is_pastor = 1 
                             ORDER BY acc.firstname asc",
-                            [$_SESSION['pk'],$_SESSION['pk']]);
+            [$_SESSION['pk'], $_SESSION['pk']]
+        );
     }
 }
 

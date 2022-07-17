@@ -20,7 +20,7 @@ class MentoringModel
 
     public function remove_mentoring($pk)
     {
-        global $db, $common; 
+        global $db, $common;
         $deleted      = $db->delete("DELETE FROM {$this->base_table} WHERE id = {$pk}");
         return $deleted ? true : false;
     }
@@ -28,11 +28,20 @@ class MentoringModel
     public function get_mentoring($payload = [])
     {
         global $db, $common;
-        $pk = (array_key_exists('pk',$payload)) ? $payload['pk'] : $_SESSION['pk'];
+        $pk = (array_key_exists('pk', $payload)) ? $payload['pk'] : $_SESSION['pk'];
         return $db->get_list("SELECT * from {$this->base_table} 
                             WHERE created_by = ? 
                             ORDER BY mentor_date asc
                             ", [$pk]);
+    }
+    public function admin_mentoring($year = 0)
+    {
+        global $db;
+
+        return $db->get_list("SELECT m.*,(Select CONCAT(lastname,', ',firstname,' ',middlename) from bro_accounts where id = m.created_by) as wccmember_name from {$this->base_table} m
+                            WHERE YEAR(mentor_date) = ? 
+                            ORDER BY mentor_date asc
+                            ", [$year]);
     }
 }
 

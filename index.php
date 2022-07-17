@@ -30,7 +30,7 @@ $today = date("F j Y, l");
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="author" content="Bryan Nikko V. Barata, Calil Christopher Jaudian">
   <title id="app_title">WCC</title>
-
+  <link rel="icon" href="frontend/assets/wcc_ico.ico">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
   <link rel="stylesheet" href="frontend/plugins/fontawesome-free/css/all.min.css">
@@ -379,7 +379,7 @@ $today = date("F j Y, l");
           });
         } else if (me == 'members') {
 
-          $('#btnMemberSunday, #btnMemberEnrollment').on('click', function() {
+          $('#btnMemberCellgroup, #btnMemberMentoring, #btnMemberSunday, #btnMemberEnrollment').on('click', function() {
             let thisID = $(this).attr('id');
             let thisTitle = $(this).html();
 
@@ -390,21 +390,89 @@ $today = date("F j Y, l");
                 loadAdminList();
               })
               $('#mdlSundayCelebration').show();
-
               loadAdminList();
-
-
-
-
             } else if (thisID == 'btnMemberEnrollment') {
               loadEnrollment();
               $('#mdlTrainings').show();
+            } else if (thisID == 'btnMemberCellgroup') {
+              $('#cellgroup_select_year').on('change', function() {
+                loadAdminCellgroup();
+              });
+              $('#mdlCellgroup').show();
+              loadAdminCellgroup();
+            } else if (thisID == 'btnMemberMentoring') {
+              $('#mentoring_select_year').on('change', function() {
+                loadAdminMentoring();
+              });
+              $('#mdlMentoring').show();
+              loadAdminMentoring();
             }
 
 
 
 
           });
+
+          function loadAdminMentoring() {
+            preload('body', true);
+            let user_year = $('#mentoring_select_year').val();
+
+
+            fireAjax('MentoringController.php?action=admin_mentoring&year=' + user_year, '', false).then(function(data) {
+
+              let obj = jQuery.parseJSON(data.trim());
+              let objData = obj.data;
+              let retval = '';
+              $.each(objData, function(k, v) {
+                retval += '<tr>';
+                retval += '<td>' + v.wccmember_name + '</td>';
+                retval += '<td>' + v.mentor_date + '</td>';
+                if (v.attendance == 1) {
+                  retval += '<td>Attended</td>';
+                } else {
+                  retval += '<td>Absent</td>';
+                }
+
+                retval += '</tr>';
+              });
+              console.log('Retval: ' + retval);
+              $('#tblMemberMentoringBody').html(retval);
+              $('#mdlLifeStyle').modal({
+                backdrop: "static"
+              });
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Mentoring', 'Failed to retrieve mentoring list. Please try again', 'error');
+            });
+          }
+
+          function loadAdminCellgroup() {
+            preload('body', true);
+            let user_year = $('#cellgroup_select_year').val();
+
+
+            fireAjax('CellgroupController.php?action=admin_cellgroup&year=' + user_year, '', false).then(function(data) {
+
+              let obj = jQuery.parseJSON(data.trim());
+              let objData = obj.data;
+              let retval = '';
+              $.each(objData, function(k, v) {
+                retval += '<tr>';
+                retval += '<td>' + v.wccmember_name + '</td>';
+                retval += '<td>' + v.event_date + ' ' + v.event_time + '</td>';
+                retval += '<td>' + v.member_name + '</td>';
+                retval += '<td>' + v.event_place + '</td>';
+                retval += '</tr>';
+              });
+              $('#tblMemberCellgroupBody').html(retval);
+              $('#mdlLifeStyle').modal({
+                backdrop: "static"
+              });
+            }).catch(function(err) {
+              console.log(err);
+              fireSwal('Cellgroup', 'Failed to retrieve cellgroup list. Please try again', 'error');
+            });
+          }
 
           function loadAdminList() {
             preload('body', true);
