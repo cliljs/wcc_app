@@ -14,15 +14,16 @@
     <?php
     if ($is_admin) {
       echo '<a href="Javascript:void(0)" class="btn btn-block btn-lg btn-secondary" id = "btnQR"><b>QR Maintenance</b></a>';
-      echo '<a href="index.php?view=members" class="btn btn-block btn-lg btn-secondary"><b>Member Inquiry</b></a>';
+      echo '<a href="index.php?view=members" class="btn btn-block btn-lg btn-secondary"><b>Lifestyle Inquiry</b></a>';
+      echo '<a href="Javascript:void(0)" id = "aRecords" class="btn btn-block btn-lg btn-secondary"><b>Export Records</b></a>';
     }
     if ($is_pastor) {
       echo '<a href="index.php?view=admins" class="btn btn-block btn-lg btn-secondary"><b>System Administrators</b></a>';
     }
     ?>
-    
+
     <a href='index.php?view=notifications' class='btn btn-block btn-lg btn-secondary'><b>Notifications</b>&nbsp;&nbsp;<span class="badge badge-danger right unreadCount"></span></a>
-    
+
     <a id="btnPersonalInformation" href="Javascript:void(0);" class="btn btn-block btn-lg btn-secondary"><b>Personal Information</b></a>
     <!-- <a href="Javascript:void(0);" class="btn btn-block btn-lg btn-secondary"><b>Tribe Approval&nbsp;<span class="badge bg-danger">1</span></b></a> -->
     <a href="logout.php" class="btn btn-block btn-lg btn-secondary"><b>Logout</b></a>
@@ -171,6 +172,45 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="mdlExportRecords" tabindex="-1" role="dialog" aria-labelledby="mdlExportRecordsLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mdlExportRecordLabel">Export Records</h5>
+
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Month</label>
+          <select class="form-control" id="downloadMonth">
+            <option value="" disabled selected>Please select a month</option>
+            <?php
+            for ($i = 1; $i < 13; $i++) {
+              echo '<option value="' . $i . '">' . date("F", mktime(0, 0, 0, $i, 10)) . '</option>';
+            }
+            ?>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Year</label>
+          <select class="form-control" id="downloadYear">
+            <option value="" disabled selected>Please select a year</option>
+            <?php
+            for ($i = 2022; $i < 3000; $i++) {
+              echo '<option value="' . $i . '">' . $i . '</option>';
+            }
+            ?>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button id="btnExportRecords" class="btn btn-info">Download</button>
       </div>
     </div>
   </div>

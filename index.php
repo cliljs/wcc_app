@@ -295,7 +295,31 @@ $today = date("F j Y, l");
           $('#btnShowBadge').on('click', function() {
             showBadge();
           });
+          $('#aRecords').on('click', function() {
+            $('#mdlExportRecords').modal({
+              backdrop: "static"
+            });
+          });
+          $('#btnExportRecords').on('click', function() {
+            let payload = {
+              'year': $('#downloadYear').val(),
+              'month': $('#downloadMonth').val()
+            };
 
+            fireAjax('TribeController.php?action=download_lifestyle', payload, false).then(function(d) {
+              let objData = $.parseJSON(d.trim()).data;
+       
+              if (objData) {
+                $('#mdlExportRecords').modal('hide');
+                fireSwal('Download Lifestyle', 'Records download succesfully. Please check your downloads folder', 'success');
+              } else {
+                throw d;
+              }
+
+            }).catch(function(err) {
+              fireSwal('Download Lifestyle', 'Failed to retrieve records. Please try again', 'error');
+            });
+          });
           if (act == 1) {
             showBadge();
           }

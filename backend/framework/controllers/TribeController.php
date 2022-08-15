@@ -90,6 +90,15 @@ switch ($act) {
             )
         );
         break;
+    case 'download_lifestyle':
+        echo json_encode(
+            $common->create_response(
+                "TribeController.php/?action=download_lifestyle",
+                $tribe_model->download_lifestyle($_POST),
+                1
+            )
+        );
+        break;
     default:
         # code...
         break;

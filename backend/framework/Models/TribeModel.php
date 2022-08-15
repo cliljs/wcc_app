@@ -34,11 +34,11 @@ class TribeModel
         $arr = [
             "new_leader"   => $query['new_leader_pk']
         ];
-        if($pk == $query['new_leader_pk']){
+        if ($pk == $query['new_leader_pk']) {
             return 'Failed to transfer disciple. Please select a different leader.';
         }
-        $check_pending = $db->get_row("Select * from {$this->base_table} where member_pk = ? and new_leader = 0",[$pk]);
-        if(empty($check_pending)){
+        $check_pending = $db->get_row("Select * from {$this->base_table} where member_pk = ? and new_leader = 0", [$pk]);
+        if (empty($check_pending)) {
             return 'Member has a pending transfer request. Please wait for pastor\'s confirmation';
         }
 
@@ -67,7 +67,24 @@ class TribeModel
                             INNER JOIN {$this->base_table} tr ON acc.id = tr.member_pk
                             WHERE tr.leader_pk = ? AND tr.is_approved = ?", [$_SESSION['pk'], 0]);
     }
-
+    public function download_lifestyle($payload = [])
+    {
+        global $db, $common;
+        $month = $payload['month'];
+        $year = $payload['year'];
+     
+        try {
+            $mentoring_list =  $db->get_list("Select m.mentor_date,(CONCAT(acc.lastname, ', ', acc.firstname, ' ', acc.middlename)) as member_name, m.attendance 
+            from bro_mentoring m 
+            left join bro_accounts acc on acc.id = m.created_by 
+            where YEAR(mentor_date) = ? and MONTH(mentor_date) = ? 
+            order by mentor_date", [$year, $month]);
+          
+            return true;
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
     public function get_leader_names($payload = [])
     {
         global $db, $common;
@@ -181,7 +198,7 @@ class TribeModel
 
         foreach ($result as $key => $value) {
             $member_pk = $value['member_pk'];
-            
+
             $retval .= "<tr>";
             $retval .= "<td>" . $value['member_name'] . "</td>";
             foreach ($days as $day) {
@@ -192,10 +209,10 @@ class TribeModel
 
                 $colorpower = '';
                 $className = $year . "-" . sprintf("%02d", $month) . "-" . sprintf("%02d", $day);
-                $row = $db->get_row("Select * from bro_attendance where sunday_date = ? and account_pk = ?",array_values($arr));
-                if(empty($row)){
+                $row = $db->get_row("Select * from bro_attendance where sunday_date = ? and account_pk = ?", array_values($arr));
+                if (empty($row)) {
                     $colorpower = '#2c3e50';
-                } else{
+                } else {
                     $colorpower = ($row["confirmed_by"] == 0) ? '#f39c12' : '#1abc9c';
                 }
                 $retval .= "<td class = 'text-center $className'><i class = 'fa fa-circle' style = 'color:{$colorpower}'></i></td>";
