@@ -311,13 +311,14 @@ $today = date("F j Y, l");
        
               if (objData != '0') {
                 $('#mdlExportRecords').modal('hide');
-                window.location.href = objData;
+                window.location.href = download_url + objData;
                 fireSwal('Download Lifestyle', 'Records download successfully. Please check your downloads folder', 'success');
               } else {
                 throw d;
               }
 
             }).catch(function(err) {
+              console.log(err);
               fireSwal('Download Lifestyle', 'Failed to retrieve records. Please try again', 'error');
             });
           });

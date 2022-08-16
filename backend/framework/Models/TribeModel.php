@@ -83,8 +83,10 @@ class TribeModel
             left join bro_accounts acc on acc.id = m.created_by 
             where YEAR(mentor_date) = ? and MONTH(mentor_date) = ? 
             order by mentor_date", [$year, $month]);
-            
-            $cellgroup_list = $db->get_list("Select cg.event_date,cg.event_time,(CONCAT(acc.lastname, ', ', acc.firstname, ' ', acc.middlename)) as member,cg.event_place,cg.member_name from bro_cellgroup cg left join bro_accounts acc on cg.user_pk = acc.id where MONTH(event_date) = ? and YEAR(event_date) = ? order by event_date",[$month,$year]);
+
+            $cellgroup_list = $db->get_list("Select cg.event_date,cg.event_time,(CONCAT(acc.lastname, ', ', acc.firstname, ' ', acc.middlename)) as member,cg.event_place,cg.member_name from bro_cellgroup cg left join bro_accounts acc on cg.user_pk = acc.id where MONTH(event_date) = ? and YEAR(event_date) = ? order by event_date", [$month, $year]);
+            $enroll_list = $db->get_list("SELECT e.created_at,(CONCAT(acc.lastname, ', ', acc.firstname, ' ', acc.middlename)) as member_name,(select CONCAT(lastname, ', ', firstname, ' ', middlename) from bro_accounts where id =(Select leader_pk from bro_tribe where member_pk = e.user_pk)) as leader_name,e.lesson_type,e.is_enrolled FROM bro_enrollment e LEFT JOIN bro_accounts acc ON acc.id = e.user_pk ORDER by e.created_at", []);
+            $sunday_list = $db->get_list("SELECT att.sunday_date,(CONCAT(acc.lastname, ', ', acc.firstname, ' ', acc.middlename)) as member_name, (Select COUNT(*) from bro_invites where account_pk = att.account_pk and invite_type = 'VIP') as vip_count, (Select COUNT(*) from bro_invites where account_pk = att.account_pk and not invite_type = 'VIP') as invite_count FROM bro_attendance att LEFT JOIN bro_accounts acc ON acc.id = att.account_pk WHERE NOT att.date_confirmed IS NULL AND MONTH(att.sunday_date) = ? AND YEAR(att.sunday_date) = ? ", [$month, $year]);
 
             $mentoring_date = [];
             $mentoring_name = [];
@@ -101,22 +103,54 @@ class TribeModel
             $tr_leader = [];
             $tr_name = [];
             $tr_status = [];
-            foreach($mentoring_list as $mentor){
-                array_push($mentoring_date,$mentor['mentor_date']);
-                array_push($mentoring_name,$mentor['member_name']);
-                if($mentor['attendance'] == 1){
-                    array_push($mentoring_attendance,'Attended');
-                } else{
-                    array_push($mentoring_attendance,'Absent');
-                }  
+
+            $sd_date = [];
+            $sd_name = [];
+            $sd_vip = [];
+            $sd_invite = [];
+
+            foreach ($mentoring_list as $mentor) {
+                array_push($mentoring_date, $mentor['mentor_date']);
+                array_push($mentoring_name, $mentor['member_name']);
+                if ($mentor['attendance'] == 1) {
+                    array_push($mentoring_attendance, 'Attended');
+                } else {
+                    array_push($mentoring_attendance, 'Absent');
+                }
             }
 
-            foreach($cellgroup_list as $cellgroup){
-                array_push($cg_date,$cellgroup['event_date']);
-                array_push($cg_time,$cellgroup['event_time']);
-                array_push($cg_member,$cellgroup['member']);
-                array_push($cg_place,$cellgroup['event_place']);
-                array_push($cg_list,$cellgroup['member_name']);
+            foreach ($cellgroup_list as $cellgroup) {
+                array_push($cg_date, $cellgroup['event_date']);
+                array_push($cg_time, $cellgroup['event_time']);
+                array_push($cg_member, $cellgroup['member']);
+                array_push($cg_place, $cellgroup['event_place']);
+                array_push($cg_list, $cellgroup['member_name']);
+            }
+
+            foreach ($enroll_list as $enroll) {
+                array_push($tr_date, $enroll['created_at']);
+                array_push($tr_member, $enroll['member_name']);
+                array_push($tr_leader, $enroll['leader_name']);
+                array_push($tr_name, $enroll['lesson_type']);
+                switch ($enroll['is_enrolled']) {
+                    case 0:
+                        array_push($tr_status, "Waiting for approval");
+                        break;
+                    case 1:
+                        array_push($tr_status, "Ongoing");
+                        break;
+                    case 2:
+                        array_push($tr_status, "Completed");
+                        break;
+                }
+                
+            }
+
+            foreach ($sunday_list as $sunday) {
+                array_push($sd_date, $sunday['sunday_date']);
+                array_push($sd_name, $sunday['member_name']);
+                array_push($sd_vip, $sunday['vip_count']);
+                array_push($sd_invite, $sunday['invite_count']);
             }
 
             $filename = "../downloads/WCC_Lifestyle_" . $month . "_" . $year . ".xlsx";
@@ -128,11 +162,21 @@ class TribeModel
                 '[cg_time]'                 => $cg_time,
                 '[cg_member]'               => $cg_member,
                 '[cg_place]'                => $cg_place,
-                '[cg_list]'                 => $cg_list
-                
+                '[cg_list]'                 => $cg_list,
+                '[tr_date]'                 => $tr_date,
+                '[tr_member]'               => $tr_member,
+                '[tr_leader]'               => $tr_leader,
+                '[tr_name]'                 => $tr_name,
+                '[tr_status]'               => $tr_status,
+                '[sd_date]'                 => $sd_date,
+                '[sd_name]'                 => $sd_name,
+                '[sd_vip]'                  => $sd_vip,
+                '[sd_invite]'               => $sd_invite
+
             ]);
-            return $filename;
+            return "WCC_Lifestyle_" . $month . "_" . $year . ".xlsx";
         } catch (\Throwable $th) {
+            echo $th;
             return '0';
         }
     }

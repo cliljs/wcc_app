@@ -1,5 +1,6 @@
 //let home_url = "https://www.sdpmonitoring.com/WCC_BRY/";
 let home_url = "http://localhost/wcc_app/";
+let download_url = home_url + "backend/framework/downloads/";
 let image_url = home_url + "backend/framework/uploads/images/";
 let base_url = home_url + "backend/framework/controllers/";
 let varErrMessage = "Failed to process request. Please try again.";
