@@ -309,9 +309,10 @@ $today = date("F j Y, l");
             fireAjax('TribeController.php?action=download_lifestyle', payload, false).then(function(d) {
               let objData = $.parseJSON(d.trim()).data;
        
-              if (objData) {
+              if (objData != '0') {
                 $('#mdlExportRecords').modal('hide');
-                fireSwal('Download Lifestyle', 'Records download succesfully. Please check your downloads folder', 'success');
+                window.location.href = objData;
+                fireSwal('Download Lifestyle', 'Records download successfully. Please check your downloads folder', 'success');
               } else {
                 throw d;
               }

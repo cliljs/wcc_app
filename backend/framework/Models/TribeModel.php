@@ -1,8 +1,12 @@
 <?php
+
+use alhimik1986\PhpExcelTemplator\PhpExcelTemplator;
+
 require_once '../../autoload.php';
 require_once MODEL_PATH . 'AccountModel.php';
 require_once MODEL_PATH . 'NotificationModel.php';
 
+require_once('../packages/vendor/autoload.php');
 class TribeModel
 {
 
@@ -72,17 +76,64 @@ class TribeModel
         global $db, $common;
         $month = $payload['month'];
         $year = $payload['year'];
-     
+
         try {
             $mentoring_list =  $db->get_list("Select m.mentor_date,(CONCAT(acc.lastname, ', ', acc.firstname, ' ', acc.middlename)) as member_name, m.attendance 
             from bro_mentoring m 
             left join bro_accounts acc on acc.id = m.created_by 
             where YEAR(mentor_date) = ? and MONTH(mentor_date) = ? 
             order by mentor_date", [$year, $month]);
-          
-            return true;
+            
+            $cellgroup_list = $db->get_list("Select cg.event_date,cg.event_time,(CONCAT(acc.lastname, ', ', acc.firstname, ' ', acc.middlename)) as member,cg.event_place,cg.member_name from bro_cellgroup cg left join bro_accounts acc on cg.user_pk = acc.id where MONTH(event_date) = ? and YEAR(event_date) = ? order by event_date",[$month,$year]);
+
+            $mentoring_date = [];
+            $mentoring_name = [];
+            $mentoring_attendance = [];
+
+            $cg_date = [];
+            $cg_time = [];
+            $cg_member = [];
+            $cg_place = [];
+            $cg_list = [];
+
+            $tr_date = [];
+            $tr_member = [];
+            $tr_leader = [];
+            $tr_name = [];
+            $tr_status = [];
+            foreach($mentoring_list as $mentor){
+                array_push($mentoring_date,$mentor['mentor_date']);
+                array_push($mentoring_name,$mentor['member_name']);
+                if($mentor['attendance'] == 1){
+                    array_push($mentoring_attendance,'Attended');
+                } else{
+                    array_push($mentoring_attendance,'Absent');
+                }  
+            }
+
+            foreach($cellgroup_list as $cellgroup){
+                array_push($cg_date,$cellgroup['event_date']);
+                array_push($cg_time,$cellgroup['event_time']);
+                array_push($cg_member,$cellgroup['member']);
+                array_push($cg_place,$cellgroup['event_place']);
+                array_push($cg_list,$cellgroup['member_name']);
+            }
+
+            $filename = "../downloads/WCC_Lifestyle_" . $month . "_" . $year . ".xlsx";
+            PhpExcelTemplator::saveToFile('../packages/wcc.xlsx', $filename, [
+                '[mentoring_date]'          => $mentoring_date,
+                '[mentoring_name]'          => $mentoring_name,
+                '[mentoring_attendance]'    => $mentoring_attendance,
+                '[cg_date]'                 => $cg_date,
+                '[cg_time]'                 => $cg_time,
+                '[cg_member]'               => $cg_member,
+                '[cg_place]'                => $cg_place,
+                '[cg_list]'                 => $cg_list
+                
+            ]);
+            return $filename;
         } catch (\Throwable $th) {
-            return false;
+            return '0';
         }
     }
     public function get_leader_names($payload = [])

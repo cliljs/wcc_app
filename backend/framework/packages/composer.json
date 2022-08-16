@@ -1,0 +1,7 @@
+{
+    "require": {
+        "phpoffice/phpspreadsheet": "^1.23",
+        "shuchkin/simplexlsx": "^1.0",
+        "alhimik1986/php-excel-templator": "^1.0"
+    }
+}
